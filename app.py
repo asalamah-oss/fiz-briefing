@@ -134,7 +134,7 @@ def process_order_history(oh_bytes_list, inv_item_ids):
 
 # ── MAIN ANALYSIS ─────────────────────────────────────────────────────────────
 @st.cache_data(show_spinner=False)
-def run_analysis(inv_bytes, inv_filename, vel_key):
+def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
     """Run full briefing analysis. vel_key changes when velocity data is updated."""
     # Load inventory
     inv = pd.read_excel(io.BytesIO(inv_bytes))
@@ -155,10 +155,11 @@ def run_analysis(inv_bytes, inv_filename, vel_key):
          'SNACKS':'Snacks','PHARMA':'Pharma','STATIONARY':'Stationary'})
     inv['Sub Category'] = inv['Sub Category'].fillna('Unknown').str.strip()
 
-    # Get velocity from session state
-    ytd_df = st.session_state.get('vel_ytd')
-    l7_df  = st.session_state.get('vel_l7')
-    net_df = st.session_state.get('vel_net')
+    # Velocity data passed as serialised JSON to avoid session state in cached fn
+    import io as _io
+    ytd_df = pd.read_json(_io.StringIO(ytd_json)) if ytd_json else None
+    l7_df  = pd.read_json(_io.StringIO(l7_json))  if l7_json  else None
+    net_df = pd.read_json(_io.StringIO(net_json))  if net_json  else None
 
     STORE_SOH = {'Jahra':'Jahra Dark Store Stock','Qurtuba':'Qurtuba Dark Store Stock',
                  'Sabah Salem':'Sabah Salem Dark Store Stock'}
@@ -791,9 +792,12 @@ else:
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
 vel_key = str(st.session_state.get('vel_oh_key','none'))
+_ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
+_l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
+_net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
 with st.spinner('Analysing inventory…'):
     try:
-        data, kpis = run_analysis(inv_bytes, uploaded_inv.name, vel_key)
+        data, kpis = run_analysis(inv_bytes, uploaded_inv.name, vel_key, _ytd_json, _l7_json, _net_json)
     except Exception as e:
         st.error(f'Error: {e}'); st.exception(e); st.stop()
 
