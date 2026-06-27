@@ -8,6 +8,44 @@ import pandas as pd
 import numpy as np
 import io, re, json, datetime
 
+
+# ── GITHUB PERSISTENCE ────────────────────────────────────────────────────────
+import base64, requests
+
+def _gh_headers():
+    token = st.secrets.get("GITHUB_TOKEN", "")
+    return {"Authorization": f"token {token}", "Accept": "application/vnd.github.v3+json"}
+
+def _gh_repo():
+    return st.secrets.get("GITHUB_REPO", "asalamah-oss/fiz-briefing")
+
+def gh_read(path):
+    """Read a file from GitHub repo. Returns content string or None."""
+    try:
+        url = f"https://api.github.com/repos/{_gh_repo()}/contents/{path}"
+        r = requests.get(url, headers=_gh_headers(), timeout=10)
+        if r.status_code == 200:
+            data = r.json()
+            return base64.b64decode(data['content']).decode('utf-8'), data['sha']
+        return None, None
+    except Exception:
+        return None, None
+
+def gh_write(path, content, sha=None):
+    """Write a file to GitHub repo. sha required for updates."""
+    try:
+        url = f"https://api.github.com/repos/{_gh_repo()}/contents/{path}"
+        payload = {
+            "message": f"auto: update {path}",
+            "content": base64.b64encode(content.encode('utf-8')).decode('utf-8'),
+        }
+        if sha:
+            payload["sha"] = sha
+        r = requests.put(url, headers=_gh_headers(), json=payload, timeout=15)
+        return r.status_code in [200, 201]
+    except Exception:
+        return False
+
 st.set_page_config(page_title="Fiz · Availability Briefing", page_icon="📦",
                    layout="wide", initial_sidebar_state="collapsed")
 
@@ -759,14 +797,29 @@ with col_oh:
     uploaded_oh  = st.file_uploader('Order history', type=['csv'],  label_visibility='collapsed', key='oh_upload')
 
 # ── ORDER HISTORY PERSISTENCE ─────────────────────────────────────────────────
-# Store order history bytes in session state
 if uploaded_oh is not None:
     oh_bytes = uploaded_oh.read()
     st.session_state['oh_bytes'] = oh_bytes
     st.session_state['oh_name']  = uploaded_oh.name
-    st.success(f"✓ Order history loaded: {uploaded_oh.name}")
+    st.success(f"✓ Order history loaded: {uploaded_oh.name} — processing velocity...")
 elif 'oh_bytes' in st.session_state:
     st.info(f"📦 Using stored order history: {st.session_state.get('oh_name','')}")
+else:
+    # Try loading pre-computed velocity from GitHub
+    if 'vel_ytd' not in st.session_state:
+        with st.spinner("Loading velocity data from GitHub..."):
+            vel_csv, _ = gh_read("data/velocity_ytd.csv")
+            l7_csv, _  = gh_read("data/velocity_l7.csv")
+            net_csv, _ = gh_read("data/velocity_net.csv")
+            meta, _    = gh_read("data/velocity_meta.txt")
+            if vel_csv and l7_csv and net_csv:
+                import io as _io2
+                st.session_state['vel_ytd']    = pd.read_csv(_io2.StringIO(vel_csv))
+                st.session_state['vel_l7']     = pd.read_csv(_io2.StringIO(l7_csv))
+                st.session_state['vel_net']    = pd.read_csv(_io2.StringIO(net_csv))
+                st.session_state['vel_oh_key'] = 'github'
+                st.session_state['oh_name']    = meta.strip() if meta else 'GitHub'
+                st.success(f"✓ Velocity data loaded from GitHub ({st.session_state['oh_name']})")
 
 if uploaded_inv is None:
     st.markdown("""
@@ -789,7 +842,7 @@ if 'oh_bytes' in st.session_state:
 
     oh_key = hash(st.session_state['oh_bytes'])
     if st.session_state.get('vel_oh_key') != oh_key:
-        with st.spinner('Processing order history…'):
+        with st.spinner('Processing order history and saving velocity data…'):
             ytd_df, l7_df, net_df, oh_date = process_order_history(
                 [st.session_state['oh_bytes']], inv_item_ids)
             st.session_state['vel_ytd']    = ytd_df
@@ -797,6 +850,21 @@ if 'oh_bytes' in st.session_state:
             st.session_state['vel_net']    = net_df
             st.session_state['vel_oh_key'] = oh_key
             st.session_state['vel_date']   = oh_date
+            # Save pre-computed velocity to GitHub for persistence
+            _, sha_ytd = gh_read("data/velocity_ytd.csv")
+            _, sha_l7  = gh_read("data/velocity_l7.csv")
+            _, sha_net = gh_read("data/velocity_net.csv")
+            _, sha_meta= gh_read("data/velocity_meta.txt")
+            saved = (
+                gh_write("data/velocity_ytd.csv", ytd_df.to_csv(index=False), sha_ytd) and
+                gh_write("data/velocity_l7.csv",  l7_df.to_csv(index=False),  sha_l7)  and
+                gh_write("data/velocity_net.csv",  net_df.to_csv(index=False),  sha_net)  and
+                gh_write("data/velocity_meta.txt", st.session_state.get('oh_name','order history'), sha_meta)
+            )
+            if saved:
+                st.success("✓ Velocity data saved to GitHub — won't need to re-upload order history again")
+            else:
+                st.warning("⚠️ Could not save velocity to GitHub — will need to re-upload order history on next session")
 else:
     if 'vel_ytd' not in st.session_state:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
