@@ -232,11 +232,13 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
 
                 # Severity
                 v = float(oos.get('true_daily',0))
-                if v >= 5 and best_str not in ['DIRECT','STRONG']:
+                if v >= 10 and best_str != 'DIRECT':
+                    sev = 'URGENT'
+                elif v >= 5 and best_str not in ['DIRECT','STRONG']:
                     sev = 'URGENT'
                 elif v >= 2 and best_str is None:
                     sev = 'URGENT'
-                elif v >= 2 and best_str in ['DIRECT','STRONG']:
+                elif v >= 2:
                     sev = 'ACTION'
                 elif v < 2 and best_str is None:
                     sev = 'ACTION'
@@ -355,7 +357,11 @@ def _compute_kpis(inv, net_df, ytd_df, l7_df):
         kpis['rev_risk'] = 0; kpis['skus_at_risk'] = 0
 
     # DC transfer opps
-    kpis['dc_opps'] = int(((inv_c['Total SOH']==0) & (inv_c['Ardiya - Distribution Center Stock']>0)).sum())
+    dc_store_opps = 0
+    for _scol in ['Jahra Dark Store Stock','Qurtuba Dark Store Stock','Sabah Salem Dark Store Stock']:
+        if _scol in inv_c.columns:
+            dc_store_opps += int(((inv_c[_scol]==0) & (inv_c['Ardiya - Distribution Center Stock']>0)).sum())
+    kpis['dc_opps'] = dc_store_opps
 
     # Overstock count
     if ytd_df is not None:
@@ -363,9 +369,11 @@ def _compute_kpis(inv, net_df, ytd_df, l7_df):
         inv_m = inv_c[['Item ID','Total SOH']].rename(columns={'Item ID':'item_id'}).merge(net_vel,on='item_id',how='left')
         inv_m['true_daily'] = inv_m['true_daily'].fillna(0)
         inv_m['days_cover']  = np.where(inv_m['true_daily']>0,inv_m['Total SOH']/inv_m['true_daily'],999)
-        kpis['overstock_count'] = int((inv_m['days_cover']>45).sum())
+        kpis['overstock_count'] = int(((inv_m['days_cover']>45) & (inv_m['true_daily']>0) & (inv_m['Total SOH']>0)).sum())
+        kpis['dead_stock_count'] = int(((inv_m['Total SOH']>0) & (inv_m['true_daily']==0)).sum())
     else:
         kpis['overstock_count'] = 0
+        kpis['dead_stock_count'] = 0
 
     # Availability by tier
     if net_df is not None:
@@ -438,7 +446,7 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
     avail = kpis.get('avail',{}).get(avail_tier,{'network':0,'full3':0,'oos_n':0})
     kpi_html = f'''
     <div class="kstrip">
-      <div class="kp"><div class="kl">Revenue at risk</div><div class="kv r">{kpis.get("rev_risk",0):,.0f} KD/day</div></div>
+      <div class="kp"><div class="kl">Revenue at risk · no direct sub</div><div class="kv r">{kpis.get("rev_risk",0):,.0f} KD/day</div></div>
       <div class="kp"><div class="kl">SKUs at risk (vel≥2)</div><div class="kv r">{kpis.get("skus_at_risk",0)}</div></div>
       <div class="kp kp-avail">
         <div class="kl">Availability · Top
@@ -453,7 +461,8 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
         </div>
       </div>
       <div class="kp"><div class="kl">DC transfer opps</div><div class="kv g">{kpis.get("dc_opps",0)}</div></div>
-      <div class="kp"><div class="kl">Overstock SKUs</div><div class="kv a">{kpis.get("overstock_count",0)}</div></div>
+      <div class="kp"><div class="kl">Real overstock</div><div class="kv a">{kpis.get("overstock_count",0)}</div></div>
+      <div class="kp"><div class="kl">Dead stock</div><div class="kv a">{kpis.get("dead_stock_count",0)}</div></div>
       <div class="kp"><div class="kl">L7 velocity health</div><div class="kv g">{kpis.get("l7_health",0)}%</div></div>
     </div>'''
 
@@ -488,7 +497,9 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
         </div>'''
         if excl:
             detail_html += f'<div class="excl">{excl} OOS SKU{"s" if excl>1 else ""} excluded — flagged as contextual</div>'
-        detail_html += f'<div class="sv {SEVC[r["severity"]]}">{SEVL[r["severity"]]}</div><div class="ss">'
+        if r["severity"] in ("URGENT","ACTION","OVERSTOCK"):
+            detail_html += f'<div class="sv {SEVC[r["severity"]]}">{SEVL[r["severity"]]}</div>'
+        detail_html += '<div class="ss">'
 
         for store in ['Jahra','Qurtuba','Sabah Salem']:
             si  = ['Jahra','Qurtuba','Sabah Salem'].index(store)
@@ -525,7 +536,7 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
                     sev_c = {'URGENT':'ob-u','ACTION':'ob-a','NOTE':'ob-n'}.get(oos.get('severity','NOTE'),'ob-n')
                     detail_html += f'<div class="ob {sev_c}{"  flagged" if flagged else ""}" id="ob_{si}_{oi}">'
                     detail_html += f'''<div class="oh">
-                      <span class="sev-dot">{{"URGENT":"🔴","ACTION":"🟡","NOTE":"🔵"}}.get("{oos["severity"]}","·")</span>
+                      <span class="sev-dot">{SI.get(oos["severity"],"·")}</span>
                       <div class="od">{oos["desc"]}<br><span class="ov">{oos["vendor"]}</span></div>
                       <div class="oy">
                         <b>{oos["velocity"]}</b>/day<br>
