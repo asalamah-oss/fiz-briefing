@@ -751,9 +751,9 @@ if uploaded_oh is not None:
     oh_bytes = uploaded_oh.read()
     st.session_state['oh_bytes'] = oh_bytes
     st.session_state['oh_name']  = uploaded_oh.name
-    st.success(f"Order history loaded: {uploaded_oh.name}", icon="✓")
+    st.success(f"✓ Order history loaded: {uploaded_oh.name}")
 elif 'oh_bytes' in st.session_state:
-    st.info(f"Using stored order history: {st.session_state.get('oh_name','')}", icon="📦")
+    st.info(f"📦 Using stored order history: {st.session_state.get('oh_name','')}")
 
 if uploaded_inv is None:
     st.markdown("""
@@ -786,7 +786,7 @@ if 'oh_bytes' in st.session_state:
             st.session_state['vel_date']   = oh_date
 else:
     if 'vel_ytd' not in st.session_state:
-        st.warning("Upload order history to enable velocity-based analysis.", icon="⚠️")
+        st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
 vel_key = str(st.session_state.get('vel_oh_key','none'))
@@ -842,7 +842,7 @@ with flagged_tab:
                            file_name=f"fiz_flagged_{kpis.get('file_date','')}.csv",
                            mime='text/csv')
     else:
-        st.info("No flagged items yet. Check boxes in the briefing to flag OOS SKUs.", icon="🚩")
+        st.info("🚩 No flagged items yet. Check boxes in the briefing to flag OOS SKUs.")
 
 with briefing_tab:
     widget_html = build_widget_html(
