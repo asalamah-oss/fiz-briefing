@@ -84,6 +84,46 @@ RESOLUTION_LABELS = {
 OH_STORAGE_KEY = 'fiz_order_history_v2'
 
 # ── SUB-QUALITY ENGINE ────────────────────────────────────────────────────────
+PRODUCT_TYPE_TOKENS = [
+    'feta','cheddar','mozzarella','brie','edam','gouda','halloumi','haloumi',
+    'kashkaval','ricotta','parmesan','emmental','gruyere','labneh','cream cheese',
+    'processed cheese','white cheese','cottage cheese','mascarpone','camembert',
+    'toast','pita','baguette','croissant','sourdough','bagel','tortilla',
+    'tannour','tandoor','simit','brioche',
+    'instant coffee','ground coffee','coffee beans','coffee capsule','coffee pod',
+    'green tea','black tea','herbal tea','chamomile',
+    'olive oil','sunflower oil','coconut oil','corn oil','sesame oil','avocado oil',
+    'orange juice','apple juice','mango juice','pomegranate juice','grape juice',
+    'chicken','beef','lamb','turkey','tuna','salmon','shrimp','prawn','sardine',
+    'oat milk','almond milk','soy milk','soya milk','coconut milk','goat milk',
+    'greek','skyr',
+    'blueberr','strawberr','raspberr','blackberr',
+    'mango','watermelon','banana','apple','orange','lemon','lime',
+    'grape','peach','apricot','cherry','fig','pomegranate','guava','kiwi',
+    'pear','plum','nectarine','clementine','mandarin','grapefruit',
+    'potato','tomato','cucumber','capsicum','onion','carrot','zucchini',
+    'eggplant','spinach','rocket','parsley','coriander','basil','lettuce',
+    'broccoli','cauliflower','celery','leek','pumpkin',
+    'brown sugar','white sugar','caster sugar','icing sugar','coconut sugar',
+    'basmati','jasmine','arborio',
+    'spaghetti','penne','fusilli','macaroni','linguine','rigatoni',
+    'dark chocolate','milk chocolate','white chocolate',
+]
+
+def get_product_token(desc):
+    d = desc.lower()
+    for token in PRODUCT_TYPE_TOKENS:
+        if token in d:
+            return token
+    return None
+
+def product_types_conflict(desc1, desc2):
+    t1 = get_product_token(desc1)
+    t2 = get_product_token(desc2)
+    if t1 is None or t2 is None:
+        return False
+    return t1 != t2
+
 def brand_tier(v,d):
     s=(str(v)+' '+str(d)).lower()
     for b,t in BRAND_TIERS.items():
@@ -100,6 +140,8 @@ def get_variant(d): return {v for v in VARIANT_KW if v in d.lower()}
 def is_organic(d):  return any(k in d.lower() for k in ['organic','natureland','bonato','earth organic'])
 
 def sub_quality(oos_rsp, oos_v, oos_d, sub_rsp, sub_v, sub_d, cat):
+    if product_types_conflict(oos_d, sub_d):
+        return None, None
     ratio = sub_rsp/oos_rsp if oos_rsp>0.01 else 1.0
     pw = 5.0 if cat=='Water' else 3.0; psc = 4.0 if cat=='Water' else 1.8
     if is_organic(oos_d)!=is_organic(sub_d): return 'STRONG'
