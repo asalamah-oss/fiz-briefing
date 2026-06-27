@@ -400,11 +400,11 @@ body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-si
 
 <script>
 var FLAGS = {flags_json};
-var _setStateValue = null;
+window._fiz_flags = FLAGS;
 
 function selectSub(cat, sub) {{
-  if (_setStateValue) {{
-    _setStateValue('selection', {{cat: cat, sub: sub}});
+  if (window._fiz_setStateValue) {{
+    window._fiz_setStateValue('selection', {{cat: cat, sub: sub}});
   }}
 }}
 
@@ -418,8 +418,9 @@ function toggleFlag(fkey, fk, bid, oid, sid) {{
   if(bl){{bl.className='ob'+(FLAGS[fkey].any?' flagged':'');}}
   var sv=document.getElementById(sid);
   if(sv){{sv.className='fsv show';setTimeout(function(){{sv.className='fsv';}},1600);}}
-  if (_setStateValue) {{
-    _setStateValue('flags', FLAGS);
+  window._fiz_flags = FLAGS;
+  if (window._fiz_setStateValue) {{
+    window._fiz_setStateValue('flags', FLAGS);
   }}
 }}
 </script>
@@ -473,38 +474,50 @@ c1,c2,c3,c4,c5=st.columns(5)
 c1.metric('File date',file_date); c2.metric('Active SKUs',f'{sku_count:,}')
 c3.metric('🔴 Urgent',total_u); c4.metric('🟡 Action',total_a); c5.metric('🔵 Note',total_n)
 
-# ── REGISTER V2 COMPONENT ────────────────────────────────────────────────────
+# ── REGISTER V2 COMPONENT (once at module level) ─────────────────────────────
 _BRIEFING_COMPONENT = st.components.v2.component(
     "fiz_briefing_widget",
+    html="<div id='root'></div>",
     js="""
 export default function(component) {
   const { data, parentElement, setStateValue } = component;
-  // Inject HTML on first render or when data changes
-  if (!parentElement._initialized || parentElement._lastKey !== data.key) {
-    parentElement._initialized = true;
-    parentElement._lastKey = data.key;
-    parentElement.style.height = '640px';
-    parentElement.style.overflow = 'hidden';
-    parentElement.innerHTML = data.html;
-    // Wire up setStateValue so JS functions can call it
-    var scripts = parentElement.querySelectorAll('script');
-    scripts.forEach(function(s) { eval(s.textContent); });
-    // Expose setStateValue to the widget functions
-    if (typeof _setStateValue !== 'undefined') {
-      window._setStateValue = setStateValue;
-    }
-    // Re-wire all onclick handlers to use the live setStateValue
-    parentElement.querySelectorAll('[onclick]').forEach(function(el) {
-      var orig = el.getAttribute('onclick');
-      el.removeAttribute('onclick');
-      el.addEventListener('click', function(e) {
-        window._setStateValue = setStateValue;
-        eval(orig);
-      });
+  if (!data || !data.html) return;
+
+  const root = parentElement.querySelector('#root');
+  if (!root) return;
+
+  // Inject the widget HTML
+  root.style.cssText = 'height:640px;overflow:hidden;';
+  root.innerHTML = data.html;
+
+  // Execute any inline scripts
+  root.querySelectorAll('script').forEach(function(oldScript) {
+    const newScript = document.createElement('script');
+    newScript.textContent = oldScript.textContent;
+    oldScript.parentNode.replaceChild(newScript, oldScript);
+  });
+
+  // Wire all onclick elements to pass setStateValue into scope
+  root.querySelectorAll('[onclick]').forEach(function(el) {
+    const orig = el.getAttribute('onclick');
+    el.removeAttribute('onclick');
+    el.addEventListener('click', function(e) {
+      e.stopPropagation();
+      // Make setStateValue available to the onclick functions
+      const fn = new Function('setStateValue', 'FLAGS', orig);
+      try {
+        const FLAGS = window._fiz_flags || {};
+        fn(setStateValue, FLAGS);
+      } catch(err) { console.warn('click err', err); }
     });
-  }
+  });
+
+  // Store flags reference for toggleFlag calls
+  window._fiz_setStateValue = setStateValue;
+  window._fiz_flags = data.flags || {};
 }
 """,
+    isolate_styles=False,
 )
 
 # Build and render widget
@@ -517,8 +530,7 @@ widget_html = build_widget_html(
 
 result = _BRIEFING_COMPONENT(
     key="briefing",
-    data={"html": widget_html, "key": f"{file_date}_{st.session_state.cur_cat}_{st.session_state.cur_sub}"},
-    default={"selection": None, "flags": st.session_state.flags},
+    data={"html": widget_html, "flags": st.session_state.flags},
     on_selection_change=lambda: None,
     on_flags_change=lambda: None,
 )
