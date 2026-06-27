@@ -88,6 +88,11 @@ PRODUCT_TYPE_TOKENS = [
     'feta','cheddar','mozzarella','brie','edam','gouda','halloumi','haloumi',
     'kashkaval','ricotta','parmesan','emmental','gruyere','labneh','cream cheese',
     'processed cheese','white cheese','cottage cheese','mascarpone','camembert',
+    'grill lite','grill cheese','grill',
+    'blue cheese','danablu','manchego','akawi','ackawi','areesh',
+    'nabulce','nabulsi','baladi','baladai','braided','shalal','shallal','jeddal',
+    'helix','monterey jack','colby','burrata','bulgarian','super sharp',
+    'topi','babybel',
     'toast','pita','baguette','croissant','sourdough','bagel','tortilla',
     'tannour','tandoor','simit','brioche',
     'instant coffee','ground coffee','coffee beans','coffee capsule','coffee pod',
@@ -104,11 +109,21 @@ PRODUCT_TYPE_TOKENS = [
     'potato','tomato','cucumber','capsicum','onion','carrot','zucchini',
     'eggplant','spinach','rocket','parsley','coriander','basil','lettuce',
     'broccoli','cauliflower','celery','leek','pumpkin',
-    'brown sugar','white sugar','caster sugar','icing sugar','coconut sugar',
     'basmati','jasmine','arborio',
     'spaghetti','penne','fusilli','macaroni','linguine','rigatoni',
     'dark chocolate','milk chocolate','white chocolate',
 ]
+
+STRICT_SUBCATS = {
+    'Block Cheese','Sliced Cheese','Spread Cheese','Shredded & Grated Cheese',
+    'Canned Cheese','Organic Block Cheese','Organic Sliced Cheese',
+    'Organic Shredded & Grated Cheese',
+    'Fruits','Organic Fruits','Veggies','Organic Veggies','Organic Herbs',
+    'Toast','Flat Bread','Healthy Breads',
+    'Ground Coffee & Beans','Instant Coffee','Coffee Capsules','Organic Instant Coffee',
+    'Oils & Ghee','Organic Oils & Ghee',
+    'Canned Fish & Meats','Organic Canned Fish & Meats',
+}
 
 def get_product_token(desc):
     d = desc.lower()
@@ -139,9 +154,15 @@ def get_flavour(d): return {f for f in FLAVOUR_KW if f in d.lower()}
 def get_variant(d): return {v for v in VARIANT_KW if v in d.lower()}
 def is_organic(d):  return any(k in d.lower() for k in ['organic','natureland','bonato','earth organic'])
 
-def sub_quality(oos_rsp, oos_v, oos_d, sub_rsp, sub_v, sub_d, cat):
+def sub_quality(oos_rsp, oos_v, oos_d, sub_rsp, sub_v, sub_d, cat, subcat=''):
     if product_types_conflict(oos_d, sub_d):
         return None
+    # Strict sub-categories: require positive type token match
+    if subcat in STRICT_SUBCATS:
+        t1 = get_product_token(oos_d)
+        t2 = get_product_token(sub_d)
+        if t1 is None or t2 is None or t1 != t2:
+            return None
     ratio = sub_rsp/oos_rsp if oos_rsp>0.01 else 1.0
     pw = 5.0 if cat=='Water' else 3.0; psc = 4.0 if cat=='Water' else 1.8
     if is_organic(oos_d)!=is_organic(sub_d): return 'STRONG'
@@ -287,7 +308,7 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
                     strength = sub_quality(
                         float(oos.get('RSP',0)), str(oos.get('Vendor','')), str(oos.get('Description','')),
                         float(s_row.get('RSP',0)), str(s_row.get('Vendor','')), str(s_row.get('Description','')),
-                        cat)
+                        cat, subcat)
                     if strength is None: continue
                     if strength not in SEV_ORDER_SUB: continue
                     if best_str is None or SEV_ORDER_SUB.index(strength) < SEV_ORDER_SUB.index(best_str):
@@ -914,7 +935,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v3'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v4'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
