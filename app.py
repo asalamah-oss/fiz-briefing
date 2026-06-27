@@ -142,6 +142,19 @@ VARIANT_KW = {
     'whole','wholegrain','wholemeal',
 }
 
+def brand_tier(v, d):
+    s = (str(v) + ' ' + str(d)).lower()
+    for b, t in BRAND_TIERS.items():
+        if b in s: return t
+    if any(k in s for k in ['organic','natureland','bonato','earth organic']): return 'PREMIUM_ORGANIC'
+    return 'STANDARD'
+
+def get_size(d):
+    d = str(d).lower()
+    for p in ['200ml','330ml','250ml','500ml','750ml','1l','1.5l','2l']:
+        if p in d: return p
+    return 'other'
+
 def get_flavour(d):
     d = d.lower(); return {f for f in FLAVOUR_KW if f in d}
 
@@ -150,6 +163,14 @@ def get_variant(d):
 
 def is_organic(d):
     return any(k in d.lower() for k in ['organic','natureland','bonato','earth organic'])
+
+def detect_sold_col(columns, store_kw, month_kw):
+    cands = [c for c in columns if 'Sold Qty' in c and month_kw in c and store_kw in c]
+    if not cands: return None
+    def sd(col):
+        m = re.search(r'(\d+)\s+(?:June|Jun|May)', col)
+        return int(m.group(1)) if m else 99
+    return sorted(cands, key=sd)[0]
 
 def sub_quality(oos_row, sub_row, cat_name):
     ood = str(oos_row.get('Description','')); sud = str(sub_row.get('Description',''))
