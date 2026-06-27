@@ -471,7 +471,8 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
         excl = sum(1 for st in ['Jahra','Qurtuba','Sabah Salem']
                    for oi in range(len(r['stores'].get(st,{}).get('oos_skus',[])))
                    if flags.get(f"{cur_sub}|{st}|{oi}",{}).get('any'))
-        cCl = 'g' if r['stores_covered']>=3 else ('a' if r.get('stores_covered',0)>=2 else 'r') if 'stores_covered' in r else 'a'
+        stores_covered = sum(1 for st in ['Jahra','Qurtuba','Sabah Salem'] if r['stores'].get(st,{}).get('covered',False))
+        cCl = 'g' if stores_covered>=3 else ('a' if stores_covered>=2 else 'r')
         oCl = 'g' if eff_oos==0 else ('a' if eff_oos<r['total_skus']*0.3 else 'r')
 
         mbar_html = f'''
