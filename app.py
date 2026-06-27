@@ -213,6 +213,8 @@ def process_order_history(oh_bytes_list, inv_item_ids):
     return ytd, l7, net, str(today)
 
 # ── MAIN ANALYSIS ─────────────────────────────────────────────────────────────
+SEV_ORDER_SUB = ['DIRECT','STRONG','WEAK']
+
 @st.cache_data(show_spinner=False)
 def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
     """Run full briefing analysis. vel_key changes when velocity data is updated."""
@@ -287,6 +289,7 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
                         float(s_row.get('RSP',0)), str(s_row.get('Vendor','')), str(s_row.get('Description','')),
                         cat)
                     if strength is None: continue
+                    if strength not in SEV_ORDER_SUB: continue
                     if best_str is None or SEV_ORDER_SUB.index(strength) < SEV_ORDER_SUB.index(best_str):
                         best_str = strength; best_sub_desc = str(s_row['Description'])[:45]
                         best_sub_soh = int(s_row[soh_col])
@@ -417,7 +420,6 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
 
     return ordered, kpis
 
-SEV_ORDER_SUB = ['DIRECT','STRONG','WEAK']
 
 def _compute_kpis(inv, net_df, ytd_df, l7_df):
     kpis = {}
@@ -912,7 +914,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none'))
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v3'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
