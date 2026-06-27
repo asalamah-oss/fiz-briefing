@@ -141,7 +141,7 @@ def is_organic(d):  return any(k in d.lower() for k in ['organic','natureland','
 
 def sub_quality(oos_rsp, oos_v, oos_d, sub_rsp, sub_v, sub_d, cat):
     if product_types_conflict(oos_d, sub_d):
-        return None, None
+        return None
     ratio = sub_rsp/oos_rsp if oos_rsp>0.01 else 1.0
     pw = 5.0 if cat=='Water' else 3.0; psc = 4.0 if cat=='Water' else 1.8
     if is_organic(oos_d)!=is_organic(sub_d): return 'STRONG'
@@ -284,7 +284,7 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
                 best_str = None; best_sub_desc = None; best_sub_soh = 0
                 for _, s_row in in_stock_df.iterrows():
                     if s_row['Item ID'] == oos['Item ID']: continue
-                    strength, _sub_label = sub_quality(
+                    strength = sub_quality(
                         float(oos.get('RSP',0)), str(oos.get('Vendor','')), str(oos.get('Description','')),
                         float(s_row.get('RSP',0)), str(s_row.get('Vendor','')), str(s_row.get('Description','')),
                         cat)
