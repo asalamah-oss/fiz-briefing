@@ -4,7 +4,6 @@ Upload the Master_LIst inventory file → instant availability briefing widget.
 """
 
 import streamlit as st
-import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 import io, re, json
@@ -401,10 +400,12 @@ body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-si
 
 <script>
 var FLAGS = {flags_json};
+var _setStateValue = null;
 
 function selectSub(cat, sub) {{
-  // Post message to Streamlit parent to trigger rerun with new selection
-  window.parent.postMessage({{type:'streamlit:setComponentValue', value:{{cat:cat,sub:sub}}}}, '*');
+  if (_setStateValue) {{
+    _setStateValue('selection', {{cat: cat, sub: sub}});
+  }}
 }}
 
 function toggleFlag(fkey, fk, bid, oid, sid) {{
@@ -417,8 +418,9 @@ function toggleFlag(fkey, fk, bid, oid, sid) {{
   if(bl){{bl.className='ob'+(FLAGS[fkey].any?' flagged':'');}}
   var sv=document.getElementById(sid);
   if(sv){{sv.className='fsv show';setTimeout(function(){{sv.className='fsv';}},1600);}}
-  // Send updated flags back to Streamlit
-  window.parent.postMessage({{type:'streamlit:setComponentValue', value:{{flags:FLAGS}}}}, '*');
+  if (_setStateValue) {{
+    _setStateValue('flags', FLAGS);
+  }}
 }}
 </script>
 </body>
@@ -471,7 +473,41 @@ c1,c2,c3,c4,c5=st.columns(5)
 c1.metric('File date',file_date); c2.metric('Active SKUs',f'{sku_count:,}')
 c3.metric('🔴 Urgent',total_u); c4.metric('🟡 Action',total_a); c5.metric('🔵 Note',total_n)
 
-# Render widget via components.html — this allows JS interaction
+# ── REGISTER V2 COMPONENT ────────────────────────────────────────────────────
+_BRIEFING_COMPONENT = st.components.v2.component(
+    "fiz_briefing_widget",
+    js="""
+export default function(component) {
+  const { data, parentElement, setStateValue } = component;
+  // Inject HTML on first render or when data changes
+  if (!parentElement._initialized || parentElement._lastKey !== data.key) {
+    parentElement._initialized = true;
+    parentElement._lastKey = data.key;
+    parentElement.style.height = '640px';
+    parentElement.style.overflow = 'hidden';
+    parentElement.innerHTML = data.html;
+    // Wire up setStateValue so JS functions can call it
+    var scripts = parentElement.querySelectorAll('script');
+    scripts.forEach(function(s) { eval(s.textContent); });
+    // Expose setStateValue to the widget functions
+    if (typeof _setStateValue !== 'undefined') {
+      window._setStateValue = setStateValue;
+    }
+    // Re-wire all onclick handlers to use the live setStateValue
+    parentElement.querySelectorAll('[onclick]').forEach(function(el) {
+      var orig = el.getAttribute('onclick');
+      el.removeAttribute('onclick');
+      el.addEventListener('click', function(e) {
+        window._setStateValue = setStateValue;
+        eval(orig);
+      });
+    });
+  }
+}
+""",
+)
+
+# Build and render widget
 widget_html = build_widget_html(
     data, file_date, sku_count,
     st.session_state.cur_cat,
@@ -479,16 +515,27 @@ widget_html = build_widget_html(
     st.session_state.flags,
 )
 
-# Receive messages from widget (nav clicks + flag toggles)
-result = components.html(widget_html, height=640, scrolling=False)
+result = _BRIEFING_COMPONENT(
+    key="briefing",
+    data={"html": widget_html, "key": f"{file_date}_{st.session_state.cur_cat}_{st.session_state.cur_sub}"},
+    default={"selection": None, "flags": st.session_state.flags},
+    on_selection_change=lambda: None,
+    on_flags_change=lambda: None,
+)
 
-# Handle postMessage result — Streamlit components.html returns value via setComponentValue
+# Handle result
 if result is not None:
-    if isinstance(result, dict):
-        if 'cat' in result and 'sub' in result:
-            st.session_state.cur_cat = result['cat']
-            st.session_state.cur_sub = result['sub']
-            st.rerun()
-        if 'flags' in result:
-            st.session_state.flags = result['flags']
-            st.rerun()
+    selection = result.get("selection")
+    new_flags  = result.get("flags")
+    changed = False
+    if selection and isinstance(selection, dict):
+        new_cat = selection.get("cat"); new_sub = selection.get("sub")
+        if new_cat and new_sub and (new_cat != st.session_state.cur_cat or new_sub != st.session_state.cur_sub):
+            st.session_state.cur_cat = new_cat
+            st.session_state.cur_sub = new_sub
+            changed = True
+    if new_flags and new_flags != st.session_state.flags:
+        st.session_state.flags = new_flags
+        changed = True
+    if changed:
+        st.rerun()
