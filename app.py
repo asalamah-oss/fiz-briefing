@@ -282,7 +282,7 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
                 best_str = None; best_sub_desc = None; best_sub_soh = 0
                 for _, s_row in in_stock_df.iterrows():
                     if s_row['Item ID'] == oos['Item ID']: continue
-                    strength = sub_quality(
+                    strength, _sub_label = sub_quality(
                         float(oos.get('RSP',0)), str(oos.get('Vendor','')), str(oos.get('Description','')),
                         float(s_row.get('RSP',0)), str(s_row.get('Vendor','')), str(s_row.get('Description','')),
                         cat)
