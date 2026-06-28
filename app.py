@@ -549,7 +549,7 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
     avail = kpis.get('avail',{}).get(avail_tier,{'network':0,'full3':0,'oos_n':0})
     kpi_html = f'''
     <div class="kstrip">
-      <div class="kp"><div class="kl">Revenue at risk · no direct sub</div><div class="kv r">{kpis.get("rev_risk",0):,.0f} KD/day</div></div>
+      <div class="kp kp-click" onclick="selectKpi('rev_risk')"><div class="kl">Revenue at risk · no direct sub ↗</div><div class="kv r">{kpis.get("rev_risk",0):,.0f} KD/day</div></div>
       <div class="kp"><div class="kl">SKUs at risk (vel≥2)</div><div class="kv r">{kpis.get("skus_at_risk",0)}</div></div>
       <div class="kp kp-avail">
         <div class="kl">Availability · Top
@@ -563,9 +563,9 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
           <span class="kv-s">Full coverage <b>{avail['full3']}%</b></span>
         </div>
       </div>
-      <div class="kp"><div class="kl">DC transfer opps</div><div class="kv g">{kpis.get("dc_opps",0)}</div></div>
-      <div class="kp"><div class="kl">Real overstock</div><div class="kv a">{kpis.get("overstock_count",0)}</div></div>
-      <div class="kp"><div class="kl">Dead stock</div><div class="kv a">{kpis.get("dead_stock_count",0)}</div></div>
+      <div class="kp kp-click" onclick="selectKpi('dc_opps')"><div class="kl">DC transfer opps ↗</div><div class="kv g">{kpis.get("dc_opps",0)}</div></div>
+      <div class="kp kp-click" onclick="selectKpi('overstock')"><div class="kl">Real overstock ↗</div><div class="kv a">{kpis.get("overstock_count",0)}</div></div>
+      <div class="kp kp-click" onclick="selectKpi('dead_stock')"><div class="kl">Dead stock ↗</div><div class="kv a">{kpis.get("dead_stock_count",0)}</div></div>
       <div class="kp"><div class="kl">L7 velocity health</div><div class="kv g">{kpis.get("l7_health",0)}%</div></div>
     </div>'''
 
@@ -685,7 +685,7 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
 body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:13px}}
 .shell{{display:flex;flex-direction:column;height:780px;border:1px solid #e2ddd8;border-radius:10px;overflow:hidden;background:#fff}}
 .kstrip{{display:flex;gap:0;border-bottom:1px solid #e2ddd8;background:#f7f6f3;flex-shrink:0;flex-wrap:wrap}}
-.kp{{padding:8px 14px;border-right:1px solid #e2ddd8;min-width:120px}}
+.kp{{padding:8px 14px;border-right:1px solid #e2ddd8;min-width:120px}}.kp-click{{cursor:pointer;}}.kp-click:hover{{background:#f0ede9;}}
 .kp-avail{{min-width:220px}}
 .kl{{font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;display:flex;align-items:center;gap:4px}}
 .kv{{font-size:20px;font-weight:500;color:#1a1a1a;line-height:1.2}}
@@ -795,6 +795,7 @@ var FLAGS={flags_json};
 window._fiz_flags=FLAGS;
 function selectSub(cat,sub){{if(window._fiz_setStateValue)window._fiz_setStateValue('selection',{{cat:cat,sub:sub}});}}
 function setTier(t){{if(window._fiz_setStateValue)window._fiz_setStateValue('tier',t);}}
+function selectKpi(kpi){{if(window._fiz_setStateValue)window._fiz_setStateValue('kpi_drill',kpi);}}
 function toggleFlag(fkey,fk,bid,oid,sid){{
   if(!FLAGS[fkey])FLAGS[fkey]={{dl:0,os:0,pe:0,dc:0,ssl:0,any:false}};
   FLAGS[fkey][fk]=FLAGS[fkey][fk]?0:1;
@@ -810,7 +811,7 @@ function toggleFlag(fkey,fk,bid,oid,sid){{
 
 # ── V2 COMPONENT ─────────────────────────────────────────────────────────────
 _BRIEFING_COMPONENT = st.components.v2.component(
-    "fiz_briefing_v2",
+    "fiz_briefing_v3",
     html="<div id='root'></div>",
     js="""
 export default function(component) {
@@ -818,21 +819,39 @@ export default function(component) {
   if (!data || !data.html) return;
   const root = parentElement.querySelector('#root');
   if (!root) return;
+
+  // Only re-render if content changed
+  if (root._lastHtmlKey === data.key) {
+    // Just update the setStateValue reference
+    window._fiz_setStateValue = setStateValue;
+    return;
+  }
+  root._lastHtmlKey = data.key;
   root.style.cssText = 'height:780px;overflow:hidden;';
   root.innerHTML = data.html;
+
+  // Execute inline scripts
   root.querySelectorAll('script').forEach(function(old) {
     const s = document.createElement('script');
-    s.textContent = old.textContent; old.parentNode.replaceChild(s, old);
+    s.textContent = old.textContent;
+    old.parentNode.replaceChild(s, old);
   });
+
+  // Wire onclick handlers — keep setStateValue in scope
   root.querySelectorAll('[onclick]').forEach(function(el) {
-    const orig = el.getAttribute('onclick'); el.removeAttribute('onclick');
+    const orig = el.getAttribute('onclick');
+    el.removeAttribute('onclick');
     el.addEventListener('click', function(e) {
-      e.stopPropagation();
       window._fiz_setStateValue = setStateValue;
       window._fiz_flags = window._fiz_flags || {};
-      try { eval(orig); } catch(err) { console.warn(err); }
+      try {
+        // Strip 'return false' so click propagates naturally
+        const code = orig.split('return false').join('');
+        eval(code);
+      } catch(err) { console.warn('fiz click err:', err, orig); }
     });
   });
+
   window._fiz_setStateValue = setStateValue;
   window._fiz_flags = data.flags || {};
 }
@@ -935,7 +954,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v4'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v5'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
@@ -994,6 +1013,113 @@ with flagged_tab:
         st.info("🚩 No flagged items yet. Check boxes in the briefing to flag OOS SKUs.")
 
 with briefing_tab:
+
+    # ── KPI DRILL-DOWN PANEL ──────────────────────────────────────────────
+    kpi_drill = st.session_state.get('kpi_drill')
+    if kpi_drill:
+        kpi_titles = {
+            'rev_risk':    'Revenue at risk — OOS SKUs with no direct substitute',
+            'skus_at_risk':'OOS SKUs with velocity ≥ 2/day',
+            'dc_opps':     'DC transfer opportunities — store OOS, DC has stock',
+            'overstock':   'Real overstock — SOH > 45 days cover (has velocity)',
+            'dead_stock':  'Dead stock — in stock but zero velocity (never sold)',
+        }
+        with st.expander(f"📊 {kpi_titles.get(kpi_drill, kpi_drill)}", expanded=True):
+            col_close, _ = st.columns([1,8])
+            with col_close:
+                if st.button("✕ Close", key="close_kpi"):
+                    st.session_state.kpi_drill = None
+                    st.rerun()
+            _ytd = st.session_state.get('vel_ytd')
+            _inv_bytes_kpi = uploaded_inv.read() if uploaded_inv else None
+            if _ytd is not None and _inv_bytes_kpi is not None:
+                import io as _io3
+                _inv_kpi = pd.read_excel(io.BytesIO(_inv_bytes_kpi))
+                _inv_kpi.columns = [c.strip() for c in _inv_kpi.columns]
+                _inv_kpi = _inv_kpi[_inv_kpi['Status']=='Active'].copy()
+                _inv_kpi['Item ID'] = pd.to_numeric(_inv_kpi['Item ID'], errors='coerce')
+                for c in ['Jahra Dark Store Stock','Qurtuba Dark Store Stock',
+                          'Sabah Salem Dark Store Stock','Ardiya - Distribution Center Stock',
+                          'Total SOH','RSP']:
+                    if c in _inv_kpi.columns:
+                        _inv_kpi[c] = pd.to_numeric(_inv_kpi[c], errors='coerce').fillna(0)
+                _net_vel = _ytd.groupby('item_id')['true_daily'].mean().reset_index()
+                _inv_m = _inv_kpi[['Item ID','Description','Category','Sub Category','RSP',
+                                   'Jahra Dark Store Stock','Qurtuba Dark Store Stock',
+                                   'Sabah Salem Dark Store Stock',
+                                   'Ardiya - Distribution Center Stock','Total SOH']].rename(
+                    columns={'Item ID':'item_id'}).merge(_net_vel, on='item_id', how='left')
+                _inv_m['true_daily'] = _inv_m['true_daily'].fillna(0)
+                _inv_m['days_cover'] = np.where(
+                    _inv_m['true_daily']>0, _inv_m['Total SOH']/_inv_m['true_daily'], 999)
+
+                if kpi_drill == 'rev_risk':
+                    _df = _inv_m[(_inv_m['Total SOH']==0) & (_inv_m['true_daily']>=0.5)].copy()
+                    _df['daily_rev_risk'] = _df['true_daily'] * _df['RSP']
+                    _df = _df.sort_values('daily_rev_risk', ascending=False)
+                    _df['Daily Rev Risk (KD)'] = _df['daily_rev_risk'].round(2)
+                    _df['Velocity (units/day)'] = _df['true_daily'].round(2)
+                    st.dataframe(_df[['Description','Category','Sub Category',
+                                     'Velocity (units/day)','RSP','Daily Rev Risk (KD)']].reset_index(drop=True),
+                                 use_container_width=True, hide_index=True)
+                elif kpi_drill == 'skus_at_risk':
+                    _rows = []
+                    for _store, _col in [('Jahra','Jahra Dark Store Stock'),
+                                         ('Qurtuba','Qurtuba Dark Store Stock'),
+                                         ('Sabah Salem','Sabah Salem Dark Store Stock')]:
+                        _sv = _ytd[_ytd['store_norm']==_store][['item_id','true_daily']]
+                        _s = _inv_kpi[_inv_kpi[_col]==0][['Item ID','Description','Category','Sub Category','RSP']].rename(
+                            columns={'Item ID':'item_id'}).merge(_sv, on='item_id', how='inner')
+                        _s = _s[_s['true_daily']>=2].copy()
+                        _s['Store'] = _store
+                        _rows.append(_s)
+                    if _rows:
+                        _df = pd.concat(_rows).sort_values('true_daily', ascending=False)
+                        _df['Velocity (units/day)'] = _df['true_daily'].round(2)
+                        st.dataframe(_df[['Store','Description','Category','Sub Category',
+                                         'Velocity (units/day)','RSP']].reset_index(drop=True),
+                                     use_container_width=True, hide_index=True)
+                elif kpi_drill == 'dc_opps':
+                    _rows = []
+                    for _store, _col in [('Jahra','Jahra Dark Store Stock'),
+                                         ('Qurtuba','Qurtuba Dark Store Stock'),
+                                         ('Sabah Salem','Sabah Salem Dark Store Stock')]:
+                        _s = _inv_kpi[(_inv_kpi[_col]==0) &
+                                      (_inv_kpi['Ardiya - Distribution Center Stock']>0)][
+                            ['Item ID','Description','Category','Sub Category',
+                             'Ardiya - Distribution Center Stock','RSP']].copy()
+                        _s['Store'] = _store
+                        _rows.append(_s)
+                    if _rows:
+                        _df = pd.concat(_rows).drop(columns=['Item ID']).sort_values(
+                            ['Category','Sub Category'])
+                        _df = _df.rename(columns={'Ardiya - Distribution Center Stock':'DC Stock'})
+                        st.dataframe(_df[['Store','Description','Category','Sub Category',
+                                         'DC Stock','RSP']].reset_index(drop=True),
+                                     use_container_width=True, hide_index=True)
+                elif kpi_drill == 'overstock':
+                    _df = _inv_m[(_inv_m['days_cover']>45) & (_inv_m['true_daily']>0) &
+                                 (_inv_m['Total SOH']>0)].copy()
+                    _df['Days Cover'] = _df['days_cover'].round(0).astype(int)
+                    _df['Velocity (units/day)'] = _df['true_daily'].round(2)
+                    _df = _df.sort_values('days_cover', ascending=False)
+                    st.dataframe(_df[['Description','Category','Sub Category','Total SOH',
+                                      'Velocity (units/day)','Days Cover','RSP']].reset_index(drop=True),
+                                 use_container_width=True, hide_index=True)
+                elif kpi_drill == 'dead_stock':
+                    _df = _inv_m[(_inv_m['Total SOH']>0) & (_inv_m['true_daily']==0)].copy()
+                    _df = _df.sort_values('Total SOH', ascending=False)
+                    st.dataframe(_df[['Description','Category','Sub Category',
+                                      'Total SOH','RSP']].reset_index(drop=True),
+                                 use_container_width=True, hide_index=True)
+                csv_kpi = _df.to_csv(index=False).encode('utf-8') if '_df' in dir() else b''
+                if csv_kpi:
+                    st.download_button("⬇️ Export as CSV", csv_kpi,
+                                       file_name=f"fiz_{kpi_drill}_{kpis.get('file_date','')}.csv",
+                                       mime='text/csv')
+            else:
+                st.info("Upload order history to enable KPI drill-down.")
+
     widget_html = build_widget_html(
         data, kpis,
         st.session_state.cur_cat,
@@ -1002,8 +1128,9 @@ with briefing_tab:
         st.session_state.avail_tier,
     )
     result = _BRIEFING_COMPONENT(
-        key="briefing_v2",
-        data={"html": widget_html, "flags": st.session_state.flags},
+        key="briefing_v3",
+        data={"html": widget_html, "flags": st.session_state.flags,
+              "key": f"{st.session_state.cur_cat}|{st.session_state.cur_sub}|{len(st.session_state.flags)}"},
         on_selection_change=lambda: None,
         on_flags_change=lambda: None,
         on_tier_change=lambda: None,
@@ -1021,4 +1148,7 @@ with briefing_tab:
         nt = result.get('tier')
         if nt and nt!=st.session_state.avail_tier:
             st.session_state.avail_tier=nt; changed=True
+        nk = result.get('kpi_drill')
+        if nk and nk!=st.session_state.get('kpi_drill'):
+            st.session_state.kpi_drill=nk; changed=True
         if changed: st.rerun()
