@@ -1449,42 +1449,76 @@ with admin_tab:
             # Test mode — assess 5 pairs first
             _test_col, _full_col = st.columns([1,2])
             with _test_col:
-                if st.button(f"🧪 Test 5 pairs first", key="test_master_btn"):
-                    _test_skus = _skus_list[:5]
-                    _test_pairs = [(_test_skus[i], _test_skus[j])
-                                   for i in range(len(_test_skus))
-                                   for j in range(i+1, len(_test_skus))][:5]
-                    _lines = []
-                    for _j, (_o, _s) in enumerate(_test_pairs):
-                        _lines.append(
-                            f"{_j+1}. OOS: {_o['Description']} | {str(_o.get('Vendor',''))[:20]} | {float(_o['RSP']):.3f} KD"
-                            f" → SUB: {_s['Description']} | {str(_s.get('Vendor',''))[:20]} | {float(_s['RSP']):.3f} KD"
+                if st.button(f"🧪 Test full sub-category (no save)", key="test_master_btn"):
+                    # Run full assessment on all pairs but don't save to GitHub
+                    _test_all_pairs = [(_skus_list[i], _skus_list[j])
+                                       for i in range(len(_skus_list))
+                                       for j in range(i+1, len(_skus_list))]
+                    _test_results = {}
+                    _test_progress = st.progress(0, text=f"Testing {len(_test_all_pairs)} pairs…")
+                    _batch_size_t = 10
+                    import requests as _rq_t, time as _tm_t
+
+                    for _bi_t in range(0, len(_test_all_pairs), _batch_size_t):
+                        _batch_t = _test_all_pairs[_bi_t:_bi_t+_batch_size_t]
+                        _lines_t = []
+                        for _j_t, (_o_t, _s_t) in enumerate(_batch_t):
+                            _lines_t.append(
+                                f"{_j_t+1}. OOS: {_o_t['Description']} | {str(_o_t.get('Vendor',''))[:20]} | {float(_o_t['RSP']):.3f} KD"
+                                f" → SUB: {_s_t['Description']} | {str(_s_t.get('Vendor',''))[:20]} | {float(_s_t['RSP']):.3f} KD"
+                            )
+                        _prompt_t = (
+                            f"Kuwait grocery substitute assessment. Sub-category: {_sel_subcat}\n\n"
+                            + "\n".join(_lines_t)
+                            + "\n\nFor each pair reply: [n]. [DIRECT/STRONG/WEAK/NONE] — [reason max 8 words]\n"
+                            + "DIRECT=customer won't notice  STRONG=minor diff  WEAK=likely rejected  NONE=not a sub"
                         )
-                    _test_prompt = (
-                        f"Kuwait grocery substitute assessment. Sub-category: {_sel_subcat}\n\n"
-                        + "\n".join(_lines)
-                        + "\n\nFor each pair reply: [n]. [DIRECT/STRONG/WEAK/NONE] — [reason max 8 words]\n"
-                        + "DIRECT=customer won't notice  STRONG=minor diff  WEAK=likely rejected  NONE=not a sub"
-                    )
-                    with st.spinner("Testing 5 pairs…"):
-                        import requests as _rq_t
-                        _tr = _rq_t.post(
-                            "https://api.anthropic.com/v1/messages",
-                            headers={"Content-Type": "application/json", "x-api-key": st.secrets.get("ANTHROPIC_API_KEY",""), "anthropic-version": "2023-06-01"},
-                            json={"model": "claude-sonnet-4-6", "max_tokens": 300,
-                                  "messages": [{"role": "user", "content": _test_prompt}]},
-                            timeout=30
+                        try:
+                            _tr = _rq_t.post(
+                                "https://api.anthropic.com/v1/messages",
+                                headers={"Content-Type": "application/json",
+                                         "x-api-key": st.secrets.get("ANTHROPIC_API_KEY",""),
+                                         "anthropic-version": "2023-06-01"},
+                                json={"model": "claude-sonnet-4-6", "max_tokens": 400,
+                                      "messages": [{"role": "user", "content": _prompt_t}]},
+                                timeout=30
+                            )
+                            if _tr.status_code == 200:
+                                _txt_t = _tr.json()["content"][0]["text"]
+                                for _j_t, (_o_t, _s_t) in enumerate(_batch_t):
+                                    for _ln_t in _txt_t.split("\n"):
+                                        _ln_t = _ln_t.strip()
+                                        if _ln_t.startswith(f"{_j_t+1}."):
+                                            _rest_t = _ln_t[len(f"{_j_t+1}."):].strip()
+                                            _pts_t = _rest_t.split("—", 1)
+                                            _str_t = _pts_t[0].strip().upper()
+                                            if _str_t not in ["DIRECT","STRONG","WEAK","NONE"]: _str_t = "WEAK"
+                                            _rsn_t = _pts_t[1].strip() if len(_pts_t) > 1 else ""
+                                            _test_results[(int(_o_t['Item ID']), int(_s_t['Item ID']))] = (_str_t, _rsn_t)
+                                            _test_results[(int(_s_t['Item ID']), int(_o_t['Item ID']))] = (_str_t, _rsn_t)
+                                            break
+                        except: pass
+                        _test_progress.progress(
+                            min((_bi_t+_batch_size_t)/max(len(_test_all_pairs),1), 1.0),
+                            text=f"Tested {min(_bi_t+_batch_size_t, len(_test_all_pairs))}/{len(_test_all_pairs)} pairs"
                         )
-                        if _tr.status_code == 200:
-                            _test_result = _tr.json()["content"][0]["text"]
-                            st.markdown("**Test results:**")
-                            for _j, (_o, _s) in enumerate(_test_pairs):
-                                for _line in _test_result.split("\n"):
-                                    if _line.strip().startswith(f"{_j+1}."):
-                                        st.markdown(f"- `{_o['Description'][:30]}` → `{_s['Description'][:30]}`  **{_line.strip()}**")
-                                        break
-                        else:
-                            st.error(f"API error: {_tr.status_code} — {_tr.text[:200]}")
+                        _tm_t.sleep(0.15)
+
+                    _test_progress.progress(1.0, text="Done")
+
+                    # Show results grouped by strength
+                    st.markdown(f"**Results: {len(_test_results)} pairs assessed**")
+                    for _strength_show in ["DIRECT","STRONG","WEAK","NONE"]:
+                        _matches = [(k,v) for k,v in _test_results.items()
+                                    if v[0]==_strength_show and k[0] < k[1]]
+                        if _matches:
+                            with st.expander(f"**{_strength_show}** — {len(_matches)} pairs", expanded=(_strength_show in ["DIRECT","STRONG"])):
+                                for (_oid_t, _sid_t), (_str_t, _rsn_t) in sorted(_matches):
+                                    _on = next((s['Description'] for s in _skus_list if int(s['Item ID'])==_oid_t), str(_oid_t))
+                                    _sn = next((s['Description'] for s in _skus_list if int(s['Item ID'])==_sid_t), str(_sid_t))
+                                    st.markdown(f"- `{_on[:40]}` → `{_sn[:40]}` · *{_rsn_t}*")
+
+                    st.info("✓ Test complete — results not saved. Click 'Build master table' to save permanently.")
 
             with _full_col:
                 if st.button(f"🤖 Build master table for {_sel_subcat}", type="primary", key="build_master_btn"):
