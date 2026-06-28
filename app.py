@@ -385,7 +385,7 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
                 # Find best substitute at this store
                 best_str = None; best_sub_desc = None; best_sub_soh = 0
                 best_sub_reason = ""
-                # Filter candidates via hard type-conflict algo first (free, fast)
+                # Step 1: algo pre-filter (instant, free)
                 candidates = []
                 for _, s_row in in_stock_df.iterrows():
                     if s_row['Item ID'] == oos['Item ID']: continue
@@ -394,31 +394,30 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
                         float(s_row.get('RSP',0)), str(s_row.get('Vendor','')), str(s_row.get('Description','')),
                         cat, subcat)
                     if algo_str is None: continue
-                    candidates.append(s_row)
-                # AI assessment: check cache, then batch-assess new pairs
+                    candidates.append((s_row, algo_str))
+                # Step 2: use AI cache if available, else fall back to algo result
                 ai_cache = st.session_state.get('ai_sub_cache', {})
-                new_pairs = []
-                for s_row in candidates:
+                for s_row, algo_str in candidates:
                     key = (int(oos['Item ID']), int(s_row['Item ID']))
-                    if key not in ai_cache:
-                        new_pairs.append((
+                    if key in ai_cache:
+                        strength, reason = ai_cache[key]
+                        if strength == 'NONE': continue
+                    else:
+                        # No AI result yet — use algo as fallback, queue for later
+                        strength = algo_str
+                        reason = ""
+                        # Add to queue for background AI enrichment
+                        if '_ai_queue' not in st.session_state:
+                            st.session_state['_ai_queue'] = []
+                        queue_item = (
                             int(oos['Item ID']), int(s_row['Item ID']),
                             str(oos.get('Description','')), str(oos.get('Vendor','')),
                             float(oos.get('RSP',0)),
                             str(s_row['Description']), str(s_row.get('Vendor','')),
                             float(s_row.get('RSP',0)), int(s_row[soh_col]), subcat
-                        ))
-                if new_pairs:
-                    new_results = ai_assess_batch(new_pairs)
-                    ai_cache.update(new_results)
-                    st.session_state['ai_sub_cache'] = ai_cache
-                    st.session_state['ai_cache_dirty'] = True
-                for s_row in candidates:
-                    key = (int(oos['Item ID']), int(s_row['Item ID']))
-                    result = ai_cache.get(key)
-                    if not result: continue
-                    strength, reason = result
-                    if strength == 'NONE': continue
+                        )
+                        if queue_item not in st.session_state['_ai_queue']:
+                            st.session_state['_ai_queue'].append(queue_item)
                     if strength not in SEV_ORDER_SUB: continue
                     if best_str is None or SEV_ORDER_SUB.index(strength) < SEV_ORDER_SUB.index(best_str):
                         best_str = strength; best_sub_desc = str(s_row['Description'])[:45]
@@ -1066,7 +1065,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v7'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v8'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
@@ -1169,6 +1168,25 @@ with flagged_tab:
         st.info("🚩 No flagged items yet. Check boxes in the briefing to flag OOS SKUs.")
 
 with briefing_tab:
+
+    # AI enrichment button
+    _queue = st.session_state.get('_ai_queue', [])
+    _cached = len(st.session_state.get('ai_sub_cache', {}))
+    _col_ai1, _col_ai2 = st.columns([2,6])
+    with _col_ai1:
+        _btn_label = f"🤖 Enrich substitutes with AI ({len(_queue)} pairs to assess)" if _queue else f"✓ AI enriched ({_cached:,} pairs cached)"
+        _btn_disabled = len(_queue) == 0
+        if st.button(_btn_label, disabled=_btn_disabled, key="ai_enrich_btn"):
+            with st.spinner(f"Assessing {len(_queue)} substitute pairs with AI… (may take 1-2 minutes)"):
+                if _queue:
+                    new_results = ai_assess_batch(_queue)
+                    ai_cache = st.session_state.get('ai_sub_cache', {})
+                    ai_cache.update(new_results)
+                    st.session_state['ai_sub_cache'] = ai_cache
+                    st.session_state['_ai_queue'] = []
+                    save_sub_cache_data(ai_cache)
+                    st.success(f"✓ {len(new_results)} pairs assessed and cached. Reloading…")
+                    st.rerun()
 
     widget_html = build_widget_html(
         data, kpis,
