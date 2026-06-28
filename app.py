@@ -199,6 +199,86 @@ def detect_sold_col(columns, store_kw, month_kw):
         m=re.search(r'(\d+)\s+(?:June|Jun|May)',col); return int(m.group(1)) if m else 99
     return sorted(cands,key=sd)[0]
 
+
+# ── AI SUBSTITUTE ASSESSMENT ──────────────────────────────────────────────────
+
+@st.cache_data(show_spinner=False, ttl=86400)
+def load_sub_cache_data():
+    """Load cached AI substitute assessments from GitHub."""
+    csv_txt, sha = gh_read("data/sub_assessments.csv")
+    if csv_txt:
+        import io as _sio
+        df = pd.read_csv(_sio.StringIO(csv_txt))
+        cache = {}
+        for _, row in df.iterrows():
+            try:
+                cache[(int(row['oos_id']), int(row['sub_id']))] = (
+                    str(row['strength']), str(row['reason']))
+            except: pass
+        return cache, sha
+    return {}, None
+
+def save_sub_cache_data(cache_dict):
+    """Save AI assessments back to GitHub."""
+    rows = ["oos_id,sub_id,strength,reason"]
+    for (oos_id, sub_id), (strength, reason) in cache_dict.items():
+        reason_clean = str(reason).replace(',', ';').replace('\n', ' ')
+        rows.append(f"{oos_id},{sub_id},{strength},{reason_clean}")
+    _, sha = gh_read("data/sub_assessments.csv")
+    gh_write("data/sub_assessments.csv", "\n".join(rows), sha)
+
+def ai_assess_batch(pairs):
+    """
+    pairs: list of (oos_id, sub_id, oos_desc, oos_vendor, oos_rsp,
+                    sub_desc, sub_vendor, sub_rsp, sub_soh, subcat)
+    Returns: dict (oos_id, sub_id) -> (strength, reason)
+    """
+    import requests as _req
+    if not pairs: return {}
+    results = {}
+    BATCH = 10
+
+    for i in range(0, len(pairs), BATCH):
+        batch = pairs[i:i+BATCH]
+        lines = []
+        for j, p in enumerate(batch):
+            _, _, od, ov, op, sd, sv, sp, ss, _ = p
+            lines.append(
+                f"{j+1}. OOS: {od} | {ov} | {op:.3f} KD"
+                f" → SUB: {sd} | {sv} | {sp:.3f} KD | {ss}u"
+            )
+        subcat = batch[0][9]
+        prompt = (
+            f"Kuwait grocery substitute assessment. Sub-category: {subcat}\n\n"
+            + "\n".join(lines)
+            + "\n\nFor each: [n]. [DIRECT/STRONG/WEAK/NONE] — [reason ≤10 words]\n"
+            + "DIRECT=customer won't notice  STRONG=minor diff  WEAK=likely rejected  NONE=not a sub"
+        )
+        try:
+            r = _req.post(
+                "https://api.anthropic.com/v1/messages",
+                headers={"Content-Type": "application/json"},
+                json={"model": "claude-sonnet-4-6", "max_tokens": 300,
+                      "messages": [{"role": "user", "content": prompt}]},
+                timeout=30
+            )
+            if r.status_code == 200:
+                text = r.json()["content"][0]["text"]
+                for j, p in enumerate(batch):
+                    for line in text.split("\n"):
+                        line = line.strip()
+                        if line.startswith(f"{j+1}."):
+                            rest = line[len(f"{j+1}."):].strip()
+                            pts = rest.split("—", 1)
+                            strength = pts[0].strip().upper()
+                            if strength not in ["DIRECT","STRONG","WEAK","NONE"]:
+                                strength = "WEAK"
+                            reason = pts[1].strip() if len(pts) > 1 else ""
+                            results[(p[0], p[1])] = (strength, reason)
+                            break
+        except: pass
+    return results
+
 # ── ORDER HISTORY PROCESSOR ───────────────────────────────────────────────────
 @st.cache_data(show_spinner=False)
 def process_order_history(oh_bytes_list, inv_item_ids):
@@ -304,17 +384,45 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
             for _, oos in oos_sig.head(6).iterrows():
                 # Find best substitute at this store
                 best_str = None; best_sub_desc = None; best_sub_soh = 0
+                best_sub_reason = ""
+                # Filter candidates via hard type-conflict algo first (free, fast)
+                candidates = []
                 for _, s_row in in_stock_df.iterrows():
                     if s_row['Item ID'] == oos['Item ID']: continue
-                    strength = sub_quality(
+                    algo_str = sub_quality(
                         float(oos.get('RSP',0)), str(oos.get('Vendor','')), str(oos.get('Description','')),
                         float(s_row.get('RSP',0)), str(s_row.get('Vendor','')), str(s_row.get('Description','')),
                         cat, subcat)
-                    if strength is None: continue
+                    if algo_str is None: continue
+                    candidates.append(s_row)
+                # AI assessment: check cache, then batch-assess new pairs
+                ai_cache = st.session_state.get('ai_sub_cache', {})
+                new_pairs = []
+                for s_row in candidates:
+                    key = (int(oos['Item ID']), int(s_row['Item ID']))
+                    if key not in ai_cache:
+                        new_pairs.append((
+                            int(oos['Item ID']), int(s_row['Item ID']),
+                            str(oos.get('Description','')), str(oos.get('Vendor','')),
+                            float(oos.get('RSP',0)),
+                            str(s_row['Description']), str(s_row.get('Vendor','')),
+                            float(s_row.get('RSP',0)), int(s_row[soh_col]), subcat
+                        ))
+                if new_pairs:
+                    new_results = ai_assess_batch(new_pairs)
+                    ai_cache.update(new_results)
+                    st.session_state['ai_sub_cache'] = ai_cache
+                    st.session_state['ai_cache_dirty'] = True
+                for s_row in candidates:
+                    key = (int(oos['Item ID']), int(s_row['Item ID']))
+                    result = ai_cache.get(key)
+                    if not result: continue
+                    strength, reason = result
+                    if strength == 'NONE': continue
                     if strength not in SEV_ORDER_SUB: continue
                     if best_str is None or SEV_ORDER_SUB.index(strength) < SEV_ORDER_SUB.index(best_str):
                         best_str = strength; best_sub_desc = str(s_row['Description'])[:45]
-                        best_sub_soh = int(s_row[soh_col])
+                        best_sub_soh = int(s_row[soh_col]); best_sub_reason = reason
                     if best_str == 'DIRECT': break
 
                 # Resolution label
@@ -364,6 +472,7 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
                     'best_sub_strength': best_str,
                     'best_sub_desc':     best_sub_desc,
                     'best_sub_soh':      best_sub_soh,
+                    'best_sub_reason':   best_sub_reason,
                 })
 
             # Overstock items
@@ -439,6 +548,11 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
     kpis['action']    = sum(sum(1 for r in v if r['severity']=='ACTION') for v in ordered.values())
     kpis['note']      = sum(sum(1 for r in v if r['severity']=='NOTE') for v in ordered.values())
     kpis['overstock_cats'] = sum(sum(1 for r in v if r['severity']=='OVERSTOCK') for v in ordered.values())
+
+    # Save any new AI assessments to GitHub cache
+    if st.session_state.get('ai_cache_dirty') and st.session_state.get('ai_sub_cache'):
+        save_sub_cache_data(st.session_state['ai_sub_cache'])
+        st.session_state['ai_cache_dirty'] = False
 
     return ordered, kpis
 
@@ -653,7 +767,9 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
                     detail_html += '<div class="ub"><div class="ul">Best substitute</div>'
                     if oos.get('best_sub_strength'):
                         tc = {'DIRECT':'utd','STRONG':'uts','WEAK':'utw'}.get(oos['best_sub_strength'],'utw')
-                        detail_html += f'<div class="ur"><span class="ut {tc}">{oos["best_sub_strength"]}</span><span class="ud">{oos["best_sub_desc"]}</span><span class="us">{oos["best_sub_soh"]}u</span></div>'
+                        reason_txt = oos.get('best_sub_reason','')
+                        reason_html = f' <span style="font-size:9px;color:#888">· {reason_txt}</span>' if reason_txt else ''
+                        detail_html += f'<div class="ur"><span class="ut {tc}">{oos["best_sub_strength"]}</span><span class="ud">{oos["best_sub_desc"]}{reason_html}</span><span class="us">{oos["best_sub_soh"]}u</span></div>'
                     else:
                         detail_html += '<div class="ns">No substitute — raise PO immediately</div>'
                     detail_html += '</div></div>'
@@ -950,10 +1066,19 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v6'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v7'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
+# Load AI substitute cache from GitHub
+if 'ai_sub_cache' not in st.session_state:
+    with st.spinner('Loading substitute assessments from GitHub…'):
+        _ai_cache, _ai_sha = load_sub_cache_data()
+        st.session_state['ai_sub_cache'] = _ai_cache
+        st.session_state['ai_cache_dirty'] = False
+        if _ai_cache:
+            st.success(f"✓ {len(_ai_cache):,} substitute assessments loaded from cache")
+
 with st.spinner('Analysing inventory…'):
     try:
         data, kpis = run_analysis(inv_bytes, uploaded_inv.name, vel_key, _ytd_json, _l7_json, _net_json)
