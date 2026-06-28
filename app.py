@@ -553,12 +553,7 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
       <div class="kp kp-click" onclick="selectKpi('rev_risk')"><div class="kl">Revenue at risk · no direct sub ↗</div><div class="kv r">{kpis.get("rev_risk",0):,.0f} KD/day</div></div>
       <div class="kp"><div class="kl">SKUs at risk (vel≥2)</div><div class="kv r">{kpis.get("skus_at_risk",0)}</div></div>
       <div class="kp kp-avail">
-        <div class="kl">Availability · Top
-          <span class="tier-btn{'  on' if avail_tier==100 else ''}" onclick="setTier(100)">100</span>
-          <span class="tier-btn{'  on' if avail_tier==200 else ''}" onclick="setTier(200)">200</span>
-          <span class="tier-btn{'  on' if avail_tier==500 else ''}" onclick="setTier(500)">500</span>
-          <span class="tier-btn{'  on' if avail_tier==1000 else ''}" onclick="setTier(1000)">1k</span>
-        </div>
+        <div class="kl">Availability · Top {avail_tier}</div>
         <div class="kv-row">
           <span class="kv-s">Network <b>{avail['network']}%</b></span>
           <span class="kv-s">Full coverage <b>{avail['full3']}%</b></span>
@@ -918,6 +913,7 @@ if uploaded_inv is None:
 
 # ── COMPUTE VELOCITY ──────────────────────────────────────────────────────────
 inv_bytes = uploaded_inv.read()
+st.session_state['inv_bytes_cache'] = inv_bytes  # cache for KPI drill-down tab
 if 'oh_bytes' in st.session_state:
     inv_temp = pd.read_excel(io.BytesIO(inv_bytes))
     inv_temp.columns = [c.strip() for c in inv_temp.columns]
@@ -1015,6 +1011,19 @@ with flagged_tab:
 
 with briefing_tab:
 
+    # Tier selector — native Streamlit so no iframe bridging needed
+    _tier_col1, _tier_col2 = st.columns([1,4])
+    with _tier_col1:
+        _tier_map = {100:'Top 100', 200:'Top 200', 500:'Top 500', 1000:'Top 1K'}
+        _tier_opts = [100, 200, 500, 1000]
+        _cur_tier_idx = _tier_opts.index(st.session_state.avail_tier) if st.session_state.avail_tier in _tier_opts else 0
+        _new_tier = st.radio("Availability tier", _tier_opts,
+            format_func=lambda x: _tier_map[x],
+            index=_cur_tier_idx, horizontal=True, label_visibility='collapsed')
+        if _new_tier != st.session_state.avail_tier:
+            st.session_state.avail_tier = _new_tier
+            st.rerun()
+
     widget_html = build_widget_html(
         data, kpis,
         st.session_state.cur_cat,
@@ -1088,7 +1097,7 @@ with kpi_tab:
             "Dead stock (zero velocity)",
         ])
         import io as _io_kpi
-        _inv_kpi_bytes = uploaded_inv.read() if uploaded_inv else None
+        _inv_kpi_bytes = st.session_state.get('inv_bytes_cache')
         if _inv_kpi_bytes:
             _inv_kpi = pd.read_excel(io.BytesIO(_inv_kpi_bytes))
             _inv_kpi.columns = [c.strip() for c in _inv_kpi.columns]
