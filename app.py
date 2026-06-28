@@ -1011,18 +1011,20 @@ with flagged_tab:
 
 with briefing_tab:
 
-    # Tier selector — native Streamlit so no iframe bridging needed
-    _tier_col1, _tier_col2 = st.columns([1,4])
-    with _tier_col1:
-        _tier_map = {100:'Top 100', 200:'Top 200', 500:'Top 500', 1000:'Top 1K'}
-        _tier_opts = [100, 200, 500, 1000]
-        _cur_tier_idx = _tier_opts.index(st.session_state.avail_tier) if st.session_state.avail_tier in _tier_opts else 0
-        _new_tier = st.radio("Availability tier", _tier_opts,
-            format_func=lambda x: _tier_map[x],
-            index=_cur_tier_idx, horizontal=True, label_visibility='collapsed')
-        if _new_tier != st.session_state.avail_tier:
-            st.session_state.avail_tier = _new_tier
-            st.rerun()
+    # Availability tier selector
+    _tc1,_tc2,_tc3,_tc4,_tc5 = st.columns([1,1,1,1,6])
+    with _tc1:
+        if st.button("Top 100", type="primary" if st.session_state.avail_tier==100 else "secondary", use_container_width=True):
+            st.session_state.avail_tier=100; st.rerun()
+    with _tc2:
+        if st.button("Top 200", type="primary" if st.session_state.avail_tier==200 else "secondary", use_container_width=True):
+            st.session_state.avail_tier=200; st.rerun()
+    with _tc3:
+        if st.button("Top 500", type="primary" if st.session_state.avail_tier==500 else "secondary", use_container_width=True):
+            st.session_state.avail_tier=500; st.rerun()
+    with _tc4:
+        if st.button("Top 1K", type="primary" if st.session_state.avail_tier==1000 else "secondary", use_container_width=True):
+            st.session_state.avail_tier=1000; st.rerun()
 
     widget_html = build_widget_html(
         data, kpis,
