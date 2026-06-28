@@ -625,18 +625,7 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
     kpis['note']      = sum(sum(1 for r in v if r['severity']=='NOTE') for v in ordered.values())
     kpis['overstock_cats'] = sum(sum(1 for r in v if r['severity']=='OVERSTOCK') for v in ordered.values())
 
-    # Top N item IDs for briefing filter — stored as lists (JSON serializable)
-    if net_json:
-        import io as _nio2
-        _net2 = pd.read_json(_nio2.StringIO(net_json))
-        kpis['top_ids'] = {
-            100:  _net2.nlargest(100,  'net_ytd')['item_id'].astype(int).tolist(),
-            200:  _net2.nlargest(200,  'net_ytd')['item_id'].astype(int).tolist(),
-            500:  _net2.nlargest(500,  'net_ytd')['item_id'].astype(int).tolist(),
-            1000: _net2.nlargest(1000, 'net_ytd')['item_id'].astype(int).tolist(),
-        }
-    else:
-        kpis['top_ids'] = {100:[], 200:[], 500:[], 1000:[]}
+    kpis['top_ids'] = {}  # computed live in main app
 
     # Save any new AI assessments to GitHub cache
     if st.session_state.get('ai_cache_dirty') and st.session_state.get('ai_sub_cache'):
@@ -1179,7 +1168,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v16'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v17'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
@@ -1260,11 +1249,40 @@ with _ab4:
     if st.button("Top 1K",   type="primary" if st.session_state.avail_tier==1000 else "secondary", use_container_width=True, key="tier_1k"):
         st.session_state.avail_tier=1000; st.rerun()
 with _ab5:
+    # Compute availability live from session state (not cached)
+    _live_avail = {'network': 0, 'full3': 0, 'oos_n': 0}
+    _vel_net = st.session_state.get('vel_net')
+    _inv_bytes_avail = st.session_state.get('inv_bytes_cache')
+    if _vel_net is not None and _inv_bytes_avail is not None:
+        try:
+            import io as _io_av
+            _inv_av = pd.read_excel(io.BytesIO(_inv_bytes_avail))
+            _inv_av.columns = [c.strip() for c in _inv_av.columns]
+            _inv_av = _inv_av[_inv_av['Status']=='Active'].copy()
+            _inv_av['Item ID'] = pd.to_numeric(_inv_av['Item ID'], errors='coerce')
+            for _c in ['Jahra Dark Store Stock','Qurtuba Dark Store Stock',
+                       'Sabah Salem Dark Store Stock','Total SOH']:
+                if _c in _inv_av.columns:
+                    _inv_av[_c] = pd.to_numeric(_inv_av[_c], errors='coerce').fillna(0)
+            _inv_av['all3'] = ((_inv_av['Jahra Dark Store Stock']>0) &
+                               (_inv_av['Qurtuba Dark Store Stock']>0) &
+                               (_inv_av['Sabah Salem Dark Store Stock']>0))
+            _top_n_av = st.session_state.avail_tier
+            _top_ids_av = set(_vel_net.nlargest(_top_n_av,'net_ytd')['item_id'].astype(int).tolist())
+            _top_inv_av = _inv_av[_inv_av['Item ID'].isin(_top_ids_av)]
+            _oos_av = (_top_inv_av['Total SOH']==0).sum()
+            _full3_av = _top_inv_av['all3'].sum()
+            _live_avail = {
+                'network': round((_top_n_av-_oos_av)/_top_n_av*100,1),
+                'full3':   round(_full3_av/_top_n_av*100,1),
+                'oos_n':   int(_oos_av)
+            }
+        except: pass
     st.metric(f"Network availability · Top {st.session_state.avail_tier}",
-              f"{avail['network']}%",
-              delta=f"-{avail['oos_n']} fully OOS", delta_color="inverse")
+              f"{_live_avail['network']}%",
+              delta=f"-{_live_avail['oos_n']} fully OOS", delta_color="inverse")
 with _ab6:
-    st.metric("Full coverage (all 3 stores)", f"{avail['full3']}%")
+    st.metric("Full coverage (all 3 stores)", f"{_live_avail['full3']}%")
 
 st.divider()
 
@@ -1328,6 +1346,15 @@ with briefing_tab:
                     save_sub_cache_data(ai_cache)
                     st.success(f"✓ {len(new_results)} pairs assessed and cached. Reloading…")
                     st.rerun()
+
+    # Compute top_ids live so nav filter always reflects current tier
+    _vel_net_live = st.session_state.get('vel_net')
+    if _vel_net_live is not None:
+        _tier = st.session_state.avail_tier
+        _live_top_ids = set(_vel_net_live.nlargest(_tier,'net_ytd')['item_id'].astype(int).tolist())
+        kpis['top_ids'] = {_tier: list(_live_top_ids)}
+    else:
+        kpis['top_ids'] = {}
 
     widget_html = build_widget_html(
         data, kpis,
