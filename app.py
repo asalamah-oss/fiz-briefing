@@ -67,14 +67,15 @@ FLAVOUR_KW = {'mint','strawberry','chocolate','mango','vanilla','lemon','orange'
     'peach','blueberry','raspberry','caramel','mocha','cherry','apple','watermelon',
     'grape','lime','coconut','passion','hazelnut','coffee','honey','cinnamon','rose','saffron','tropical'}
 VARIANT_KW = {'zero','diet','light','sugar free','no sugar','low fat','full fat','skimmed',
-    'semi skimmed','fat free','reduced fat','unsalted','salted','whole','wholegrain','wholemeal'}
+    'semi skimmed','fat free','reduced fat','unsalted','salted','whole','wholegrain','wholemeal',
+    'full cream','half cream','lactose free','lactose-free'}
 CAT_ORDER = ['Dairy & Eggs','Drinks','Confectionary','Fruits & Vegetables','Snacks','Ice Cream',
     'Bakery','Cupboard','Home Care','Personal Care','Water','Frozen Food','Baby','Meats',
     'Health & Lifestyle','Coffee, Tea & Creamer','Pets','Baking Essentials','Ready to Eat','Pharma','Stationary']
 SEV_ORDER  = ['URGENT','ACTION','NOTE','OVERSTOCK']
-FLAG_KEYS  = ['dl','os','pe','dc','ssl']
+FLAG_KEYS  = ['dl','os','pe','dc','ssl','sf']
 FLAG_LABELS= {'dl':'Discontinued here','os':'Out of season','pe':'Promo ended',
-              'dc':'Discontinued','ssl':'Supplier service level'}
+              'dc':'Discontinued','ssl':'Supplier service level','sf':'Wrong substitute'}
 RESOLUTION_LABELS = {
     'DC_TRANSFER':       '🔄 Transfer from DC',
     'RAISE_PO':          '📦 Raise PO',
@@ -522,8 +523,8 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
     RTL  = {'FRESH':'Fresh · supplier-direct','PRODUCE':'Produce · supplier-direct',
             'NON-FRESH':'Non-fresh · transfer eligible'}
     RTC  = {'FRESH':'chip-f','PRODUCE':'chip-p','NON-FRESH':'chip-n'}
-    FL   = ['Discontinued here','Out of season','Promo ended','Discontinued','Supplier service level']
-    FK   = ['dl','os','pe','dc','ssl']
+    FL   = ['Discontinued here','Out of season','Promo ended','Discontinued','Supplier service level','Wrong substitute']
+    FK   = ['dl','os','pe','dc','ssl','sf']
 
     # ── NAV ───────────────────────────────────────────────────────────────────
     nav_html = ''
@@ -799,7 +800,7 @@ function selectKpi(kpi){{if(window._fiz_setStateValue)window._fiz_setStateValue(
 function toggleFlag(fkey,fk,bid,oid,sid){{
   if(!FLAGS[fkey])FLAGS[fkey]={{dl:0,os:0,pe:0,dc:0,ssl:0,any:false}};
   FLAGS[fkey][fk]=FLAGS[fkey][fk]?0:1;
-  FLAGS[fkey].any=!!(FLAGS[fkey].dl||FLAGS[fkey].os||FLAGS[fkey].pe||FLAGS[fkey].dc||FLAGS[fkey].ssl);
+  FLAGS[fkey].any=!!(FLAGS[fkey].dl||FLAGS[fkey].os||FLAGS[fkey].pe||FLAGS[fkey].dc||FLAGS[fkey].ssl||FLAGS[fkey].sf);
   var b=document.getElementById(bid);if(b){{b.className='fb'+(FLAGS[fkey][fk]?' on':'');b.textContent=FLAGS[fkey][fk]?'✓':'';}}
   var bl=document.getElementById(oid);if(bl)bl.className=bl.className.replace(' flagged','')+(FLAGS[fkey].any?' flagged':'');
   var sv=document.getElementById(sid);if(sv){{sv.className='fsv show';setTimeout(function(){{sv.className='fsv';}},1600);}}
@@ -954,7 +955,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v5'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v6'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
@@ -972,7 +973,7 @@ if 'flags'      not in st.session_state: st.session_state.flags      = {}
 if 'avail_tier' not in st.session_state: st.session_state.avail_tier = 100
 
 # ── FLAGGED ITEMS VIEW ────────────────────────────────────────────────────────
-flagged_tab, briefing_tab = st.tabs(["🚩 Flagged items", "📋 Briefing"])
+flagged_tab, briefing_tab, kpi_tab = st.tabs(["🚩 Flagged items", "📋 Briefing", "📊 KPI Drill-down"])
 
 with flagged_tab:
     flags = st.session_state.flags
@@ -1014,112 +1015,6 @@ with flagged_tab:
 
 with briefing_tab:
 
-    # ── KPI DRILL-DOWN PANEL ──────────────────────────────────────────────
-    kpi_drill = st.session_state.get('kpi_drill')
-    if kpi_drill:
-        kpi_titles = {
-            'rev_risk':    'Revenue at risk — OOS SKUs with no direct substitute',
-            'skus_at_risk':'OOS SKUs with velocity ≥ 2/day',
-            'dc_opps':     'DC transfer opportunities — store OOS, DC has stock',
-            'overstock':   'Real overstock — SOH > 45 days cover (has velocity)',
-            'dead_stock':  'Dead stock — in stock but zero velocity (never sold)',
-        }
-        with st.expander(f"📊 {kpi_titles.get(kpi_drill, kpi_drill)}", expanded=True):
-            col_close, _ = st.columns([1,8])
-            with col_close:
-                if st.button("✕ Close", key="close_kpi"):
-                    st.session_state.kpi_drill = None
-                    st.rerun()
-            _ytd = st.session_state.get('vel_ytd')
-            _inv_bytes_kpi = uploaded_inv.read() if uploaded_inv else None
-            if _ytd is not None and _inv_bytes_kpi is not None:
-                import io as _io3
-                _inv_kpi = pd.read_excel(io.BytesIO(_inv_bytes_kpi))
-                _inv_kpi.columns = [c.strip() for c in _inv_kpi.columns]
-                _inv_kpi = _inv_kpi[_inv_kpi['Status']=='Active'].copy()
-                _inv_kpi['Item ID'] = pd.to_numeric(_inv_kpi['Item ID'], errors='coerce')
-                for c in ['Jahra Dark Store Stock','Qurtuba Dark Store Stock',
-                          'Sabah Salem Dark Store Stock','Ardiya - Distribution Center Stock',
-                          'Total SOH','RSP']:
-                    if c in _inv_kpi.columns:
-                        _inv_kpi[c] = pd.to_numeric(_inv_kpi[c], errors='coerce').fillna(0)
-                _net_vel = _ytd.groupby('item_id')['true_daily'].mean().reset_index()
-                _inv_m = _inv_kpi[['Item ID','Description','Category','Sub Category','RSP',
-                                   'Jahra Dark Store Stock','Qurtuba Dark Store Stock',
-                                   'Sabah Salem Dark Store Stock',
-                                   'Ardiya - Distribution Center Stock','Total SOH']].rename(
-                    columns={'Item ID':'item_id'}).merge(_net_vel, on='item_id', how='left')
-                _inv_m['true_daily'] = _inv_m['true_daily'].fillna(0)
-                _inv_m['days_cover'] = np.where(
-                    _inv_m['true_daily']>0, _inv_m['Total SOH']/_inv_m['true_daily'], 999)
-
-                if kpi_drill == 'rev_risk':
-                    _df = _inv_m[(_inv_m['Total SOH']==0) & (_inv_m['true_daily']>=0.5)].copy()
-                    _df['daily_rev_risk'] = _df['true_daily'] * _df['RSP']
-                    _df = _df.sort_values('daily_rev_risk', ascending=False)
-                    _df['Daily Rev Risk (KD)'] = _df['daily_rev_risk'].round(2)
-                    _df['Velocity (units/day)'] = _df['true_daily'].round(2)
-                    st.dataframe(_df[['Description','Category','Sub Category',
-                                     'Velocity (units/day)','RSP','Daily Rev Risk (KD)']].reset_index(drop=True),
-                                 use_container_width=True, hide_index=True)
-                elif kpi_drill == 'skus_at_risk':
-                    _rows = []
-                    for _store, _col in [('Jahra','Jahra Dark Store Stock'),
-                                         ('Qurtuba','Qurtuba Dark Store Stock'),
-                                         ('Sabah Salem','Sabah Salem Dark Store Stock')]:
-                        _sv = _ytd[_ytd['store_norm']==_store][['item_id','true_daily']]
-                        _s = _inv_kpi[_inv_kpi[_col]==0][['Item ID','Description','Category','Sub Category','RSP']].rename(
-                            columns={'Item ID':'item_id'}).merge(_sv, on='item_id', how='inner')
-                        _s = _s[_s['true_daily']>=2].copy()
-                        _s['Store'] = _store
-                        _rows.append(_s)
-                    if _rows:
-                        _df = pd.concat(_rows).sort_values('true_daily', ascending=False)
-                        _df['Velocity (units/day)'] = _df['true_daily'].round(2)
-                        st.dataframe(_df[['Store','Description','Category','Sub Category',
-                                         'Velocity (units/day)','RSP']].reset_index(drop=True),
-                                     use_container_width=True, hide_index=True)
-                elif kpi_drill == 'dc_opps':
-                    _rows = []
-                    for _store, _col in [('Jahra','Jahra Dark Store Stock'),
-                                         ('Qurtuba','Qurtuba Dark Store Stock'),
-                                         ('Sabah Salem','Sabah Salem Dark Store Stock')]:
-                        _s = _inv_kpi[(_inv_kpi[_col]==0) &
-                                      (_inv_kpi['Ardiya - Distribution Center Stock']>0)][
-                            ['Item ID','Description','Category','Sub Category',
-                             'Ardiya - Distribution Center Stock','RSP']].copy()
-                        _s['Store'] = _store
-                        _rows.append(_s)
-                    if _rows:
-                        _df = pd.concat(_rows).drop(columns=['Item ID']).sort_values(
-                            ['Category','Sub Category'])
-                        _df = _df.rename(columns={'Ardiya - Distribution Center Stock':'DC Stock'})
-                        st.dataframe(_df[['Store','Description','Category','Sub Category',
-                                         'DC Stock','RSP']].reset_index(drop=True),
-                                     use_container_width=True, hide_index=True)
-                elif kpi_drill == 'overstock':
-                    _df = _inv_m[(_inv_m['days_cover']>45) & (_inv_m['true_daily']>0) &
-                                 (_inv_m['Total SOH']>0)].copy()
-                    _df['Days Cover'] = _df['days_cover'].round(0).astype(int)
-                    _df['Velocity (units/day)'] = _df['true_daily'].round(2)
-                    _df = _df.sort_values('days_cover', ascending=False)
-                    st.dataframe(_df[['Description','Category','Sub Category','Total SOH',
-                                      'Velocity (units/day)','Days Cover','RSP']].reset_index(drop=True),
-                                 use_container_width=True, hide_index=True)
-                elif kpi_drill == 'dead_stock':
-                    _df = _inv_m[(_inv_m['Total SOH']>0) & (_inv_m['true_daily']==0)].copy()
-                    _df = _df.sort_values('Total SOH', ascending=False)
-                    st.dataframe(_df[['Description','Category','Sub Category',
-                                      'Total SOH','RSP']].reset_index(drop=True),
-                                 use_container_width=True, hide_index=True)
-                csv_kpi = _df.to_csv(index=False).encode('utf-8') if '_df' in dir() else b''
-                if csv_kpi:
-                    st.download_button("⬇️ Export as CSV", csv_kpi,
-                                       file_name=f"fiz_{kpi_drill}_{kpis.get('file_date','')}.csv",
-                                       mime='text/csv')
-            else:
-                st.info("Upload order history to enable KPI drill-down.")
-
     widget_html = build_widget_html(
         data, kpis,
         st.session_state.cur_cat,
@@ -1144,6 +1039,33 @@ with briefing_tab:
                 st.session_state.cur_cat=nc; st.session_state.cur_sub=ns; changed=True
         nf = result.get('flags')
         if nf and nf!=st.session_state.flags:
+            # Check for new 'wrong substitute' flags and save to GitHub
+            for fkey, fval in nf.items():
+                old_fval = st.session_state.flags.get(fkey, {})
+                if fval.get('sf') and not old_fval.get('sf'):
+                    # New wrong substitute flag — append to sub_feedback.csv
+                    parts = fkey.split('|')
+                    if len(parts) >= 2:
+                        _subcat, _store = parts[0], parts[1]
+                        _oi = int(parts[2]) if len(parts) > 2 else 0
+                        _oos_desc = ''
+                        _sub_desc = ''
+                        _strength = ''
+                        try:
+                            _r = next((r for cat_items in data.values()
+                                      for r in cat_items if r['subcat']==_subcat), None)
+                            if _r:
+                                _oos = _r['stores'].get(_store,{}).get('oos_skus',[])
+                                if _oi < len(_oos):
+                                    _oos_desc = _oos[_oi].get('desc','')
+                                    _sub_desc = _oos[_oi].get('best_sub_desc','')
+                                    _strength = _oos[_oi].get('best_sub_strength','')
+                        except: pass
+                        _fb_row = f"{kpis.get('file_date','')},{_subcat},{_store},{_oos_desc},{_sub_desc},{_strength},wrong_substitute\n"
+                        _fb_csv, _fb_sha = gh_read("data/sub_feedback.csv")
+                        if _fb_csv is None:
+                            _fb_csv = "date,subcat,store,oos_desc,sub_desc,algo_strength,feedback\n"
+                        gh_write("data/sub_feedback.csv", _fb_csv + _fb_row, _fb_sha)
             st.session_state.flags=nf; changed=True
         nt = result.get('tier')
         if nt and nt!=st.session_state.avail_tier:
@@ -1152,3 +1074,100 @@ with briefing_tab:
         if nk and nk!=st.session_state.get('kpi_drill'):
             st.session_state.kpi_drill=nk; changed=True
         if changed: st.rerun()
+
+with kpi_tab:
+    _ytd_kpi = st.session_state.get('vel_ytd')
+    if _ytd_kpi is None:
+        st.info("Upload order history to enable KPI drill-down.")
+    else:
+        kpi_choice = st.selectbox("Select metric to drill into", [
+            "Revenue at risk — OOS, no direct sub",
+            "OOS SKUs with velocity ≥ 2/day",
+            "DC transfer opportunities",
+            "Real overstock (>45 days cover)",
+            "Dead stock (zero velocity)",
+        ])
+        import io as _io_kpi
+        _inv_kpi_bytes = uploaded_inv.read() if uploaded_inv else None
+        if _inv_kpi_bytes:
+            _inv_kpi = pd.read_excel(io.BytesIO(_inv_kpi_bytes))
+            _inv_kpi.columns = [c.strip() for c in _inv_kpi.columns]
+            _inv_kpi = _inv_kpi[_inv_kpi['Status']=='Active'].copy()
+            _inv_kpi['Item ID'] = pd.to_numeric(_inv_kpi['Item ID'], errors='coerce')
+            for _c in ['Jahra Dark Store Stock','Qurtuba Dark Store Stock',
+                       'Sabah Salem Dark Store Stock','Ardiya - Distribution Center Stock',
+                       'Total SOH','RSP']:
+                if _c in _inv_kpi.columns:
+                    _inv_kpi[_c] = pd.to_numeric(_inv_kpi[_c], errors='coerce').fillna(0)
+            _nv = _ytd_kpi.groupby('item_id')['true_daily'].mean().reset_index()
+            _im = _inv_kpi[['Item ID','Description','Category','Sub Category','RSP',
+                             'Jahra Dark Store Stock','Qurtuba Dark Store Stock',
+                             'Sabah Salem Dark Store Stock',
+                             'Ardiya - Distribution Center Stock','Total SOH']].rename(
+                columns={'Item ID':'item_id'}).merge(_nv, on='item_id', how='left')
+            _im['true_daily'] = _im['true_daily'].fillna(0)
+            _im['days_cover'] = np.where(_im['true_daily']>0,
+                _im['Total SOH']/_im['true_daily'], 999)
+
+            if kpi_choice.startswith("Revenue"):
+                _df_kpi = _im[(_im['Total SOH']==0) & (_im['true_daily']>=0.5)].copy()
+                _df_kpi['Daily Rev Risk (KD)'] = (_df_kpi['true_daily']*_df_kpi['RSP']).round(2)
+                _df_kpi['Velocity'] = _df_kpi['true_daily'].round(2)
+                _df_kpi = _df_kpi.sort_values('Daily Rev Risk (KD)', ascending=False)
+                st.metric("Total daily revenue at risk", f"{_df_kpi['Daily Rev Risk (KD)'].sum():,.0f} KD/day")
+                st.dataframe(_df_kpi[['Description','Category','Sub Category',
+                    'Velocity','RSP','Daily Rev Risk (KD)']].reset_index(drop=True),
+                    use_container_width=True, hide_index=True)
+            elif kpi_choice.startswith("OOS SKUs"):
+                _rows_kpi = []
+                for _st, _col in [('Jahra','Jahra Dark Store Stock'),
+                                   ('Qurtuba','Qurtuba Dark Store Stock'),
+                                   ('Sabah Salem','Sabah Salem Dark Store Stock')]:
+                    _sv = _ytd_kpi[_ytd_kpi['store_norm']==_st][['item_id','true_daily']]
+                    _s = _inv_kpi[_inv_kpi[_col]==0][['Item ID','Description','Category',
+                        'Sub Category','RSP']].rename(columns={'Item ID':'item_id'}).merge(
+                        _sv, on='item_id', how='inner')
+                    _s = _s[_s['true_daily']>=2].copy(); _s['Store'] = _st
+                    _rows_kpi.append(_s)
+                _df_kpi = pd.concat(_rows_kpi).sort_values('true_daily', ascending=False)
+                _df_kpi['Velocity'] = _df_kpi['true_daily'].round(2)
+                st.metric("OOS SKUs with vel ≥ 2/day", len(_df_kpi))
+                st.dataframe(_df_kpi[['Store','Description','Category','Sub Category',
+                    'Velocity','RSP']].reset_index(drop=True),
+                    use_container_width=True, hide_index=True)
+            elif kpi_choice.startswith("DC"):
+                _rows_kpi = []
+                for _st, _col in [('Jahra','Jahra Dark Store Stock'),
+                                   ('Qurtuba','Qurtuba Dark Store Stock'),
+                                   ('Sabah Salem','Sabah Salem Dark Store Stock')]:
+                    _s = _inv_kpi[(_inv_kpi[_col]==0) &
+                                  (_inv_kpi['Ardiya - Distribution Center Stock']>0)].copy()
+                    _s['Store'] = _st; _rows_kpi.append(_s)
+                _df_kpi = pd.concat(_rows_kpi).rename(
+                    columns={'Ardiya - Distribution Center Stock':'DC Stock'})
+                _df_kpi = _df_kpi.sort_values(['Category','Sub Category'])
+                st.metric("DC transfer opportunities", len(_df_kpi))
+                st.dataframe(_df_kpi[['Store','Description','Category','Sub Category',
+                    'DC Stock','RSP']].reset_index(drop=True),
+                    use_container_width=True, hide_index=True)
+            elif kpi_choice.startswith("Real"):
+                _df_kpi = _im[(_im['days_cover']>45) & (_im['true_daily']>0) &
+                               (_im['Total SOH']>0)].copy()
+                _df_kpi['Days Cover'] = _df_kpi['days_cover'].round(0).astype(int)
+                _df_kpi['Velocity'] = _df_kpi['true_daily'].round(2)
+                _df_kpi = _df_kpi.sort_values('days_cover', ascending=False)
+                st.metric("Overstocked SKUs", len(_df_kpi))
+                st.dataframe(_df_kpi[['Description','Category','Sub Category',
+                    'Total SOH','Velocity','Days Cover','RSP']].reset_index(drop=True),
+                    use_container_width=True, hide_index=True)
+            elif kpi_choice.startswith("Dead"):
+                _df_kpi = _im[(_im['Total SOH']>0) & (_im['true_daily']==0)].copy()
+                _df_kpi = _df_kpi.sort_values('Total SOH', ascending=False)
+                st.metric("Dead stock SKUs", len(_df_kpi))
+                st.dataframe(_df_kpi[['Description','Category','Sub Category',
+                    'Total SOH','RSP']].reset_index(drop=True),
+                    use_container_width=True, hide_index=True)
+
+            _csv_kpi = _df_kpi.to_csv(index=False).encode('utf-8')
+            st.download_button("⬇️ Export as CSV", _csv_kpi,
+                file_name=f"fiz_kpi_{kpis.get('file_date','')}.csv", mime='text/csv')
