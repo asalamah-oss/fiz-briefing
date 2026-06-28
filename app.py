@@ -680,9 +680,9 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
 *{{box-sizing:border-box;margin:0;padding:0}}
 body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:13px}}
 .shell{{display:flex;flex-direction:column;height:780px;border:1px solid #e2ddd8;border-radius:10px;overflow:hidden;background:#fff}}
-.kstrip{{display:flex;gap:0;border-bottom:1px solid #e2ddd8;background:#f7f6f3;flex-shrink:0;flex-wrap:wrap}}
-.kp{{padding:8px 14px;border-right:1px solid #e2ddd8;min-width:120px}}.kp-click{{cursor:pointer;}}.kp-click:hover{{background:#f0ede9;}}
-.kp-avail{{min-width:220px}}
+
+
+
 .kl{{font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;display:flex;align-items:center;gap:4px}}
 .kv{{font-size:20px;font-weight:500;color:#1a1a1a;line-height:1.2}}
 .kv.r{{color:#dc2626}}.kv.a{{color:#d97706}}.kv.g{{color:#16a34a}}
@@ -773,7 +773,6 @@ body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-si
 .kp2 .kl{{font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.04em}}
 </style></head><body>
 <div class="shell">
-  <div class="kstrip">{kpi_html}</div>
   <div class="main">
     <nav class="nv">
       <div class="nh"><div class="nh-t">Fiz · Availability Briefing</div>
@@ -969,6 +968,41 @@ if 'flags'      not in st.session_state: st.session_state.flags      = {}
 if 'avail_tier' not in st.session_state: st.session_state.avail_tier = 100
 
 # ── FLAGGED ITEMS VIEW ────────────────────────────────────────────────────────
+# ── NATIVE KPI STRIP ─────────────────────────────────────────────────────────
+avail = kpis.get('avail',{}).get(st.session_state.avail_tier,{'network':0,'full3':0,'oos_n':0})
+
+_k1,_k2,_k3,_k4,_k5,_k6,_k7,_k8 = st.columns(8)
+_k1.metric("🔴 Urgent",          kpis.get('urgent',0))
+_k2.metric("🟡 Action",          kpis.get('action',0))
+_k3.metric("🔵 Note",            kpis.get('note',0))
+_k4.metric("Revenue at risk",    f"{kpis.get('rev_risk',0):,.0f} KD")
+_k5.metric("OOS vel≥2/day",      kpis.get('skus_at_risk',0))
+_k6.metric("DC transfer opps",   kpis.get('dc_opps',0))
+_k7.metric("Real overstock",     kpis.get('overstock_count',0))
+_k8.metric("Dead stock",         kpis.get('dead_stock_count',0))
+
+_ab1,_ab2,_ab3,_ab4,_ab5,_ab6 = st.columns([1,1,1,1,2,2])
+with _ab1:
+    if st.button("Top 100",  type="primary" if st.session_state.avail_tier==100  else "secondary", use_container_width=True, key="tier_100"):
+        st.session_state.avail_tier=100;  st.rerun()
+with _ab2:
+    if st.button("Top 200",  type="primary" if st.session_state.avail_tier==200  else "secondary", use_container_width=True, key="tier_200"):
+        st.session_state.avail_tier=200;  st.rerun()
+with _ab3:
+    if st.button("Top 500",  type="primary" if st.session_state.avail_tier==500  else "secondary", use_container_width=True, key="tier_500"):
+        st.session_state.avail_tier=500;  st.rerun()
+with _ab4:
+    if st.button("Top 1K",   type="primary" if st.session_state.avail_tier==1000 else "secondary", use_container_width=True, key="tier_1k"):
+        st.session_state.avail_tier=1000; st.rerun()
+with _ab5:
+    st.metric(f"Network availability · Top {st.session_state.avail_tier}",
+              f"{avail['network']}%",
+              delta=f"-{avail['oos_n']} fully OOS", delta_color="inverse")
+with _ab6:
+    st.metric("Full coverage (all 3 stores)", f"{avail['full3']}%")
+
+st.divider()
+
 flagged_tab, briefing_tab, kpi_tab = st.tabs(["🚩 Flagged items", "📋 Briefing", "📊 KPI Drill-down"])
 
 with flagged_tab:
@@ -1011,21 +1045,6 @@ with flagged_tab:
 
 with briefing_tab:
 
-    # Availability tier selector
-    _tc1,_tc2,_tc3,_tc4,_tc5 = st.columns([1,1,1,1,6])
-    with _tc1:
-        if st.button("Top 100", type="primary" if st.session_state.avail_tier==100 else "secondary", use_container_width=True):
-            st.session_state.avail_tier=100; st.rerun()
-    with _tc2:
-        if st.button("Top 200", type="primary" if st.session_state.avail_tier==200 else "secondary", use_container_width=True):
-            st.session_state.avail_tier=200; st.rerun()
-    with _tc3:
-        if st.button("Top 500", type="primary" if st.session_state.avail_tier==500 else "secondary", use_container_width=True):
-            st.session_state.avail_tier=500; st.rerun()
-    with _tc4:
-        if st.button("Top 1K", type="primary" if st.session_state.avail_tier==1000 else "secondary", use_container_width=True):
-            st.session_state.avail_tier=1000; st.rerun()
-
     widget_html = build_widget_html(
         data, kpis,
         st.session_state.cur_cat,
@@ -1034,9 +1053,9 @@ with briefing_tab:
         st.session_state.avail_tier,
     )
     result = _BRIEFING_COMPONENT(
-        key="briefing_v3",
+        key=f"briefing_v3_{st.session_state.avail_tier}",
         data={"html": widget_html, "flags": st.session_state.flags,
-              "key": f"{st.session_state.cur_cat}|{st.session_state.cur_sub}|{len(st.session_state.flags)}"},
+              "key": f"{st.session_state.cur_cat}|{st.session_state.cur_sub}|{len(st.session_state.flags)}|{st.session_state.avail_tier}"},
         on_selection_change=lambda: None,
         on_flags_change=lambda: None,
         on_tier_change=lambda: None,
@@ -1092,6 +1111,7 @@ with kpi_tab:
         st.info("Upload order history to enable KPI drill-down.")
     else:
         kpi_choice = st.selectbox("Select metric to drill into", [
+            f"Availability — Top {st.session_state.avail_tier} OOS SKUs",
             "Revenue at risk — OOS, no direct sub",
             "OOS SKUs with velocity ≥ 2/day",
             "DC transfer opportunities",
@@ -1120,7 +1140,59 @@ with kpi_tab:
             _im['days_cover'] = np.where(_im['true_daily']>0,
                 _im['Total SOH']/_im['true_daily'], 999)
 
-            if kpi_choice.startswith("Revenue"):
+            if kpi_choice.startswith("Availability"):
+                # Top N SKUs that are OOS at any store
+                _net_ytd_df = st.session_state.get('vel_net')
+                if _net_ytd_df is not None:
+                    _top_n = st.session_state.avail_tier
+                    _top_ids = _net_ytd_df.nlargest(_top_n,'net_ytd')['item_id'].tolist()
+                    _top_inv = _im[_im['item_id'].isin(_top_ids)].copy()
+                    _oos_any = _top_inv[_top_inv['Total SOH']==0].copy()
+                    _oos_missing = _top_inv[
+                        (_top_inv['Total SOH']>0) &
+                        ((_top_inv['Jahra Dark Store Stock']==0) |
+                         (_top_inv['Qurtuba Dark Store Stock']==0) |
+                         (_top_inv['Sabah Salem Dark Store Stock']==0))
+                    ].copy()
+                    _top_inv_merged = _top_inv.merge(
+                        _net_ytd_df[['item_id','net_ytd']], on='item_id', how='left')
+                    _oos_any = _oos_any.merge(
+                        _net_ytd_df[['item_id','net_ytd']], on='item_id', how='left')
+                    _oos_missing = _oos_missing.merge(
+                        _net_ytd_df[['item_id','net_ytd']], on='item_id', how='left')
+
+                    col_a, col_b, col_c = st.columns(3)
+                    col_a.metric(f"Top {_top_n} SKUs", _top_n)
+                    col_b.metric("Fully OOS (no stock anywhere)", len(_oos_any))
+                    col_c.metric("Missing ≥1 store", len(_oos_missing))
+
+                    st.markdown("#### Fully OOS — no stock at any store")
+                    if len(_oos_any):
+                        _oos_any['Network YTD'] = _oos_any['net_ytd'].fillna(0).astype(int)
+                        _oos_any['Velocity'] = _oos_any['true_daily'].round(2)
+                        _oos_any = _oos_any.sort_values('Network YTD', ascending=False)
+                        st.dataframe(_oos_any[['Description','Category','Sub Category',
+                            'Network YTD','Velocity','RSP',
+                            'Ardiya - Distribution Center Stock']].rename(
+                            columns={'Ardiya - Distribution Center Stock':'DC Stock'}).reset_index(drop=True),
+                            use_container_width=True, hide_index=True)
+                    else:
+                        st.success(f"All Top {_top_n} SKUs have stock somewhere in the network!")
+
+                    st.markdown("#### Missing at ≥1 store (in stock somewhere but not everywhere)")
+                    if len(_oos_missing):
+                        _oos_missing['Network YTD'] = _oos_missing['net_ytd'].fillna(0).astype(int)
+                        _oos_missing['Jahra'] = _oos_missing['Jahra Dark Store Stock'].apply(lambda x: '✓' if x>0 else '✗')
+                        _oos_missing['Qurtuba'] = _oos_missing['Qurtuba Dark Store Stock'].apply(lambda x: '✓' if x>0 else '✗')
+                        _oos_missing['Sabah Salem'] = _oos_missing['Sabah Salem Dark Store Stock'].apply(lambda x: '✓' if x>0 else '✗')
+                        _oos_missing['DC Stock'] = _oos_missing['Ardiya - Distribution Center Stock'].astype(int)
+                        _oos_missing = _oos_missing.sort_values('Network YTD', ascending=False)
+                        st.dataframe(_oos_missing[['Description','Category','Sub Category',
+                            'Network YTD','Jahra','Qurtuba','Sabah Salem','DC Stock','RSP']].reset_index(drop=True),
+                            use_container_width=True, hide_index=True)
+                    _df_kpi = _oos_any  # for export
+
+            elif kpi_choice.startswith("Revenue"):
                 _df_kpi = _im[(_im['Total SOH']==0) & (_im['true_daily']>=0.5)].copy()
                 _df_kpi['Daily Rev Risk (KD)'] = (_df_kpi['true_daily']*_df_kpi['RSP']).round(2)
                 _df_kpi['Velocity'] = _df_kpi['true_daily'].round(2)
