@@ -391,7 +391,7 @@ def process_order_history(oh_bytes_list, inv_item_ids):
     return ytd, l7, net, str(today)
 
 # ── MAIN ANALYSIS ─────────────────────────────────────────────────────────────
-SEV_ORDER_SUB = ['DIRECT','STRONG','WEAK']
+SEV_ORDER_SUB = ['DIRECT']
 
 @st.cache_data(show_spinner=False)
 def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
@@ -477,12 +477,14 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
                     key = (int(oos['Item ID']), int(s_row['Item ID']))
                     if key in ai_cache:
                         strength, reason = ai_cache[key]
-                        if strength == 'NONE': continue
+                        # Only DIRECT counts
+                        if strength != 'DIRECT': continue
                     else:
-                        # No AI result yet — use algo as fallback, queue for later
-                        strength = algo_str
+                        # No AI result yet — use algo as fallback (DIRECT only)
+                        if algo_str != 'DIRECT': continue
+                        strength = 'DIRECT'
                         reason = ""
-                        # Add to queue for background AI enrichment
+                        # Queue for AI verification
                         if '_ai_queue' not in st.session_state:
                             st.session_state['_ai_queue'] = []
                         queue_item = (
@@ -494,11 +496,11 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
                         )
                         if queue_item not in st.session_state['_ai_queue']:
                             st.session_state['_ai_queue'].append(queue_item)
-                    if strength not in SEV_ORDER_SUB: continue
-                    if best_str is None or SEV_ORDER_SUB.index(strength) < SEV_ORDER_SUB.index(best_str):
-                        best_str = strength; best_sub_desc = str(s_row['Description'])[:45]
-                        best_sub_soh = int(s_row[soh_col]); best_sub_reason = reason
-                    if best_str == 'DIRECT': break
+                    best_str = 'DIRECT'
+                    best_sub_desc = str(s_row['Description'])[:45]
+                    best_sub_soh = int(s_row[soh_col])
+                    best_sub_reason = reason
+                    break  # Found a DIRECT — stop looking
 
                 # Resolution label
                 dc_soh = float(oos.get('Ardiya - Distribution Center Stock',0))
@@ -518,18 +520,17 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
                             other_overstocked = True; break
                     resolution = 'OVERSTOCK_ELSEWHERE' if other_overstocked else 'RAISE_PO'
 
-                # Severity
+                # Severity — DIRECT substitute only
                 v = float(oos.get('true_daily',0))
-                if v >= 10 and best_str != 'DIRECT':
+                has_direct = (best_str == 'DIRECT')
+                if v >= 5 and not has_direct:
                     sev = 'URGENT'
-                elif v >= 5 and best_str not in ['DIRECT','STRONG']:
+                elif v >= 2 and not has_direct:
                     sev = 'URGENT'
-                elif v >= 2 and best_str is None:
-                    sev = 'URGENT'
-                elif v >= 2:
+                elif v >= 0.5 and not has_direct:
                     sev = 'ACTION'
-                elif v < 2 and best_str is None:
-                    sev = 'ACTION'
+                elif has_direct:
+                    sev = 'NOTE'
                 else:
                     sev = 'NOTE'
 
@@ -703,6 +704,8 @@ def _compute_kpis(inv, net_df, ytd_df, l7_df):
 
 # ── WIDGET HTML BUILDER ───────────────────────────────────────────────────────
 def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
+    # Filter to only show sub-cats/SKUs relevant to selected tier
+    top_ids = kpis.get('top_ids', {}).get(avail_tier, set()) if avail_tier != 'all' else None
     SI   = {'URGENT':'🔴','ACTION':'🟡','NOTE':'🔵','OVERSTOCK':'🟠'}
     SEVC = {'URGENT':'sv-u','ACTION':'sv-a','NOTE':'sv-n','OVERSTOCK':'sv-o'}
     SEVL = {'URGENT':'🔴 Urgent — high-velocity OOS, no adequate substitute',
@@ -717,7 +720,19 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
 
     # ── NAV ───────────────────────────────────────────────────────────────────
     nav_html = ''
+    # Apply top N filter
+    def _in_top(r):
+        if top_ids is None: return True
+        for st_data in r['stores'].values():
+            for o in st_data.get('oos_skus',[]):
+                if int(o.get('item_id',0)) in top_ids: return True
+            for o in st_data.get('overstock_skus',[]):
+                if int(o.get('item_id',0)) in top_ids: return True
+        return False
+
     for cat, items in data.items():
+        items = [r for r in items if _in_top(r)]
+        if not items: continue
         u=sum(1 for r in items if r['severity']=='URGENT')
         a=sum(1 for r in items if r['severity']=='ACTION')
         badges=(f'<span class="cbu">{u}U</span>' if u else '')+(f'<span class="cba">{a}A</span>' if a else '')
@@ -814,6 +829,11 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
                     dc_str = f" · {sk['days_cover']:.0f}d cover" if sk.get('days_cover',0) < 999 else ''
                     detail_html += f'<div class="ik"><span style="color:#16a34a;font-size:11px;flex-shrink:0">✓</span><span class="id" title="{sk["desc"]}">{sk["desc"]}</span><span class="im">{sk["velocity"]}/day · {sk["soh"]}u{dc_str}</span></div>'
 
+            # Filter OOS to top N only
+            _oos_filtered = [o for o in sd.get('oos_skus',[])
+                             if top_ids is None or int(o.get('item_id',0)) in top_ids]
+            if _oos_filtered:
+                sd = dict(sd); sd['oos_skus'] = _oos_filtered
             if sd.get('oos_skus'):
                 detail_html += '<div class="dl" style="margin-top:5px">Out of stock</div><div class="ow">'
                 for oi, oos in enumerate(sd['oos_skus']):
@@ -840,11 +860,10 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
                           <span class="fl">{FL[fi]}</span></label>'''
                     detail_html += f'<span class="fsv" id="sv_{si}_{oi}">✓ saved</span></div>'
                     detail_html += '<div class="ub"><div class="ul">Best substitute</div>'
-                    if oos.get('best_sub_strength'):
-                        tc = {'DIRECT':'utd','STRONG':'uts','WEAK':'utw'}.get(oos['best_sub_strength'],'utw')
+                    if oos.get('best_sub_strength') == 'DIRECT':
                         reason_txt = oos.get('best_sub_reason','')
                         reason_html = f' <span style="font-size:9px;color:#888">· {reason_txt}</span>' if reason_txt else ''
-                        detail_html += f'<div class="ur"><span class="ut {tc}">{oos["best_sub_strength"]}</span><span class="ud">{oos["best_sub_desc"]}{reason_html}</span><span class="us">{oos["best_sub_soh"]}u</span></div>'
+                        detail_html += f'<div class="ur"><span class="ut utd">DIRECT</span><span class="ud">{oos["best_sub_desc"]}{reason_html}</span><span class="us">{oos["best_sub_soh"]}u</span></div>'
                     else:
                         detail_html += '<div class="ns">No substitute — raise PO immediately</div>'
                     detail_html += '</div></div>'
@@ -1141,7 +1160,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v11'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v13'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
@@ -1199,15 +1218,14 @@ if 'avail_tier' not in st.session_state: st.session_state.avail_tier = 100
 # ── NATIVE KPI STRIP ─────────────────────────────────────────────────────────
 avail = kpis.get('avail',{}).get(st.session_state.avail_tier,{'network':0,'full3':0,'oos_n':0})
 
-_k1,_k2,_k3,_k4,_k5,_k6,_k7,_k8 = st.columns(8)
-_k1.metric("🔴 Urgent",          kpis.get('urgent',0))
-_k2.metric("🟡 Action",          kpis.get('action',0))
-_k3.metric("🔵 Note",            kpis.get('note',0))
-_k4.metric("Revenue at risk",    f"{kpis.get('rev_risk',0):,.0f} KD")
-_k5.metric("OOS vel≥2/day",      kpis.get('skus_at_risk',0))
-_k6.metric("DC transfer opps",   kpis.get('dc_opps',0))
-_k7.metric("Real overstock",     kpis.get('overstock_count',0))
-_k8.metric("Dead stock",         kpis.get('dead_stock_count',0))
+_k1,_k2,_k3,_k4,_k5,_k6,_k7 = st.columns(7)
+_k1.metric("🔴 Urgent",        kpis.get('urgent',0))
+_k2.metric("🟡 Action",        kpis.get('action',0))
+_k3.metric("🔵 Note",          kpis.get('note',0))
+_k4.metric(f"OOS vel≥2/day · Top {st.session_state.avail_tier}", kpis.get('skus_at_risk',0))
+_k5.metric("DC transfer opps", kpis.get('dc_opps',0))
+_k6.metric("Real overstock",   kpis.get('overstock_count',0))
+_k7.metric("Dead stock",       kpis.get('dead_stock_count',0))
 
 _ab1,_ab2,_ab3,_ab4,_ab5,_ab6 = st.columns([1,1,1,1,2,2])
 with _ab1:
@@ -1470,8 +1488,10 @@ with admin_tab:
                         _prompt_t = (
                             f"Kuwait grocery substitute assessment. Sub-category: {_sel_subcat}\n\n"
                             + "\n".join(_lines_t)
-                            + "\n\nFor each pair reply: [n]. [DIRECT/STRONG/WEAK/NONE] — [reason max 8 words]\n"
-                            + "DIRECT=customer won't notice  STRONG=minor diff  WEAK=likely rejected  NONE=not a sub"
+                            + "\n\nFor each pair: is the substitute a DIRECT replacement?\n"
+                            + "DIRECT = customer would fully accept this substitute (same type, similar price, same use)\n"
+                            + "NONE = not a direct substitute\n\n"
+                            + "Reply: [n]. [DIRECT/NONE] — [reason max 8 words]"
                         )
                         try:
                             _tr = _rq_t.post(
@@ -1492,7 +1512,7 @@ with admin_tab:
                                             _rest_t = _ln_t[len(f"{_j_t+1}."):].strip()
                                             _pts_t = _rest_t.split("—", 1)
                                             _str_t = _pts_t[0].strip().upper()
-                                            if _str_t not in ["DIRECT","STRONG","WEAK","NONE"]: _str_t = "WEAK"
+                                            if _str_t not in ["DIRECT","NONE"]: _str_t = "NONE"
                                             _rsn_t = _pts_t[1].strip() if len(_pts_t) > 1 else ""
                                             _test_results[(int(_o_t['Item ID']), int(_s_t['Item ID']))] = (_str_t, _rsn_t)
                                             _test_results[(int(_s_t['Item ID']), int(_o_t['Item ID']))] = (_str_t, _rsn_t)
@@ -1541,8 +1561,10 @@ with admin_tab:
                         _prompt2 = (
                             f"Kuwait grocery substitute assessment. Sub-category: {_sel_subcat}\n\n"
                             + "\n".join(_lines2)
-                            + "\n\nFor each pair reply: [n]. [DIRECT/STRONG/WEAK/NONE] — [reason max 8 words]\n"
-                            + "DIRECT=customer won't notice  STRONG=minor diff  WEAK=likely rejected  NONE=not a sub"
+                            + "\n\nFor each pair: is the substitute a DIRECT replacement?\n"
+                            + "DIRECT = customer buying the OOS product would fully accept this substitute (same type, similar price, same use case)\n"
+                            + "NONE = not a direct substitute\n\n"
+                            + "Reply: [n]. [DIRECT/NONE] — [reason max 8 words]"
                         )
                         try:
                             _r2 = _rq2.post(
@@ -1561,8 +1583,8 @@ with admin_tab:
                                             _rest2 = _ln2[len(f"{_j2+1}."):].strip()
                                             _pts2 = _rest2.split("—", 1)
                                             _str2 = _pts2[0].strip().upper()
-                                            if _str2 not in ["DIRECT","STRONG","WEAK","NONE"]:
-                                                _str2 = "WEAK"
+                                            if _str2 not in ["DIRECT","NONE"]:
+                                                _str2 = "NONE"
                                             _rsn2 = _pts2[1].strip() if len(_pts2) > 1 else ""
                                             _fwd2 = (int(_o2['Item ID']), int(_s2['Item ID']))
                                             _rev2 = (int(_s2['Item ID']), int(_o2['Item ID']))
@@ -1605,7 +1627,6 @@ with kpi_tab:
     else:
         kpi_choice = st.selectbox("Select metric to drill into", [
             f"Availability — Top {st.session_state.avail_tier} OOS SKUs",
-            "Revenue at risk — OOS, no direct sub",
             "OOS SKUs with velocity ≥ 2/day",
             "DC transfer opportunities",
             "Real overstock (>45 days cover)",
@@ -1685,15 +1706,6 @@ with kpi_tab:
                             use_container_width=True, hide_index=True)
                     _df_kpi = _oos_any  # for export
 
-            elif kpi_choice.startswith("Revenue"):
-                _df_kpi = _im[(_im['Total SOH']==0) & (_im['true_daily']>=0.5)].copy()
-                _df_kpi['Daily Rev Risk (KD)'] = (_df_kpi['true_daily']*_df_kpi['RSP']).round(2)
-                _df_kpi['Velocity'] = _df_kpi['true_daily'].round(2)
-                _df_kpi = _df_kpi.sort_values('Daily Rev Risk (KD)', ascending=False)
-                st.metric("Total daily revenue at risk", f"{_df_kpi['Daily Rev Risk (KD)'].sum():,.0f} KD/day")
-                st.dataframe(_df_kpi[['Description','Category','Sub Category',
-                    'Velocity','RSP','Daily Rev Risk (KD)']].reset_index(drop=True),
-                    use_container_width=True, hide_index=True)
             elif kpi_choice.startswith("OOS SKUs"):
                 _rows_kpi = []
                 for _st, _col in [('Jahra','Jahra Dark Store Stock'),
