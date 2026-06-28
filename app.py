@@ -269,7 +269,7 @@ def ai_assess_batch(pairs):
         try:
             r = _req.post(
                 "https://api.anthropic.com/v1/messages",
-                headers={"Content-Type": "application/json"},
+                headers={"Content-Type": "application/json", "x-api-key": st.secrets.get("ANTHROPIC_API_KEY",""), "anthropic-version": "2023-06-01"},
                 json={"model": "claude-sonnet-4-6", "max_tokens": 300,
                       "messages": [{"role": "user", "content": prompt}]},
                 timeout=30
@@ -329,7 +329,7 @@ def find_better_sub(oos_desc, oos_vendor, oos_rsp, oos_id,
     try:
         r = _req.post(
             "https://api.anthropic.com/v1/messages",
-            headers={"Content-Type": "application/json"},
+            headers={"Content-Type": "application/json", "x-api-key": st.secrets.get("ANTHROPIC_API_KEY",""), "anthropic-version": "2023-06-01"},
             json={"model": "claude-sonnet-4-6", "max_tokens": 80,
                   "messages": [{"role": "user", "content": prompt}]},
             timeout=20
@@ -1470,7 +1470,7 @@ with admin_tab:
                         import requests as _rq_t
                         _tr = _rq_t.post(
                             "https://api.anthropic.com/v1/messages",
-                            headers={"Content-Type": "application/json"},
+                            headers={"Content-Type": "application/json", "x-api-key": st.secrets.get("ANTHROPIC_API_KEY",""), "anthropic-version": "2023-06-01"},
                             json={"model": "claude-sonnet-4-6", "max_tokens": 300,
                                   "messages": [{"role": "user", "content": _test_prompt}]},
                             timeout=30
@@ -1513,7 +1513,7 @@ with admin_tab:
                         try:
                             _r2 = _rq2.post(
                                 "https://api.anthropic.com/v1/messages",
-                                headers={"Content-Type": "application/json"},
+                                headers={"Content-Type": "application/json", "x-api-key": st.secrets.get("ANTHROPIC_API_KEY",""), "anthropic-version": "2023-06-01"},
                                 json={"model": "claude-sonnet-4-6", "max_tokens": 400,
                                       "messages": [{"role": "user", "content": _prompt2}]},
                                 timeout=30
