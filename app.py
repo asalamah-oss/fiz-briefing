@@ -1441,6 +1441,11 @@ with admin_tab:
                 st.dataframe(_inv_sel[['Item ID','Description','Vendor','RSP']].reset_index(drop=True),
                              use_container_width=True, hide_index=True)
 
+            # Build SKU list once, used by both test and full build
+            _exclude_kw = ['caviar','lumpfish','cleaning','detergent']
+            _skus_list = [s for s in _inv_sel[['Item ID','Description','Vendor','RSP']].to_dict('records')
+                          if not any(k in str(s.get('Description','')).lower() for k in _exclude_kw)]
+
             # Test mode — assess 5 pairs first
             _test_col, _full_col = st.columns([1,2])
             with _test_col:
@@ -1483,90 +1488,81 @@ with admin_tab:
 
             with _full_col:
                 if st.button(f"🤖 Build master table for {_sel_subcat}", type="primary", key="build_master_btn"):
-                    _skus_list = _inv_sel[['Item ID','Description','Vendor','RSP']].to_dict('records')
-                # Filter obvious non-food
-                _exclude = ['caviar','lumpfish','cleaning','detergent']
-                _skus_list = [s for s in _skus_list
-                              if not any(k in str(s.get('Description','')).lower() for k in _exclude)]
+                    _all_pairs = [(a,b) for i,a in enumerate(_skus_list)
+                                  for j,b in enumerate(_skus_list) if i < j]
+                    _progress = st.progress(0, text=f"Assessing {len(_all_pairs)} pairs...")
+                    _results = {}
+                    _batch_size = 10
+                    import time as _tm
+                    import requests as _rq2
 
-                _all_pairs = [(a,b) for i,a in enumerate(_skus_list)
-                              for j,b in enumerate(_skus_list) if i < j]
-
-                _progress = st.progress(0, text=f"Assessing {len(_all_pairs)} pairs...")
-                _results = {}
-                _batch_size = 10
-
-                for _bi in range(0, len(_all_pairs), _batch_size):
-                    _batch = _all_pairs[_bi:_bi+_batch_size]
-                    _lines = []
-                    for _j, (_oos, _sub) in enumerate(_batch):
-                        _lines.append(
-                            f"{_j+1}. OOS: {_oos['Description']} | {str(_oos.get('Vendor',''))[:20]} | {float(_oos['RSP']):.3f} KD"
-                            f" → SUB: {_sub['Description']} | {str(_sub.get('Vendor',''))[:20]} | {float(_sub['RSP']):.3f} KD"
+                    for _bi in range(0, len(_all_pairs), _batch_size):
+                        _batch = _all_pairs[_bi:_bi+_batch_size]
+                        _lines2 = []
+                        for _j2, (_o2, _s2) in enumerate(_batch):
+                            _lines2.append(
+                                f"{_j2+1}. OOS: {_o2['Description']} | {str(_o2.get('Vendor',''))[:20]} | {float(_o2['RSP']):.3f} KD"
+                                f" → SUB: {_s2['Description']} | {str(_s2.get('Vendor',''))[:20]} | {float(_s2['RSP']):.3f} KD"
+                            )
+                        _prompt2 = (
+                            f"Kuwait grocery substitute assessment. Sub-category: {_sel_subcat}\n\n"
+                            + "\n".join(_lines2)
+                            + "\n\nFor each pair reply: [n]. [DIRECT/STRONG/WEAK/NONE] — [reason max 8 words]\n"
+                            + "DIRECT=customer won't notice  STRONG=minor diff  WEAK=likely rejected  NONE=not a sub"
                         )
-                    _prompt = (
-                        f"Kuwait grocery substitute assessment. Sub-category: {_sel_subcat}\n\n"
-                        + "\n".join(_lines)
-                        + "\n\nFor each pair reply: [n]. [DIRECT/STRONG/WEAK/NONE] — [reason max 8 words]\n"
-                        + "DIRECT=customer won't notice  STRONG=minor diff  WEAK=likely rejected  NONE=not a sub"
-                    )
-                    try:
-                        import requests as _rq
-                        _r = _rq.post(
-                            "https://api.anthropic.com/v1/messages",
-                            headers={"Content-Type": "application/json"},
-                            json={"model": "claude-sonnet-4-6", "max_tokens": 400,
-                                  "messages": [{"role": "user", "content": _prompt}]},
-                            timeout=30
-                        )
-                        if _r.status_code == 200:
-                            _text = _r.json()["content"][0]["text"]
-                            for _j, (_oos, _sub) in enumerate(_batch):
-                                for _line in _text.split("\n"):
-                                    _line = _line.strip()
-                                    if _line.startswith(f"{_j+1}."):
-                                        _rest = _line[len(f"{_j+1}."):].strip()
-                                        _pts = _rest.split("—", 1)
-                                        _str = _pts[0].strip().upper()
-                                        if _str not in ["DIRECT","STRONG","WEAK","NONE"]: _str = "WEAK"
-                                        _rsn = _pts[1].strip() if len(_pts) > 1 else ""
-                                        _results[(int(_oos['Item ID']), int(_sub['Item ID']))] = (_str, _rsn)
-                                        # Symmetric reverse
-                                        _rev = (int(_sub['Item ID']), int(_oos['Item ID']))
-                                        if _rev not in _results:
-                                            _results[_rev] = (_str, f"Reverse: {_rsn}")
-                                        break
-                    except: pass
-                    _pct = min((_bi + _batch_size) / len(_all_pairs), 1.0)
-                    _progress.progress(_pct, text=f"Assessed {min(_bi+_batch_size, len(_all_pairs))}/{len(_all_pairs)} pairs — {len(_results)} results")
-                    import time as _t; _t.sleep(0.2)
+                        try:
+                            _r2 = _rq2.post(
+                                "https://api.anthropic.com/v1/messages",
+                                headers={"Content-Type": "application/json"},
+                                json={"model": "claude-sonnet-4-6", "max_tokens": 400,
+                                      "messages": [{"role": "user", "content": _prompt2}]},
+                                timeout=30
+                            )
+                            if _r2.status_code == 200:
+                                _txt2 = _r2.json()["content"][0]["text"]
+                                for _j2, (_o2, _s2) in enumerate(_batch):
+                                    for _ln2 in _txt2.split("\n"):
+                                        _ln2 = _ln2.strip()
+                                        if _ln2.startswith(f"{_j2+1}."):
+                                            _rest2 = _ln2[len(f"{_j2+1}."):].strip()
+                                            _pts2 = _rest2.split("—", 1)
+                                            _str2 = _pts2[0].strip().upper()
+                                            if _str2 not in ["DIRECT","STRONG","WEAK","NONE"]:
+                                                _str2 = "WEAK"
+                                            _rsn2 = _pts2[1].strip() if len(_pts2) > 1 else ""
+                                            _fwd2 = (int(_o2['Item ID']), int(_s2['Item ID']))
+                                            _rev2 = (int(_s2['Item ID']), int(_o2['Item ID']))
+                                            _results[_fwd2] = (_str2, _rsn2)
+                                            if _rev2 not in _results:
+                                                _results[_rev2] = (_str2, _rsn2)
+                                            break
+                        except: pass
+                        _pct2 = min((_bi + _batch_size) / max(len(_all_pairs),1), 1.0)
+                        _progress.progress(_pct2, text=f"Assessed {min(_bi+_batch_size, len(_all_pairs))}/{len(_all_pairs)} pairs — {len(_results)} results")
+                        _tm.sleep(0.15)
 
-                _progress.progress(1.0, text=f"Done — {len(_results)} pairs assessed")
+                    _progress.progress(1.0, text=f"Done — {len(_results)} pairs assessed")
 
-                # Merge with existing master table
-                _new_rows = []
-                for (_oid, _sid), (_str, _rsn) in _results.items():
-                    _new_rows.append({
-                        'oos_id': _oid, 'sub_id': _sid,
-                        'subcat': _sel_subcat, 'strength': _str,
-                        'reason': str(_rsn).replace(',',';')
-                    })
-                _new_df = pd.DataFrame(_new_rows)
-                if len(_mt_df) > 0:
-                    _merged = pd.concat([_mt_df[_mt_df['subcat']!=_sel_subcat], _new_df], ignore_index=True)
-                else:
-                    _merged = _new_df
+                    # Merge with existing master table
+                    _new_rows2 = []
+                    for (_oid2, _sid2), (_str2, _rsn2) in _results.items():
+                        _new_rows2.append({'oos_id':_oid2,'sub_id':_sid2,
+                                           'subcat':_sel_subcat,'strength':_str2,
+                                           'reason':str(_rsn2).replace(',',';')})
+                    _new_df2 = pd.DataFrame(_new_rows2)
+                    if len(_mt_df) > 0:
+                        _merged2 = pd.concat([_mt_df[_mt_df['subcat']!=_sel_subcat], _new_df2], ignore_index=True)
+                    else:
+                        _merged2 = _new_df2
 
-                # Save to GitHub
-                _merged_csv = _merged.to_csv(index=False)
-                _, _cur_sha = gh_read("data/sub_master.csv")
-                if gh_write("data/sub_master.csv", _merged_csv, _cur_sha):
-                    st.success(f"✓ {len(_new_rows)} pairs saved to master table for {_sel_subcat}")
-                    # Clear cached data so app re-reads master table
-                    load_sub_cache_data.clear()
-                    st.rerun()
-                else:
-                    st.error("Failed to save to GitHub")
+                    _merged_csv2 = _merged2.to_csv(index=False)
+                    _, _cur_sha2 = gh_read("data/sub_master.csv")
+                    if gh_write("data/sub_master.csv", _merged_csv2, _cur_sha2):
+                        st.success(f"✓ {len(_new_rows2)} pairs saved to master table for {_sel_subcat}")
+                        load_sub_cache_data.clear()
+                        st.rerun()
+                    else:
+                        st.error("Failed to save to GitHub")
 
 with kpi_tab:
     _ytd_kpi = st.session_state.get('vel_ytd')
