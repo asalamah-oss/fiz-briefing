@@ -625,6 +625,19 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
     kpis['note']      = sum(sum(1 for r in v if r['severity']=='NOTE') for v in ordered.values())
     kpis['overstock_cats'] = sum(sum(1 for r in v if r['severity']=='OVERSTOCK') for v in ordered.values())
 
+    # Top N item IDs for briefing filter — stored as lists (JSON serializable)
+    if net_json:
+        import io as _nio2
+        _net2 = pd.read_json(_nio2.StringIO(net_json))
+        kpis['top_ids'] = {
+            100:  _net2.nlargest(100,  'net_ytd')['item_id'].astype(int).tolist(),
+            200:  _net2.nlargest(200,  'net_ytd')['item_id'].astype(int).tolist(),
+            500:  _net2.nlargest(500,  'net_ytd')['item_id'].astype(int).tolist(),
+            1000: _net2.nlargest(1000, 'net_ytd')['item_id'].astype(int).tolist(),
+        }
+    else:
+        kpis['top_ids'] = {100:[], 200:[], 500:[], 1000:[]}
+
     # Save any new AI assessments to GitHub cache
     if st.session_state.get('ai_cache_dirty') and st.session_state.get('ai_sub_cache'):
         save_sub_cache_data(st.session_state['ai_sub_cache'])
@@ -705,7 +718,7 @@ def _compute_kpis(inv, net_df, ytd_df, l7_df):
 # ── WIDGET HTML BUILDER ───────────────────────────────────────────────────────
 def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
     # Filter to only show sub-cats/SKUs relevant to selected tier
-    top_ids = kpis.get('top_ids', {}).get(avail_tier, set()) if avail_tier != 'all' else None
+    top_ids = set(kpis.get('top_ids', {}).get(avail_tier, []))
     SI   = {'URGENT':'🔴','ACTION':'🟡','NOTE':'🔵','OVERSTOCK':'🟠'}
     SEVC = {'URGENT':'sv-u','ACTION':'sv-a','NOTE':'sv-n','OVERSTOCK':'sv-o'}
     SEVL = {'URGENT':'🔴 Urgent — high-velocity OOS, no adequate substitute',
@@ -720,14 +733,20 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
 
     # ── NAV ───────────────────────────────────────────────────────────────────
     nav_html = ''
-    # Apply top N filter
+    # Apply top N filter — top_ids is a set of item_ids for selected tier
+    # If top_ids is empty or None, show everything
     def _in_top(r):
-        if top_ids is None: return True
+        if not top_ids:  # empty set or None = show all
+            return True
         for st_data in r['stores'].values():
             for o in st_data.get('oos_skus',[]):
-                if int(o.get('item_id',0)) in top_ids: return True
+                try:
+                    if int(o.get('item_id',0)) in top_ids: return True
+                except: pass
             for o in st_data.get('overstock_skus',[]):
-                if int(o.get('item_id',0)) in top_ids: return True
+                try:
+                    if int(o.get('item_id',0)) in top_ids: return True
+                except: pass
         return False
 
     for cat, items in data.items():
@@ -1160,7 +1179,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v13'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v16'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
