@@ -116,14 +116,25 @@ PRODUCT_TYPE_TOKENS = [
 ]
 
 STRICT_SUBCATS = {
-    'Block Cheese','Sliced Cheese','Spread Cheese','Shredded & Grated Cheese',
-    'Canned Cheese','Organic Block Cheese','Organic Sliced Cheese',
-    'Organic Shredded & Grated Cheese',
+    # Block cheese — types clearly named (feta, cheddar, brie etc)
+    'Block Cheese','Organic Block Cheese',
+    # Produce — different fruit/veg types are never subs
     'Fruits','Organic Fruits','Veggies','Organic Veggies','Organic Herbs',
-    'Toast','Flat Bread','Healthy Breads',
+    # Coffee — instant vs ground vs capsule are never subs
     'Ground Coffee & Beans','Instant Coffee','Coffee Capsules','Organic Instant Coffee',
+    # Oils — olive vs sunflower are never subs
     'Oils & Ghee','Organic Oils & Ghee',
+    # Fish/meat — tuna vs salmon are never subs
     'Canned Fish & Meats','Organic Canned Fish & Meats',
+    # Bread — toast vs flatbread are never subs
+    'Toast','Flat Bread','Healthy Breads',
+}
+# Sub-categories where AI handles all pairs (algo only does hard type conflict check)
+AI_HANDLED_SUBCATS = {
+    'Sliced Cheese','Shredded & Grated Cheese','Spread Cheese',
+    'Canned Cheese','Organic Sliced Cheese','Organic Shredded & Grated Cheese',
+    'Laban','Greek Yogurt','Plain Yogurt','Flavored Yogurt',
+    'Long Life Milk','Fresh Milk','Flavored Milk',
 }
 
 def get_product_token(desc):
@@ -159,7 +170,8 @@ def sub_quality(oos_rsp, oos_v, oos_d, sub_rsp, sub_v, sub_d, cat, subcat=''):
     if product_types_conflict(oos_d, sub_d):
         return None
     # Strict sub-categories: require positive type token match
-    if subcat in STRICT_SUBCATS:
+    # (skipped for AI_HANDLED_SUBCATS where AI makes the call)
+    if subcat in STRICT_SUBCATS and subcat not in AI_HANDLED_SUBCATS:
         t1 = get_product_token(oos_d)
         t2 = get_product_token(sub_d)
         if t1 is None or t2 is None or t1 != t2:
@@ -1129,17 +1141,37 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v9'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v11'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
-# Load AI substitute cache from GitHub
+# Load master table + AI cache from GitHub on startup
 if 'ai_sub_cache' not in st.session_state:
-    with st.spinner('Loading substitute assessments from GitHub…'):
-        _ai_cache, _ai_sha = load_sub_cache_data()
-        st.session_state['ai_sub_cache'] = _ai_cache
+    with st.spinner('Loading substitute data from GitHub…'):
+        # Load master table first (permanent, sub-cat level)
+        _mt_csv, _ = gh_read("data/sub_master.csv")
+        _master_cache = {}
+        if _mt_csv:
+            import io as _io_mt_load
+            _mt_df_load = pd.read_csv(_io_mt_load.StringIO(_mt_csv))
+            for _, _row in _mt_df_load.iterrows():
+                try:
+                    _master_cache[(int(_row['oos_id']), int(_row['sub_id']))] = (
+                        str(_row['strength']), str(_row['reason']))
+                except: pass
+
+        # Load session AI cache (ad-hoc assessments)
+        _ai_cache, _ = load_sub_cache_data()
+
+        # Merge: master table takes priority over session cache
+        _combined = {**_ai_cache, **_master_cache}
+        st.session_state['ai_sub_cache'] = _combined
         st.session_state['ai_cache_dirty'] = False
-        if _ai_cache:
+
+        _master_subcats = len(_mt_df_load['subcat'].unique()) if _mt_csv and len(_master_cache) > 0 else 0
+        if _master_subcats > 0:
+            st.success(f"✓ Master table: {len(_master_cache):,} pairs ({_master_subcats} sub-cats) + {len(_ai_cache):,} session assessments")
+        elif _ai_cache:
             st.success(f"✓ {len(_ai_cache):,} substitute assessments loaded from cache")
 
 with st.spinner('Analysing inventory…'):
@@ -1199,7 +1231,7 @@ with _ab6:
 
 st.divider()
 
-flagged_tab, briefing_tab, kpi_tab = st.tabs(["🚩 Flagged items", "📋 Briefing", "📊 KPI Drill-down"])
+flagged_tab, briefing_tab, kpi_tab, admin_tab = st.tabs(["🚩 Flagged items", "📋 Briefing", "📊 KPI Drill-down", "⚙️ Master Table"])
 
 with flagged_tab:
     flags = st.session_state.flags
@@ -1351,6 +1383,190 @@ with briefing_tab:
         if nk and nk!=st.session_state.get('kpi_drill'):
             st.session_state.kpi_drill=nk; changed=True
         if changed: st.rerun()
+
+with admin_tab:
+    st.markdown("### Substitution Master Table Builder")
+    st.markdown("Build a permanent AI-assessed substitution table for any sub-category. Results saved to GitHub and used by all future analysis runs.")
+
+    # Load existing master table
+    _mt_csv, _mt_sha = gh_read("data/sub_master.csv")
+    if _mt_csv:
+        import io as _io_mt
+        _mt_df = pd.read_csv(_io_mt.StringIO(_mt_csv))
+        _covered_subcats = sorted(_mt_df['subcat'].unique().tolist()) if 'subcat' in _mt_df.columns else []
+        st.success(f"✓ Master table: {len(_mt_df):,} pairs across {len(_covered_subcats)} sub-categories")
+        if _covered_subcats:
+            st.caption("Covered: " + ", ".join(_covered_subcats))
+    else:
+        _mt_df = pd.DataFrame()
+        _covered_subcats = []
+        st.info("No master table yet — build one sub-category at a time.")
+
+    st.divider()
+
+    # Sub-category selector
+    _all_subcats = sorted(inv_temp['Sub Category'].unique().tolist()) if 'inv_temp' in dir() else []
+    if not _all_subcats and 'inv_bytes_cache' in st.session_state:
+        import io as _io_mt2
+        _inv_mt = pd.read_excel(io.BytesIO(st.session_state['inv_bytes_cache']))
+        _inv_mt.columns = [c.strip() for c in _inv_mt.columns]
+        _inv_mt = _inv_mt[_inv_mt['Status']=='Active']
+        _all_subcats = sorted(_inv_mt['Sub Category'].dropna().unique().tolist())
+
+    _sel_subcat = st.selectbox(
+        "Select sub-category to assess",
+        [s for s in _all_subcats if s not in _covered_subcats] + 
+        (['--- Already covered ---'] + _covered_subcats if _covered_subcats else []),
+        key="master_subcat_sel"
+    )
+
+    if _sel_subcat and not _sel_subcat.startswith('---'):
+        # Show SKU count
+        if 'inv_bytes_cache' in st.session_state:
+            import io as _io_mt3
+            _inv_sel = pd.read_excel(io.BytesIO(st.session_state['inv_bytes_cache']))
+            _inv_sel.columns = [c.strip() for c in _inv_sel.columns]
+            _inv_sel = _inv_sel[(_inv_sel['Status']=='Active') & (_inv_sel['Sub Category']==_sel_subcat)].copy()
+            _inv_sel['Item ID'] = pd.to_numeric(_inv_sel['Item ID'], errors='coerce')
+            _inv_sel['RSP'] = pd.to_numeric(_inv_sel['RSP'], errors='coerce').fillna(0)
+            _n_skus = len(_inv_sel)
+            _n_pairs = _n_skus * (_n_skus - 1) // 2
+            _n_batches = (_n_pairs * 2) // 10 + 1
+
+            st.markdown(f"**{_sel_subcat}** — {_n_skus} SKUs → {_n_pairs:,} unique pairs → ~{_n_batches} API calls")
+            st.caption(f"Estimated cost: ~${_n_batches * 0.003:.2f} | Time: ~{max(1, _n_batches // 10)} minutes")
+
+            # Show SKUs
+            with st.expander(f"View all {_n_skus} SKUs in this sub-category"):
+                st.dataframe(_inv_sel[['Item ID','Description','Vendor','RSP']].reset_index(drop=True),
+                             use_container_width=True, hide_index=True)
+
+            # Test mode — assess 5 pairs first
+            _test_col, _full_col = st.columns([1,2])
+            with _test_col:
+                if st.button(f"🧪 Test 5 pairs first", key="test_master_btn"):
+                    _test_skus = _skus_list[:5]
+                    _test_pairs = [(_test_skus[i], _test_skus[j])
+                                   for i in range(len(_test_skus))
+                                   for j in range(i+1, len(_test_skus))][:5]
+                    _lines = []
+                    for _j, (_o, _s) in enumerate(_test_pairs):
+                        _lines.append(
+                            f"{_j+1}. OOS: {_o['Description']} | {str(_o.get('Vendor',''))[:20]} | {float(_o['RSP']):.3f} KD"
+                            f" → SUB: {_s['Description']} | {str(_s.get('Vendor',''))[:20]} | {float(_s['RSP']):.3f} KD"
+                        )
+                    _test_prompt = (
+                        f"Kuwait grocery substitute assessment. Sub-category: {_sel_subcat}\n\n"
+                        + "\n".join(_lines)
+                        + "\n\nFor each pair reply: [n]. [DIRECT/STRONG/WEAK/NONE] — [reason max 8 words]\n"
+                        + "DIRECT=customer won't notice  STRONG=minor diff  WEAK=likely rejected  NONE=not a sub"
+                    )
+                    with st.spinner("Testing 5 pairs…"):
+                        import requests as _rq_t
+                        _tr = _rq_t.post(
+                            "https://api.anthropic.com/v1/messages",
+                            headers={"Content-Type": "application/json"},
+                            json={"model": "claude-sonnet-4-6", "max_tokens": 300,
+                                  "messages": [{"role": "user", "content": _test_prompt}]},
+                            timeout=30
+                        )
+                        if _tr.status_code == 200:
+                            _test_result = _tr.json()["content"][0]["text"]
+                            st.markdown("**Test results:**")
+                            for _j, (_o, _s) in enumerate(_test_pairs):
+                                for _line in _test_result.split("\n"):
+                                    if _line.strip().startswith(f"{_j+1}."):
+                                        st.markdown(f"- `{_o['Description'][:30]}` → `{_s['Description'][:30]}`  **{_line.strip()}**")
+                                        break
+                        else:
+                            st.error(f"API error: {_tr.status_code} — {_tr.text[:200]}")
+
+            with _full_col:
+                if st.button(f"🤖 Build master table for {_sel_subcat}", type="primary", key="build_master_btn"):
+                    _skus_list = _inv_sel[['Item ID','Description','Vendor','RSP']].to_dict('records')
+                # Filter obvious non-food
+                _exclude = ['caviar','lumpfish','cleaning','detergent']
+                _skus_list = [s for s in _skus_list
+                              if not any(k in str(s.get('Description','')).lower() for k in _exclude)]
+
+                _all_pairs = [(a,b) for i,a in enumerate(_skus_list)
+                              for j,b in enumerate(_skus_list) if i < j]
+
+                _progress = st.progress(0, text=f"Assessing {len(_all_pairs)} pairs...")
+                _results = {}
+                _batch_size = 10
+
+                for _bi in range(0, len(_all_pairs), _batch_size):
+                    _batch = _all_pairs[_bi:_bi+_batch_size]
+                    _lines = []
+                    for _j, (_oos, _sub) in enumerate(_batch):
+                        _lines.append(
+                            f"{_j+1}. OOS: {_oos['Description']} | {str(_oos.get('Vendor',''))[:20]} | {float(_oos['RSP']):.3f} KD"
+                            f" → SUB: {_sub['Description']} | {str(_sub.get('Vendor',''))[:20]} | {float(_sub['RSP']):.3f} KD"
+                        )
+                    _prompt = (
+                        f"Kuwait grocery substitute assessment. Sub-category: {_sel_subcat}\n\n"
+                        + "\n".join(_lines)
+                        + "\n\nFor each pair reply: [n]. [DIRECT/STRONG/WEAK/NONE] — [reason max 8 words]\n"
+                        + "DIRECT=customer won't notice  STRONG=minor diff  WEAK=likely rejected  NONE=not a sub"
+                    )
+                    try:
+                        import requests as _rq
+                        _r = _rq.post(
+                            "https://api.anthropic.com/v1/messages",
+                            headers={"Content-Type": "application/json"},
+                            json={"model": "claude-sonnet-4-6", "max_tokens": 400,
+                                  "messages": [{"role": "user", "content": _prompt}]},
+                            timeout=30
+                        )
+                        if _r.status_code == 200:
+                            _text = _r.json()["content"][0]["text"]
+                            for _j, (_oos, _sub) in enumerate(_batch):
+                                for _line in _text.split("\n"):
+                                    _line = _line.strip()
+                                    if _line.startswith(f"{_j+1}."):
+                                        _rest = _line[len(f"{_j+1}."):].strip()
+                                        _pts = _rest.split("—", 1)
+                                        _str = _pts[0].strip().upper()
+                                        if _str not in ["DIRECT","STRONG","WEAK","NONE"]: _str = "WEAK"
+                                        _rsn = _pts[1].strip() if len(_pts) > 1 else ""
+                                        _results[(int(_oos['Item ID']), int(_sub['Item ID']))] = (_str, _rsn)
+                                        # Symmetric reverse
+                                        _rev = (int(_sub['Item ID']), int(_oos['Item ID']))
+                                        if _rev not in _results:
+                                            _results[_rev] = (_str, f"Reverse: {_rsn}")
+                                        break
+                    except: pass
+                    _pct = min((_bi + _batch_size) / len(_all_pairs), 1.0)
+                    _progress.progress(_pct, text=f"Assessed {min(_bi+_batch_size, len(_all_pairs))}/{len(_all_pairs)} pairs — {len(_results)} results")
+                    import time as _t; _t.sleep(0.2)
+
+                _progress.progress(1.0, text=f"Done — {len(_results)} pairs assessed")
+
+                # Merge with existing master table
+                _new_rows = []
+                for (_oid, _sid), (_str, _rsn) in _results.items():
+                    _new_rows.append({
+                        'oos_id': _oid, 'sub_id': _sid,
+                        'subcat': _sel_subcat, 'strength': _str,
+                        'reason': str(_rsn).replace(',',';')
+                    })
+                _new_df = pd.DataFrame(_new_rows)
+                if len(_mt_df) > 0:
+                    _merged = pd.concat([_mt_df[_mt_df['subcat']!=_sel_subcat], _new_df], ignore_index=True)
+                else:
+                    _merged = _new_df
+
+                # Save to GitHub
+                _merged_csv = _merged.to_csv(index=False)
+                _, _cur_sha = gh_read("data/sub_master.csv")
+                if gh_write("data/sub_master.csv", _merged_csv, _cur_sha):
+                    st.success(f"✓ {len(_new_rows)} pairs saved to master table for {_sel_subcat}")
+                    # Clear cached data so app re-reads master table
+                    load_sub_cache_data.clear()
+                    st.rerun()
+                else:
+                    st.error("Failed to save to GitHub")
 
 with kpi_tab:
     _ytd_kpi = st.session_state.get('vel_ytd')
