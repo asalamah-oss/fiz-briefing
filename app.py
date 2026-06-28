@@ -279,6 +279,70 @@ def ai_assess_batch(pairs):
         except: pass
     return results
 
+
+def find_better_sub(oos_desc, oos_vendor, oos_rsp, oos_id,
+                    blacklisted_sub_id, in_stock_items, subcat, ai_cache):
+    """
+    Called when team flags a substitute as wrong.
+    Asks AI to pick the best alternative from remaining in-stock SKUs.
+    Returns updated ai_cache with blacklisted pair set to NONE
+    and new best pair assessed.
+    """
+    import requests as _req
+
+    # Blacklist the flagged pair permanently
+    ai_cache[(oos_id, blacklisted_sub_id)] = ('NONE', 'Flagged as wrong by team')
+
+    # Build candidate list excluding blacklisted
+    candidates = [r for r in in_stock_items if r['item_id'] != blacklisted_sub_id
+                  and ai_cache.get((oos_id, r['item_id']), ('',''))[0] != 'NONE']
+
+    if not candidates:
+        return ai_cache, None
+
+    cand_lines = []
+    for i, c in enumerate(candidates[:10]):
+        cand_lines.append(f"{i+1}. {c['desc']} | {c['vendor']} | {c['rsp']:.3f} KD | {c['soh']}u")
+
+    prompt = (
+        f"Kuwait grocery app. Sub-category: {subcat}\n\n"
+        f"OOS product: {oos_desc} | {oos_vendor} | {oos_rsp:.3f} KD\n"
+        f"The team flagged the previous suggestion as WRONG.\n\n"
+        f"From these in-stock alternatives, which is the BEST substitute?\n\n"
+        + "\n".join(cand_lines)
+        + "\n\nReply: [number]. [DIRECT/STRONG/WEAK/NONE] \u2014 [reason \u226410 words]\n"
+        "If none are suitable, reply: NONE \u2014 no adequate substitute available"
+    )
+
+    try:
+        r = _req.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={"Content-Type": "application/json"},
+            json={"model": "claude-sonnet-4-6", "max_tokens": 80,
+                  "messages": [{"role": "user", "content": prompt}]},
+            timeout=20
+        )
+        if r.status_code == 200:
+            text = r.json()["content"][0]["text"].strip()
+            if text.upper().startswith("NONE"):
+                return ai_cache, None
+            # Parse "3. STRONG — same brand different format"
+            import re as _re
+            m = _re.match(r'(\d+)\.\s*(DIRECT|STRONG|WEAK|NONE)\s*[—-]\s*(.*)', text)
+            if m:
+                idx = int(m.group(1)) - 1
+                strength = m.group(2).upper()
+                reason = m.group(3).strip()
+                if 0 <= idx < len(candidates):
+                    best = candidates[idx]
+                    key = (oos_id, best['item_id'])
+                    ai_cache[key] = (strength, reason)
+                    return ai_cache, best
+    except:
+        pass
+
+    return ai_cache, None
+
 # ── ORDER HISTORY PROCESSOR ───────────────────────────────────────────────────
 @st.cache_data(show_spinner=False)
 def process_order_history(oh_bytes_list, inv_item_ids):
@@ -1065,7 +1129,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v8'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v9'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
@@ -1088,7 +1152,15 @@ with st.spinner('Analysing inventory…'):
 if 'cur_cat' not in st.session_state or st.session_state.cur_cat not in data:
     st.session_state.cur_cat  = next(iter(data))
     st.session_state.cur_sub  = data[st.session_state.cur_cat][0]['subcat']
-if 'flags'      not in st.session_state: st.session_state.flags      = {}
+if 'flags' not in st.session_state:
+    _saved_flags, _ = gh_read("data/flags.json")
+    if _saved_flags:
+        try:
+            st.session_state.flags = json.loads(_saved_flags)
+        except:
+            st.session_state.flags = {}
+    else:
+        st.session_state.flags = {}
 if 'avail_tier' not in st.session_state: st.session_state.avail_tier = 100
 
 # ── FLAGGED ITEMS VIEW ────────────────────────────────────────────────────────
@@ -1239,6 +1311,38 @@ with briefing_tab:
                         if _fb_csv is None:
                             _fb_csv = "date,subcat,store,oos_desc,sub_desc,algo_strength,feedback\n"
                         gh_write("data/sub_feedback.csv", _fb_csv + _fb_row, _fb_sha)
+            # Auto-clear operational flags for SKUs now back in stock
+            PERSISTENT_FLAGS = {'dl', 'dc'}  # Discontinued here, Discontinued
+            if 'inv_bytes_cache' in st.session_state:
+                try:
+                    import io as _io3
+                    _inv_check = pd.read_excel(io.BytesIO(st.session_state['inv_bytes_cache']))
+                    _inv_check.columns = [c.strip() for c in _inv_check.columns]
+                    _inv_check['Item ID'] = pd.to_numeric(_inv_check['Item ID'], errors='coerce')
+                    _inv_check['Total SOH'] = pd.to_numeric(_inv_check.get('Total SOH', 0), errors='coerce').fillna(0)
+                    _in_stock_ids = set(_inv_check[_inv_check['Total SOH']>0]['Item ID'].dropna().astype(int).tolist())
+                    keys_to_clear = []
+                    for _fkey, _fval in nf.items():
+                        # fkey format: "subcat|store|oi" — need item_id
+                        # Check via data if this OOS SKU is now back in stock
+                        _fparts = _fkey.split('|')
+                        if len(_fparts) >= 3:
+                            _fsubcat, _fstore, _foi = _fparts[0], _fparts[1], int(_fparts[2])
+                            _fr = next((r for cat_items in data.values()
+                                       for r in cat_items if r['subcat']==_fsubcat), None)
+                            if _fr:
+                                _foos_list = _fr['stores'].get(_fstore,{}).get('oos_skus',[])
+                                if _foi < len(_foos_list):
+                                    _fitem_id = _foos_list[_foi].get('item_id',0)
+                                    if _fitem_id in _in_stock_ids:
+                                        # SKU back in stock — clear non-persistent flags
+                                        for _fk in list(_fval.keys()):
+                                            if _fk not in PERSISTENT_FLAGS and _fk != 'any':
+                                                nf[_fkey][_fk] = 0
+                                        nf[_fkey]['any'] = any(
+                                            nf[_fkey].get(k,0) for k in PERSISTENT_FLAGS)
+                except:
+                    pass
             st.session_state.flags=nf; changed=True
         nt = result.get('tier')
         if nt and nt!=st.session_state.avail_tier:
