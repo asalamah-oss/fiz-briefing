@@ -1269,7 +1269,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v26'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v27'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
@@ -1463,23 +1463,32 @@ with _ab6:
                       'Sabah Salem':'Sabah Salem Dark Store Stock'}
             # Mark promo SKUs
             _inv_ss['_is_promo'] = _inv_ss['Description'].apply(is_promo)
-            _core_ids_ss = set(_inv_ss[~_inv_ss['_is_promo']]['Item ID'].dropna().astype(int).tolist())
+            # Use same top_ids as network availability
+            _flags_ss = st.session_state.get('flags', {})
+            _hidden_ss = get_flagged_item_ids(_flags_ss, PERMANENT_FLAGS)
+            _top_n_ss = st.session_state.avail_tier
+            _vel_net_ss = st.session_state.get('vel_net')
+            if _top_n_ss > 0 and _vel_net_ss is not None:
+                _top_ids_ss = set(_vel_net_ss.nlargest(_top_n_ss,'net_ytd')['item_id'].astype(int).tolist())
+                _inv_ss_filt = _inv_ss[_inv_ss['Item ID'].isin(_top_ids_ss) &
+                                       ~_inv_ss['Item ID'].isin(_hidden_ss)]
+            else:
+                _inv_ss_filt = _inv_ss[~_inv_ss['Item ID'].isin(_hidden_ss)]
+            _denom_ss = len(_inv_ss_filt)
+
             for _st2, _sc2 in _scols.items():
                 if _sc2 in _inv_ss.columns:
                     _inv_ss[_sc2] = pd.to_numeric(_inv_ss[_sc2], errors='coerce').fillna(0)
-                    _in_stk = set(_inv_ss[_inv_ss[_sc2]>0]['Item ID'].dropna().astype(int).tolist())
+                    _in_stk = set(_inv_ss_filt[_inv_ss_filt[_sc2]>0]['Item ID'].dropna().astype(int).tolist())
                     _s90 = _sold_sets.get(_st2,{}).get('90d', set())
                     _s30 = _sold_sets.get(_st2,{}).get('30d', set())
-                    _core_in_stk = _in_stk & _core_ids_ss
-                    _core_s90 = _s90 & _core_ids_ss
-                    _core_s30 = _s30 & _core_ids_ss
+                    _top_ids_for_store = set(_inv_ss_filt['Item ID'].dropna().astype(int).tolist())
+                    _s90_filt = _s90 & _top_ids_for_store
+                    _s30_filt = _s30 & _top_ids_for_store
                     _store_avail[_st2] = {
-                        'full':      round(len(_in_stk)/len(_all_ids_ss)*100,1) if _all_ids_ss else 0,
-                        '90d':       round(len(_in_stk & _s90)/len(_s90)*100,1) if _s90 else 0,
-                        '30d':       round(len(_in_stk & _s30)/len(_s30)*100,1) if _s30 else 0,
-                        'core_full': round(len(_core_in_stk)/len(_core_ids_ss)*100,1) if _core_ids_ss else 0,
-                        'core_90d':  round(len(_core_in_stk & _core_s90)/len(_core_s90)*100,1) if _core_s90 else 0,
-                        'core_30d':  round(len(_core_in_stk & _core_s30)/len(_core_s30)*100,1) if _core_s30 else 0,
+                        'full': round(len(_in_stk)/_denom_ss*100,1) if _denom_ss else 0,
+                        '90d':  round(len(_in_stk & _s90_filt)/len(_s90_filt)*100,1) if _s90_filt else 0,
+                        '30d':  round(len(_in_stk & _s30_filt)/len(_s30_filt)*100,1) if _s30_filt else 0,
                     }
         except: pass
     _c_j, _c_q, _c_ss2 = st.columns(3)
