@@ -185,6 +185,12 @@ def sub_quality(oos_rsp, oos_v, oos_d, sub_rsp, sub_v, sub_d, cat, subcat=''):
     fcap=False
     if ofl and sfl and ofl!=sfl: return 'WEAK'
     if (ofl and not sfl) or (not ofl and sfl): fcap=True
+    # Fat content conflict — different fat levels are never direct substitutes
+    FAT_VARIANTS = {'low fat','full fat','fat free','skimmed','semi skimmed',
+                    'reduced fat','full cream','half cream','0%','skimmed'}
+    _ofat = ovr & FAT_VARIANTS
+    _sfat = svr & FAT_VARIANTS
+    if _ofat and _sfat and _ofat != _sfat: return None
     if ovr!=svr: fcap=True
     if cat=='Water':
         oot=brand_tier(oos_v,oos_d); sut=brand_tier(sub_v,sub_d)
@@ -263,8 +269,16 @@ def ai_assess_batch(pairs):
         prompt = (
             f"Kuwait grocery substitute assessment. Sub-category: {subcat}\n\n"
             + "\n".join(lines)
-            + "\n\nFor each: [n]. [DIRECT/STRONG/WEAK/NONE] — [reason ≤10 words]\n"
-            + "DIRECT=customer won't notice  STRONG=minor diff  WEAK=likely rejected  NONE=not a sub"
+            + "\n\nFor each pair: is the substitute a DIRECT replacement?\n"
+            + "DIRECT = customer would fully accept (same type, same fat content, similar price, same use)\n"
+            + "NONE = not a direct substitute\n\n"
+            + "IMPORTANT RULES:\n"
+            + "- Different fat content = NONE (low fat vs full fat vs fat free vs skimmed vs full cream)\n"
+            + "- Different cheese type = NONE (cheddar vs feta vs mozzarella vs halloumi etc)\n"
+            + "- Processed cheese vs natural cheese = NONE\n"
+            + "- Different milk alternative type = NONE (oat vs almond vs soy vs coconut vs dairy)\n"
+            + "- Different fruit or vegetable type = NONE\n\n"
+            + "Reply: [n]. [DIRECT/NONE] — [reason max 8 words]"
         )
         try:
             r = _req.post(
@@ -388,7 +402,65 @@ def process_order_history(oh_bytes_list, inv_item_ids):
     # Network YTD for top SKU availability KPIs
     net = long.groupby('item_id')['qty'].sum().reset_index().rename(columns={'qty':'net_ytd'})
 
-    return ytd, l7, net, str(today)
+    # Store-level sold sets for assortment availability (90d and 30d)
+    _cut90 = today - datetime.timedelta(days=90)
+    _cut30 = today - datetime.timedelta(days=30)
+    sold_sets = {}
+    for _store in ['Jahra','Qurtuba','Sabah Salem']:
+        _s = long[long['store_norm']==_store]
+        sold_sets[_store] = {
+            '90d': set(_s[_s['date']>=_cut90]['item_id'].unique().astype(int).tolist()),
+            '30d': set(_s[_s['date']>=_cut30]['item_id'].unique().astype(int).tolist()),
+        }
+
+    return ytd, l7, net, str(today), sold_sets
+
+
+def is_promo(desc):
+    """Returns True if SKU description indicates a promotional item."""
+    import re as _re
+    d = str(desc).lower()
+    if _re.search(r'\bpromo\b', d): return True
+    if _re.search(r'special offer', d): return True
+    if _re.search(r'\bbonus pack\b', d): return True
+    if _re.search(r'\d+\+\d+\s*free', d): return True
+    if _re.search(r'\b\d+\+1\b', d): return True
+    if _re.search(r'promo pack', d): return True
+    if _re.search(r'value pack', d): return True
+    if _re.search(r'gift pack', d): return True
+    if _re.search(r'twin pack', d): return True
+    if _re.search(r'\bbundle\b', d): return True
+    return False
+
+
+# ── FLAG HELPERS ──────────────────────────────────────────────────────────────
+PERMANENT_FLAGS   = {'dl', 'dc'}     # hide from briefing + exclude from availability
+OPERATIONAL_FLAGS = {'os', 'pe', 'ssl'}  # dim in briefing + exclude from KPIs
+
+def flag_state(item_id, store, oi, flags):
+    """Returns ('hidden', 'dimmed', or 'normal') for an OOS SKU."""
+    fkey = f"{store}|{item_id}"
+    # Try both key formats
+    for k in [fkey, f"{store}|{item_id}|{oi}"]:
+        fval = flags.get(k, {})
+        if any(fval.get(f) for f in PERMANENT_FLAGS):
+            return 'hidden'
+        if any(fval.get(f) for f in OPERATIONAL_FLAGS):
+            return 'dimmed'
+    return 'normal'
+
+def get_flagged_item_ids(flags, flag_types):
+    """Returns set of item_ids that have any of the given flag types set."""
+    ids = set()
+    for fkey, fval in flags.items():
+        if any(fval.get(f) for f in flag_types):
+            # Extract item_id from key formats: "store|item_id" or "subcat|store|oi"
+            parts = fkey.split('|')
+            for p in parts:
+                try:
+                    ids.add(int(p))
+                except: pass
+    return ids
 
 # ── MAIN ANALYSIS ─────────────────────────────────────────────────────────────
 SEV_ORDER_SUB = ['DIRECT']
@@ -525,8 +597,6 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
                 has_direct = (best_str == 'DIRECT')
                 if v >= 5 and not has_direct:
                     sev = 'URGENT'
-                elif v >= 2 and not has_direct:
-                    sev = 'URGENT'
                 elif v >= 0.5 and not has_direct:
                     sev = 'ACTION'
                 elif has_direct:
@@ -648,7 +718,7 @@ def _compute_kpis(inv, net_df, ytd_df, l7_df):
                                 on='item_id', how='left')
         oos_vel = all_vel[(all_vel['Total SOH']==0) & (all_vel['true_daily']>=0.5)]
         kpis['rev_risk'] = round(float((oos_vel['true_daily']*oos_vel['RSP']).sum()),0)
-        kpis['skus_at_risk'] = int((oos_vel['true_daily']>=2).sum())
+        kpis['skus_at_risk'] = int((oos_vel['true_daily']>=5).sum())
     else:
         kpis['rev_risk'] = 0; kpis['skus_at_risk'] = 0
 
@@ -706,6 +776,8 @@ def _compute_kpis(inv, net_df, ytd_df, l7_df):
 
 # ── WIDGET HTML BUILDER ───────────────────────────────────────────────────────
 def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
+    _hidden_ids_w  = get_flagged_item_ids(flags, PERMANENT_FLAGS)
+    _dimmed_ids_w  = get_flagged_item_ids(flags, OPERATIONAL_FLAGS)
     # Filter to only show sub-cats/SKUs relevant to selected tier
     top_ids = set(kpis.get('top_ids', {}).get(avail_tier, []))
     SI   = {'URGENT':'🔴','ACTION':'🟡','NOTE':'🔵','OVERSTOCK':'🟠'}
@@ -740,6 +812,15 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
 
     for cat, items in data.items():
         items = [r for r in items if _in_top(r)]
+        if not items: continue
+        # Skip sub-cats where all OOS items are permanently flagged (hidden)
+        def _has_visible_oos(r):
+            for sd in r['stores'].values():
+                for o in sd.get('oos_skus',[]):
+                    if int(o.get('item_id',0)) not in _hidden_ids_w:
+                        return True
+            return False
+        items = [r for r in items if _has_visible_oos(r) or r.get('overstock_skus')]
         if not items: continue
         u=sum(1 for r in items if r['severity']=='URGENT')
         a=sum(1 for r in items if r['severity']=='ACTION')
@@ -868,6 +949,14 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
                           <span class="fl">{FL[fi]}</span></label>'''
                     detail_html += f'<span class="fsv" id="sv_{si}_{oi}">✓ saved</span></div>'
                     detail_html += '<div class="ub"><div class="ul">Best substitute</div>'
+                    _oos_id = int(oos.get('item_id',0))
+                    if _oos_id in _hidden_ids_w:
+                        continue  # skip permanently flagged items entirely
+                    _is_dimmed = _oos_id in _dimmed_ids_w
+                    _dim_style = 'opacity:0.4;' if _is_dimmed else ''
+                    if _is_dimmed:
+                        detail_html += f'<div class="oi" style="{_dim_style}"><div class="on">{oos["desc"][:52]}</div><div class="ov">{oos["vendor"][:25]}</div><div class="os" style="color:#888">⚑ Flagged — excluded from KPIs</div></div>'
+                        continue
                     if oos.get('best_sub_strength') == 'DIRECT':
                         reason_txt = oos.get('best_sub_reason','')
                         reason_html = f' <span style="font-size:9px;color:#888">· {reason_txt}</span>' if reason_txt else ''
@@ -1116,6 +1205,14 @@ else:
                 st.session_state['vel_net']    = pd.read_csv(_io2.StringIO(net_csv))
                 st.session_state['vel_oh_key'] = 'github'
                 st.session_state['oh_name']    = meta.strip() if meta else 'GitHub'
+                # Load sold_sets
+                import json as _json_ss2
+                _ss_raw, _ = gh_read("data/sold_sets.json")
+                if _ss_raw:
+                    _ss_loaded = _json_ss2.loads(_ss_raw)
+                    st.session_state['sold_sets'] = {
+                        store: {k: set(v) for k,v in sv.items()}
+                        for store, sv in _ss_loaded.items()}
                 st.success(f"✓ Velocity data loaded from GitHub ({st.session_state['oh_name']})")
 
 if uploaded_inv is None:
@@ -1141,23 +1238,30 @@ if 'oh_bytes' in st.session_state:
     oh_key = hash(st.session_state['oh_bytes'])
     if st.session_state.get('vel_oh_key') != oh_key:
         with st.spinner('Processing order history and saving velocity data…'):
-            ytd_df, l7_df, net_df, oh_date = process_order_history(
+            ytd_df, l7_df, net_df, oh_date, sold_sets = process_order_history(
                 [st.session_state['oh_bytes']], inv_item_ids)
             st.session_state['vel_ytd']    = ytd_df
             st.session_state['vel_l7']     = l7_df
             st.session_state['vel_net']    = net_df
             st.session_state['vel_oh_key'] = oh_key
             st.session_state['vel_date']   = oh_date
+            st.session_state['sold_sets']  = sold_sets
             # Save pre-computed velocity to GitHub for persistence
             _, sha_ytd = gh_read("data/velocity_ytd.csv")
             _, sha_l7  = gh_read("data/velocity_l7.csv")
             _, sha_net = gh_read("data/velocity_net.csv")
             _, sha_meta= gh_read("data/velocity_meta.txt")
+            import json as _json_ss
+            _, sha_ss = gh_read("data/sold_sets.json")
+            # Convert sets to lists for JSON serialization
+            _ss_json = {store: {k: list(v) for k,v in sv.items()}
+                        for store, sv in sold_sets.items()}
             saved = (
                 gh_write("data/velocity_ytd.csv", ytd_df.to_csv(index=False), sha_ytd) and
                 gh_write("data/velocity_l7.csv",  l7_df.to_csv(index=False),  sha_l7)  and
                 gh_write("data/velocity_net.csv",  net_df.to_csv(index=False),  sha_net)  and
-                gh_write("data/velocity_meta.txt", st.session_state.get('oh_name','order history'), sha_meta)
+                gh_write("data/velocity_meta.txt", st.session_state.get('oh_name','order history'), sha_meta) and
+                gh_write("data/sold_sets.json", _json_ss(_ss_json), sha_ss)
             )
             if saved:
                 st.success("✓ Velocity data saved to GitHub — won't need to re-upload order history again")
@@ -1168,7 +1272,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v18'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v24'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
@@ -1245,9 +1349,35 @@ _filtered_data = {cat: [r for r in items if _subcat_in_top_kpi(r)]
                   for cat, items in data.items()}
 _filtered_data = {cat: items for cat, items in _filtered_data.items() if items}
 
-_live_u = sum(sum(1 for r in v if r['severity']=='URGENT') for v in _filtered_data.values())
-_live_a = sum(sum(1 for r in v if r['severity']=='ACTION') for v in _filtered_data.values())
-_live_n = sum(sum(1 for r in v if r['severity']=='NOTE')   for v in _filtered_data.values())
+# Exclude flagged items from severity counts
+_flags_now = st.session_state.get('flags', {})
+_hidden_ids   = get_flagged_item_ids(_flags_now, PERMANENT_FLAGS)
+_dimmed_ids   = get_flagged_item_ids(_flags_now, OPERATIONAL_FLAGS)
+_excluded_ids = _hidden_ids | _dimmed_ids  # both excluded from KPI counts
+
+def _oos_counts(data_dict, sev):
+    count = 0
+    for v in data_dict.values():
+        for r in v:
+            for sd in r['stores'].values():
+                for o in sd.get('oos_skus',[]):
+                    if r['severity']==sev and int(o.get('item_id',0)) not in _excluded_ids:
+                        count += 1
+                        break  # count subcat-store once
+    return count
+
+_live_u = sum(1 for v in _filtered_data.values() for r in v if r['severity']=='URGENT'
+              and not all(int(o.get('item_id',0)) in _excluded_ids
+                         for sd in r['stores'].values()
+                         for o in sd.get('oos_skus',[])))
+_live_a = sum(1 for v in _filtered_data.values() for r in v if r['severity']=='ACTION'
+              and not all(int(o.get('item_id',0)) in _excluded_ids
+                         for sd in r['stores'].values()
+                         for o in sd.get('oos_skus',[])))
+_live_n = sum(1 for v in _filtered_data.values() for r in v if r['severity']=='NOTE'
+              and not all(int(o.get('item_id',0)) in _excluded_ids
+                         for sd in r['stores'].values()
+                         for o in sd.get('oos_skus',[])))
 
 _k1,_k2,_k3,_k4,_k5,_k6,_k7 = st.columns(7)
 _k1.metric("🔴 Urgent",        _live_u)
@@ -1291,13 +1421,16 @@ with _ab5:
                 if _c in _inv_av.columns:
                     _inv_av[_c] = pd.to_numeric(_inv_av[_c], errors='coerce').fillna(0)
             _top_n_av = st.session_state.avail_tier
+            _flags_avail = st.session_state.get('flags', {})
+            _hidden_avail = get_flagged_item_ids(_flags_avail, PERMANENT_FLAGS)
             if _top_n_av > 0:
                 _top_ids_av = set(_vel_net.nlargest(_top_n_av,'net_ytd')['item_id'].astype(int).tolist())
-                _top_inv_av = _inv_av[_inv_av['Item ID'].isin(_top_ids_av)]
+                _top_inv_av = _inv_av[_inv_av['Item ID'].isin(_top_ids_av) &
+                                      ~_inv_av['Item ID'].isin(_hidden_avail)]
                 _n = len(_top_inv_av)
             else:
-                _top_inv_av = _inv_av
-                _n = len(_inv_av)
+                _top_inv_av = _inv_av[~_inv_av['Item ID'].isin(_hidden_avail)]
+                _n = len(_top_inv_av)
             if _n > 0:
                 _oos_av   = (_top_inv_av['Total SOH']==0).sum()
                 _jahra_av = (_top_inv_av['Jahra Dark Store Stock']>0).sum()
@@ -1316,10 +1449,50 @@ with _ab5:
               f"{_live_avail['network']}%",
               delta=f"-{_live_avail['oos_n']} fully OOS", delta_color="inverse")
 with _ab6:
-    _c_j, _c_q, _c_ss = st.columns(3)
-    _c_j.metric("Jahra",       f"{_live_avail['jahra']}%")
-    _c_q.metric("Qurtuba",     f"{_live_avail['qurtuba']}%")
-    _c_ss.metric("Sabah Salem",f"{_live_avail['ss']}%")
+    # Per-store with 3 tiers each
+    _sold_sets = st.session_state.get('sold_sets', {})
+    _inv_bytes_ss = st.session_state.get('inv_bytes_cache')
+    _store_avail = {}
+    if _inv_bytes_ss:
+        try:
+            import io as _io_ss
+            _inv_ss = pd.read_excel(io.BytesIO(_inv_bytes_ss))
+            _inv_ss.columns = [c.strip() for c in _inv_ss.columns]
+            _inv_ss = _inv_ss[_inv_ss['Status']=='Active'].copy()
+            _inv_ss['Item ID'] = pd.to_numeric(_inv_ss['Item ID'], errors='coerce')
+            _all_ids_ss = set(_inv_ss['Item ID'].dropna().astype(int).tolist())
+            _scols = {'Jahra':'Jahra Dark Store Stock',
+                      'Qurtuba':'Qurtuba Dark Store Stock',
+                      'Sabah Salem':'Sabah Salem Dark Store Stock'}
+            # Mark promo SKUs
+            _inv_ss['_is_promo'] = _inv_ss['Description'].apply(is_promo)
+            _core_ids_ss = set(_inv_ss[~_inv_ss['_is_promo']]['Item ID'].dropna().astype(int).tolist())
+            for _st2, _sc2 in _scols.items():
+                if _sc2 in _inv_ss.columns:
+                    _inv_ss[_sc2] = pd.to_numeric(_inv_ss[_sc2], errors='coerce').fillna(0)
+                    _in_stk = set(_inv_ss[_inv_ss[_sc2]>0]['Item ID'].dropna().astype(int).tolist())
+                    _s90 = _sold_sets.get(_st2,{}).get('90d', set())
+                    _s30 = _sold_sets.get(_st2,{}).get('30d', set())
+                    _core_in_stk = _in_stk & _core_ids_ss
+                    _core_s90 = _s90 & _core_ids_ss
+                    _core_s30 = _s30 & _core_ids_ss
+                    _store_avail[_st2] = {
+                        'full':      round(len(_in_stk)/len(_all_ids_ss)*100,1) if _all_ids_ss else 0,
+                        '90d':       round(len(_in_stk & _s90)/len(_s90)*100,1) if _s90 else 0,
+                        '30d':       round(len(_in_stk & _s30)/len(_s30)*100,1) if _s30 else 0,
+                        'core_full': round(len(_core_in_stk)/len(_core_ids_ss)*100,1) if _core_ids_ss else 0,
+                        'core_90d':  round(len(_core_in_stk & _core_s90)/len(_core_s90)*100,1) if _core_s90 else 0,
+                        'core_30d':  round(len(_core_in_stk & _core_s30)/len(_core_s30)*100,1) if _core_s30 else 0,
+                    }
+        except: pass
+    _c_j, _c_q, _c_ss2 = st.columns(3)
+    for _col2, _stn in [(_c_j,'Jahra'),(_c_q,'Qurtuba'),(_c_ss2,'Sabah Salem')]:
+        _sa = _store_avail.get(_stn, {'full':0,'90d':0,'30d':0,'core_full':0,'core_90d':0,'core_30d':0})
+        _col2.markdown(f"**{_stn}**")
+        _col2.markdown(
+            f"All: **{_sa['full']}%** | 90d: **{_sa['90d']}%** | 30d: **{_sa['30d']}%**  \n"
+            f"*Ex-promo:* **{_sa['core_full']}%** | **{_sa['core_90d']}%** | **{_sa['core_30d']}%**"
+        )
 
 st.divider()
 
@@ -1476,7 +1649,15 @@ with briefing_tab:
                                             nf[_fkey].get(k,0) for k in PERSISTENT_FLAGS)
                 except:
                     pass
-            st.session_state.flags=nf; changed=True
+            st.session_state.flags=nf
+            # Persist flags to GitHub on every change
+            try:
+                _fj = json.dumps(nf)
+                _, _fs = gh_read("data/flags.json")
+                gh_write("data/flags.json", _fj, _fs)
+            except Exception as _fe:
+                pass
+            changed=True
         nt = result.get('tier')
         if nt and nt!=st.session_state.avail_tier:
             st.session_state.avail_tier=nt; changed=True
@@ -1645,8 +1826,13 @@ with admin_tab:
                             f"Kuwait grocery substitute assessment. Sub-category: {_sel_subcat}\n\n"
                             + "\n".join(_lines2)
                             + "\n\nFor each pair: is the substitute a DIRECT replacement?\n"
-                            + "DIRECT = customer buying the OOS product would fully accept this substitute (same type, similar price, same use case)\n"
+                            + "DIRECT = customer would fully accept (same type, same fat content, similar price, same use)\n"
                             + "NONE = not a direct substitute\n\n"
+                            + "IMPORTANT RULES:\n"
+                            + "- Different fat content = NONE (low fat ≠ full fat ≠ fat free ≠ skimmed ≠ full cream)\n"
+                            + "- Different cheese type = NONE (cheddar ≠ feta ≠ mozzarella ≠ halloumi etc)\n"
+                            + "- Processed cheese ≠ natural cheese = NONE\n"
+                            + "- Different fruit/veg type = NONE\n\n"
                             + "Reply: [n]. [DIRECT/NONE] — [reason max 8 words]"
                         )
                         try:
