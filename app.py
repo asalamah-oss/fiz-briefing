@@ -772,11 +772,11 @@ def _compute_kpis(inv, net_df, ytd_df, l7_df):
 
 
 # ── WIDGET HTML BUILDER ───────────────────────────────────────────────────────
-def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
+def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier, top_ids_set=None):
     _hidden_ids_w  = get_flagged_item_ids(flags, PERMANENT_FLAGS)
     _dimmed_ids_w  = get_flagged_item_ids(flags, OPERATIONAL_FLAGS)
-    # Filter to only show sub-cats/SKUs relevant to selected tier
-    top_ids = set(kpis.get('top_ids', {}).get(avail_tier, []))
+    # Use directly passed top_ids_set (live computed) or fall back to kpis
+    top_ids = top_ids_set if top_ids_set is not None else set(kpis.get('top_ids', {}).get(avail_tier, []))
     SI   = {'URGENT':'🔴','ACTION':'🟡','NOTE':'🔵','OVERSTOCK':'🟠'}
     SEVC = {'URGENT':'sv-u','ACTION':'sv-a','NOTE':'sv-n','OVERSTOCK':'sv-o'}
     SEVL = {'URGENT':'🔴 Urgent — high-velocity OOS, no adequate substitute',
@@ -1274,7 +1274,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v28'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v29'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
@@ -1594,6 +1594,7 @@ with briefing_tab:
         st.session_state.cur_sub,
         st.session_state.flags,
         st.session_state.avail_tier,
+        top_ids_set=_live_top_ids if _tier_live > 0 else set(),
     )
     result = _BRIEFING_COMPONENT(
         key=f"briefing_v3_{st.session_state.avail_tier}",
