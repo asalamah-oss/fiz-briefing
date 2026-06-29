@@ -920,11 +920,10 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier, top_ids_s
                     dc_str = f" · {sk['days_cover']:.0f}d cover" if sk.get('days_cover',0) < 999 else ''
                     detail_html += f'<div class="ik"><span style="color:#16a34a;font-size:11px;flex-shrink:0">✓</span><span class="id" title="{sk["desc"]}">{sk["desc"]}</span><span class="im">{sk["velocity"]}/day · {sk["soh"]}u{dc_str}</span></div>'
 
-            # Filter OOS to top N only (empty set = show all)
+            # Filter OOS to top N only (empty top_ids = show all)
             _oos_filtered = [o for o in sd.get('oos_skus',[])
                              if not top_ids or int(o.get('item_id',0)) in top_ids]
-            if _oos_filtered:
-                sd = dict(sd); sd['oos_skus'] = _oos_filtered
+            sd = dict(sd); sd['oos_skus'] = _oos_filtered  # always update
             if sd.get('oos_skus'):
                 detail_html += '<div class="dl" style="margin-top:5px">Out of stock</div><div class="ow">'
                 for oi, oos in enumerate(sd['oos_skus']):
@@ -1274,7 +1273,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v30'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v31'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
