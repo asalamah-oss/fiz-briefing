@@ -551,12 +551,13 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
                         strength, reason = ai_cache[key]
                         # Only DIRECT counts
                         if strength != 'DIRECT': continue
+                        best_str = 'DIRECT'
+                        best_sub_desc = str(s_row['Description'])[:45]
+                        best_sub_soh = int(s_row[soh_col])
+                        best_sub_reason = reason
+                        break  # Found a DIRECT — stop looking
                     else:
-                        # No AI result yet — use algo as fallback (DIRECT only)
-                        if algo_str != 'DIRECT': continue
-                        strength = 'DIRECT'
-                        reason = ""
-                        # Queue for AI verification
+                        # No AI result yet — queue for assessment, show nothing
                         if '_ai_queue' not in st.session_state:
                             st.session_state['_ai_queue'] = []
                         queue_item = (
@@ -568,11 +569,7 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
                         )
                         if queue_item not in st.session_state['_ai_queue']:
                             st.session_state['_ai_queue'].append(queue_item)
-                    best_str = 'DIRECT'
-                    best_sub_desc = str(s_row['Description'])[:45]
-                    best_sub_soh = int(s_row[soh_col])
-                    best_sub_reason = reason
-                    break  # Found a DIRECT — stop looking
+                        # No fallback — wait for AI
 
                 # Resolution label
                 dc_soh = float(oos.get('Ardiya - Distribution Center Stock',0))
@@ -844,7 +841,7 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier):
     kpi_html = f'''
     <div class="kstrip">
       <div class="kp kp-click" onclick="selectKpi('rev_risk')"><div class="kl">Revenue at risk · no direct sub ↗</div><div class="kv r">{kpis.get("rev_risk",0):,.0f} KD/day</div></div>
-      <div class="kp"><div class="kl">SKUs at risk (vel≥2)</div><div class="kv r">{kpis.get("skus_at_risk",0)}</div></div>
+      <div class="kp"><div class="kl">OOS SKUs (vel≥5/day)</div><div class="kv r">{kpis.get("skus_at_risk",0)}</div></div>
       <div class="kp kp-avail">
         <div class="kl">Availability · Top {avail_tier}</div>
         <div class="kv-row">
@@ -1272,7 +1269,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v24'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v25'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
@@ -1383,7 +1380,7 @@ _k1,_k2,_k3,_k4,_k5,_k6,_k7 = st.columns(7)
 _k1.metric("🔴 Urgent",        _live_u)
 _k2.metric("🟡 Action",        _live_a)
 _k3.metric("🔵 Note",          _live_n)
-_k4.metric(f"OOS vel≥2/day", kpis.get('skus_at_risk',0))
+_k4.metric("OOS vel≥5/day", kpis.get('skus_at_risk',0))
 _k5.metric("DC transfer opps", kpis.get('dc_opps',0))
 _k6.metric("Real overstock",   kpis.get('overstock_count',0))
 _k7.metric("Dead stock",       kpis.get('dead_stock_count',0))
@@ -1896,7 +1893,7 @@ with kpi_tab:
     else:
         kpi_choice = st.selectbox("Select metric to drill into", [
             f"Availability — Top {st.session_state.avail_tier} OOS SKUs",
-            "OOS SKUs with velocity ≥ 2/day",
+            "OOS SKUs with velocity ≥ 5/day",
             "DC transfer opportunities",
             "Real overstock (>45 days cover)",
             "Dead stock (zero velocity)",
@@ -1984,11 +1981,11 @@ with kpi_tab:
                     _s = _inv_kpi[_inv_kpi[_col]==0][['Item ID','Description','Category',
                         'Sub Category','RSP']].rename(columns={'Item ID':'item_id'}).merge(
                         _sv, on='item_id', how='inner')
-                    _s = _s[_s['true_daily']>=2].copy(); _s['Store'] = _st
+                    _s = _s[_s['true_daily']>=5].copy(); _s['Store'] = _st
                     _rows_kpi.append(_s)
                 _df_kpi = pd.concat(_rows_kpi).sort_values('true_daily', ascending=False)
                 _df_kpi['Velocity'] = _df_kpi['true_daily'].round(2)
-                st.metric("OOS SKUs with vel ≥ 2/day", len(_df_kpi))
+                st.metric("OOS SKUs with vel ≥ 5/day", len(_df_kpi))
                 st.dataframe(_df_kpi[['Store','Description','Category','Sub Category',
                     'Velocity','RSP']].reset_index(drop=True),
                     use_container_width=True, hide_index=True)
