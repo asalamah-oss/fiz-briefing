@@ -1274,7 +1274,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v29'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v30'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
@@ -1582,11 +1582,19 @@ with briefing_tab:
     # Compute top_ids live so nav filter always reflects current tier
     _vel_net_live = st.session_state.get('vel_net')
     _tier_live = st.session_state.avail_tier
+    _live_top_ids = set()
     if _vel_net_live is not None and _tier_live > 0:
-        _live_top_ids = set(_vel_net_live.nlargest(_tier_live,'net_ytd')['item_id'].astype(int).tolist())
-        kpis['top_ids'] = {_tier_live: list(_live_top_ids)}
-    else:
-        kpis['top_ids'] = {}  # empty = show all
+        try:
+            # Try net_ytd column first, then fall back to any numeric column
+            if 'net_ytd' in _vel_net_live.columns:
+                _live_top_ids = set(_vel_net_live.nlargest(_tier_live,'net_ytd')['item_id'].astype(int).tolist())
+            else:
+                _num_cols = [c for c in _vel_net_live.columns if c != 'item_id']
+                if _num_cols:
+                    _live_top_ids = set(_vel_net_live.nlargest(_tier_live,_num_cols[0])['item_id'].astype(int).tolist())
+        except Exception as _e:
+            st.warning(f"Top N filter error: {_e}")
+            _live_top_ids = set()
 
     widget_html = build_widget_html(
         data, kpis,
@@ -1594,7 +1602,7 @@ with briefing_tab:
         st.session_state.cur_sub,
         st.session_state.flags,
         st.session_state.avail_tier,
-        top_ids_set=_live_top_ids if _tier_live > 0 else set(),
+        top_ids_set=_live_top_ids if _live_top_ids else None,
     )
     result = _BRIEFING_COMPONENT(
         key=f"briefing_v3_{st.session_state.avail_tier}",
