@@ -1269,7 +1269,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v25'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v26'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
@@ -1484,12 +1484,9 @@ with _ab6:
         except: pass
     _c_j, _c_q, _c_ss2 = st.columns(3)
     for _col2, _stn in [(_c_j,'Jahra'),(_c_q,'Qurtuba'),(_c_ss2,'Sabah Salem')]:
-        _sa = _store_avail.get(_stn, {'full':0,'90d':0,'30d':0,'core_full':0,'core_90d':0,'core_30d':0})
-        _col2.markdown(f"**{_stn}**")
-        _col2.markdown(
-            f"All: **{_sa['full']}%** | 90d: **{_sa['90d']}%** | 30d: **{_sa['30d']}%**  \n"
-            f"*Ex-promo:* **{_sa['core_full']}%** | **{_sa['core_90d']}%** | **{_sa['core_30d']}%**"
-        )
+        _sa = _store_avail.get(_stn, {'full':0,'90d':0,'30d':0})
+        _col2.metric(_stn, f"{_sa['full']}%")
+        _col2.caption(f"90d active: {_sa['90d']}%  |  30d hot: {_sa['30d']}%")
 
 st.divider()
 
@@ -1536,20 +1533,34 @@ with flagged_tab:
 with briefing_tab:
 
     # AI enrichment button
-    _queue = st.session_state.get('_ai_queue', [])
+    _queue_all = st.session_state.get('_ai_queue', [])
     _cached = len(st.session_state.get('ai_sub_cache', {}))
+
+    # Filter queue to current tier only
+    _tier_now_q = st.session_state.avail_tier
+    _vel_net_q = st.session_state.get('vel_net')
+    if _tier_now_q > 0 and _vel_net_q is not None:
+        _top_ids_q = set(_vel_net_q.nlargest(_tier_now_q,'net_ytd')['item_id'].astype(int).tolist())
+        _queue = [p for p in _queue_all if p[0] in _top_ids_q]
+    else:
+        _queue = _queue_all  # All tier — use full queue
+
     _col_ai1, _col_ai2 = st.columns([2,6])
     with _col_ai1:
-        _btn_label = f"🤖 Enrich substitutes with AI ({len(_queue)} pairs to assess)" if _queue else f"✓ AI enriched ({_cached:,} pairs cached)"
+        _tier_label_q = f"Top {_tier_now_q}" if _tier_now_q > 0 else "All"
+        _btn_label = f"🤖 Enrich {_tier_label_q} with AI ({len(_queue)} pairs)" if _queue else f"✓ AI enriched ({_cached:,} pairs cached)"
         _btn_disabled = len(_queue) == 0
         if st.button(_btn_label, disabled=_btn_disabled, key="ai_enrich_btn"):
-            with st.spinner(f"Assessing {len(_queue)} substitute pairs with AI… (may take 1-2 minutes)"):
+            with st.spinner(f"Assessing {len(_queue)} pairs for {_tier_label_q}… (may take 1-2 minutes)"):
                 if _queue:
                     new_results = ai_assess_batch(_queue)
                     ai_cache = st.session_state.get('ai_sub_cache', {})
                     ai_cache.update(new_results)
                     st.session_state['ai_sub_cache'] = ai_cache
-                    st.session_state['_ai_queue'] = []
+                    # Remove assessed pairs from full queue
+                    assessed_keys = {(p[0],p[1]) for p in _queue}
+                    st.session_state['_ai_queue'] = [p for p in _queue_all
+                                                     if (p[0],p[1]) not in assessed_keys]
                     save_sub_cache_data(ai_cache)
                     st.success(f"✓ {len(new_results)} pairs assessed and cached. Reloading…")
                     st.rerun()
