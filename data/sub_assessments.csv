@@ -118,3 +118,81 @@ oos_id,sub_id,strength,reason
 30608,28512,NONE,Different format (sticks); larger size; higher price
 30608,28511,NONE,Different format (sticks); different flavor; higher price
 30608,24470,NONE,Different format (sticks); different flavor; higher price
+24336,26515,NONE,Different product type; much smaller size
+24336,32478,NONE,Different product type; egg-shaped novelty item
+24336,25659,NONE,different chocolate bar type; much smaller
+24336,30495,NONE,coconut praline vs malted chocolate balls
+24336,37737,NONE,coconut filling bar vs malted chocolate balls
+24336,40332,NONE,caramel chocolate bar vs malted chocolate balls
+24336,40331,NONE,crispy chocolate bar vs malted chocolate balls
+24336,26396,NONE,wafer fingers vs malted chocolate balls
+24336,31468,NONE,wafer fingers vs malted chocolate balls
+24336,40330,NONE,hazelnut chocolate bar vs malted chocolate balls
+24336,28422,NONE,different product type; malt balls vs dark chocolate
+24336,38392,NONE,different product type; malt balls vs caramel bar
+24336,30298,NONE,different product type; malt balls vs peanut bar
+24336,39940,NONE,different product type and significantly smaller size
+24336,39941,NONE,different product type; larger size; higher price
+24336,31445,NONE,different product type and significantly smaller size
+24336,39942,NONE,different product type; malt balls vs wafer bar
+24336,26726,NONE,different product type and significantly smaller size
+24336,40367,NONE,different brand; type; and significantly higher price
+24336,40368,NONE,different brand; type; and significantly higher price
+24336,40369,NONE,different product type; significantly higher price
+24336,27353,NONE,different product type; higher price
+24336,37874,NONE,different bar type; much smaller; cheaper
+24336,36912,NONE,different bar type; smaller; much cheaper
+24336,29477,NONE,different bar type; wafer-based; cheaper
+24336,33778,NONE,different bar type; wafer-based; cheaper
+24336,39111,NONE,different bar type; higher price
+24336,39786,NONE,different bar type; different price
+24336,38465,NONE,different bar type; wafer-based
+24336,38466,NONE,different bar type; wafer-based
+24336,27746,NONE,Different product type; Aero vs Maltesers
+24336,25677,NONE,Different product type; Lion bar vs Maltesers
+24336,37875,NONE,Much smaller size; different product type
+24336,31527,NONE,Wafer bar; different texture and type
+24336,36803,NONE,Plain chocolate bar vs malted balls
+24336,36804,NONE,Larger size; different product type
+24336,39944,NONE,Bubbly chocolate; different texture and type
+24336,26790,NONE,Much smaller size; different product type
+24336,37447,NONE,different chocolate type; format; and texture
+24336,26832,NONE,different chocolate type; format; and texture
+24336,39115,NONE,different chocolate type; format; and texture
+24336,36832,NONE,different chocolate type; format; and texture
+24336,36831,NONE,different chocolate type; format; and texture
+24336,37720,NONE,different brand; much larger; much pricier
+24336,37722,NONE,different brand; much larger; much pricier
+24336,37723,NONE,different brand; much larger; much pricier
+24336,37721,NONE,different brand; much larger; much pricier
+24336,24397,NONE,different brand; format; and significantly different size
+24336,37088,NONE,different chocolate type; dark vs milk
+24336,37080,NONE,different chocolate type; dark vs milk
+24336,37087,NONE,different brand; premium product; higher price
+24336,39317,NONE,different brand; format; and chocolate type
+24336,33213,NONE,different brand; nibbles format; no malt balls
+24336,26257,NONE,different brand; nibbles format; no malt balls
+24336,29821,NONE,Cocoa spread; completely different product format
+24336,38171,NONE,Different product type; filled chocolate bar
+24336,38173,NONE,Different product type; cream-filled chocolate bar
+24336,38170,NONE,Much larger; different product; significantly higher price
+32414,35771,NONE,Different vegetable type; mushroom vs tomato
+32414,35782,NONE,Different vegetable type; mushroom vs tomato
+32415,39469,NONE,Different vegetable type; beans vs capsicum
+32415,26506,NONE,Different vegetable type; beetroot vs capsicum
+32415,39458,NONE,Different vegetable type; mushroom vs capsicum
+32415,27843,NONE,Different vegetable type; squash vs capsicum
+32415,24412,NONE,Different vegetable type; cabbage vs capsicum
+32415,30498,NONE,Different vegetable type; garlic vs capsicum
+32415,33388,NONE,Different vegetable type; ginger vs capsicum
+32415,28199,NONE,Different vegetable type; asparagus vs capsicum
+30608,35722,DIRECT,Same brand; same price; same chip type.
+30608,26543,DIRECT,Same brand; same price; same chip type.
+30608,30609,DIRECT,Same brand; same price; same chip type.
+30608,28562,DIRECT,Same brand; same price; same chip type.
+30608,25544,DIRECT,Same brand; same price; same chip type.
+30608,28575,DIRECT,Same brand; same price; same chip type.
+30608,35721,NONE,Different product line; lower price; multigrain chips.
+30608,28561,DIRECT,Same brand; same weight; similar price.
+30608,26542,NONE,Different weight; lower price; different product line.
+30608,24520,NONE,Wheat crusts; different product type entirely.
