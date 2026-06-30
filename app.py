@@ -1262,7 +1262,7 @@ if 'oh_bytes' in st.session_state:
                 gh_write("data/velocity_l7.csv",  l7_df.to_csv(index=False),  sha_l7)  and
                 gh_write("data/velocity_net.csv",  net_df.to_csv(index=False),  sha_net)  and
                 gh_write("data/velocity_meta.txt", st.session_state.get('oh_name','order history'), sha_meta) and
-                gh_write("data/sold_sets.json", _json_ss(_ss_json), sha_ss)
+                gh_write("data/sold_sets.json", _json_ss.dumps(_ss_json), sha_ss)
             )
             if saved:
                 st.success("✓ Velocity data saved to GitHub — won't need to re-upload order history again")
