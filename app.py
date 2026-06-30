@@ -6,7 +6,7 @@ Two uploads: Master_LIst (daily) + Order History (persistent via storage)
 import streamlit as st
 import pandas as pd
 import numpy as np
-import io, re, json, datetime
+import io, re, json, datetime, time
 
 
 # ── GITHUB PERSISTENCE ────────────────────────────────────────────────────────
@@ -245,18 +245,28 @@ def save_sub_cache_data(cache_dict):
     _, sha = gh_read("data/sub_assessments.csv")
     gh_write("data/sub_assessments.csv", "\n".join(rows), sha)
 
-def ai_assess_batch(pairs):
+def ai_assess_batch(pairs, progress_cb=None):
     """
     pairs: list of (oos_id, sub_id, oos_desc, oos_vendor, oos_rsp,
                     sub_desc, sub_vendor, sub_rsp, sub_soh, subcat)
-    Returns: dict (oos_id, sub_id) -> (strength, reason)
+    Returns: (results, errors)
+      results: dict (oos_id, sub_id) -> (strength, reason)
+      errors:  list of human-readable error strings (empty if all OK)
+    progress_cb(done, total) optional, called after each batch.
     """
     import requests as _req
-    if not pairs: return {}
+    if not pairs: return {}, []
     results = {}
+    errors = []
     BATCH = 10
 
-    for i in range(0, len(pairs), BATCH):
+    api_key = st.secrets.get("ANTHROPIC_API_KEY", "")
+    if not api_key:
+        return {}, ["ANTHROPIC_API_KEY is missing from Streamlit secrets. "
+                    "Add it under Manage app → Settings → Secrets."]
+
+    total = len(pairs)
+    for i in range(0, total, BATCH):
         batch = pairs[i:i+BATCH]
         lines = []
         for j, p in enumerate(batch):
@@ -280,30 +290,52 @@ def ai_assess_batch(pairs):
             + "- Different fruit or vegetable type = NONE\n\n"
             + "Reply: [n]. [DIRECT/NONE] — [reason max 8 words]"
         )
-        try:
-            r = _req.post(
-                "https://api.anthropic.com/v1/messages",
-                headers={"Content-Type": "application/json", "x-api-key": st.secrets.get("ANTHROPIC_API_KEY",""), "anthropic-version": "2023-06-01"},
-                json={"model": "claude-sonnet-4-6", "max_tokens": 300,
-                      "messages": [{"role": "user", "content": prompt}]},
-                timeout=30
-            )
-            if r.status_code == 200:
-                text = r.json()["content"][0]["text"]
-                for j, p in enumerate(batch):
-                    for line in text.split("\n"):
-                        line = line.strip()
-                        if line.startswith(f"{j+1}."):
-                            rest = line[len(f"{j+1}."):].strip()
-                            pts = rest.split("—", 1)
-                            strength = pts[0].strip().upper()
-                            if strength not in ["DIRECT","STRONG","WEAK","NONE"]:
-                                strength = "WEAK"
-                            reason = pts[1].strip() if len(pts) > 1 else ""
-                            results[(p[0], p[1])] = (strength, reason)
-                            break
-        except: pass
-    return results
+        # Up to 3 attempts with backoff on transient errors (429/5xx/network)
+        _ok = False
+        for _attempt in range(3):
+            try:
+                r = _req.post(
+                    "https://api.anthropic.com/v1/messages",
+                    headers={"Content-Type": "application/json", "x-api-key": api_key,
+                             "anthropic-version": "2023-06-01"},
+                    json={"model": "claude-sonnet-4-6", "max_tokens": 300,
+                          "messages": [{"role": "user", "content": prompt}]},
+                    timeout=60
+                )
+                if r.status_code == 200:
+                    text = r.json()["content"][0]["text"]
+                    for j, p in enumerate(batch):
+                        for line in text.split("\n"):
+                            line = line.strip()
+                            if line.startswith(f"{j+1}."):
+                                rest = line[len(f"{j+1}."):].strip()
+                                pts = rest.split("—", 1)
+                                strength = pts[0].strip().upper()
+                                if strength not in ["DIRECT","STRONG","WEAK","NONE"]:
+                                    strength = "NONE"
+                                reason = pts[1].strip() if len(pts) > 1 else ""
+                                results[(p[0], p[1])] = (strength, reason)
+                                break
+                    _ok = True
+                    break
+                elif r.status_code in (429, 500, 502, 503, 529):
+                    time.sleep(2 * (_attempt + 1))  # backoff and retry
+                    continue
+                else:
+                    # Non-retryable (e.g. 401 bad key, 400 bad request)
+                    _msg = ""
+                    try: _msg = r.json().get("error", {}).get("message", "")[:200]
+                    except: _msg = r.text[:200]
+                    errors.append(f"Batch {i//BATCH+1}: HTTP {r.status_code} — {_msg}")
+                    break
+            except Exception as e:
+                if _attempt == 2:
+                    errors.append(f"Batch {i//BATCH+1}: {type(e).__name__} — {str(e)[:200]}")
+                else:
+                    time.sleep(2 * (_attempt + 1))
+        if progress_cb:
+            progress_cb(min(i+BATCH, total), total)
+    return results, errors
 
 
 def find_better_sub(oos_desc, oos_vendor, oos_rsp, oos_id,
@@ -468,7 +500,7 @@ SEV_ORDER_SUB = ['DIRECT']
 # Bump this string whenever run_analysis or any helper it calls (e.g. _compute_kpis)
 # is edited, so @st.cache_data forces a clean recompute instead of serving a stale
 # result computed under old code. Prevents StopIteration / empty-data crashes on redeploy.
-CODE_VERSION = "2026-06-30c"
+CODE_VERSION = "2026-06-30d"
 
 def _active_mask(df):
     """Case-insensitive Active filter. Source system has shipped both 'Active' and
@@ -1583,9 +1615,17 @@ with briefing_tab:
         _btn_label = f"🤖 Enrich {_tier_label_q} with AI ({len(_queue)} pairs)" if _queue else f"✓ AI enriched ({_cached:,} pairs cached)"
         _btn_disabled = len(_queue) == 0
         if st.button(_btn_label, disabled=_btn_disabled, key="ai_enrich_btn"):
-            with st.spinner(f"Assessing {len(_queue)} pairs for {_tier_label_q}… (may take 1-2 minutes)"):
-                if _queue:
-                    new_results = ai_assess_batch(_queue)
+            if _queue:
+                _prog = st.progress(0, text=f"Assessing {len(_queue)} pairs for {_tier_label_q}…")
+                def _cb(done, total):
+                    _prog.progress(min(done/max(total,1),1.0),
+                                   text=f"Assessed {done}/{total} pairs…")
+                new_results, _errs = ai_assess_batch(_queue, progress_cb=_cb)
+                _prog.empty()
+                if _errs:
+                    # Surface what actually went wrong instead of silently doing nothing
+                    st.error("AI assessment hit errors:\n\n" + "\n".join(f"• {e}" for e in _errs[:10]))
+                if new_results:
                     ai_cache = st.session_state.get('ai_sub_cache', {})
                     ai_cache.update(new_results)
                     st.session_state['ai_sub_cache'] = ai_cache
@@ -1596,6 +1636,9 @@ with briefing_tab:
                     save_sub_cache_data(ai_cache)
                     st.success(f"✓ {len(new_results)} pairs assessed and cached. Reloading…")
                     st.rerun()
+                elif not _errs:
+                    st.warning("No results returned and no errors reported — "
+                               "the API responses may not have matched the expected format.")
     with _col_ai2:
         if st.button(f"🔄 Re-assess all ({_cached:,} cached)", key="ai_reassess_btn",
                      help="Clears ALL cached assessments and rebuilds the queue so every current "
