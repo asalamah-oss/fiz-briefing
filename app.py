@@ -1273,7 +1273,7 @@ else:
         st.warning("⚠️ Upload order history to enable velocity-based analysis.")
 
 # ── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v31'
+vel_key = str(st.session_state.get('vel_oh_key','none')) + '_v32'
 _ytd_json = st.session_state['vel_ytd'].to_json() if 'vel_ytd' in st.session_state and st.session_state['vel_ytd'] is not None else None
 _l7_json  = st.session_state['vel_l7'].to_json()  if 'vel_l7'  in st.session_state and st.session_state['vel_l7']  is not None else None
 _net_json = st.session_state['vel_net'].to_json()  if 'vel_net'  in st.session_state and st.session_state['vel_net']  is not None else None
@@ -1558,7 +1558,7 @@ with briefing_tab:
     else:
         _queue = _queue_all  # All tier — use full queue
 
-    _col_ai1, _col_ai2 = st.columns([2,6])
+    _col_ai1, _col_ai2, _col_ai3 = st.columns([2,2,4])
     with _col_ai1:
         _tier_label_q = f"Top {_tier_now_q}" if _tier_now_q > 0 else "All"
         _btn_label = f"🤖 Enrich {_tier_label_q} with AI ({len(_queue)} pairs)" if _queue else f"✓ AI enriched ({_cached:,} pairs cached)"
@@ -1577,6 +1577,19 @@ with briefing_tab:
                     save_sub_cache_data(ai_cache)
                     st.success(f"✓ {len(new_results)} pairs assessed and cached. Reloading…")
                     st.rerun()
+    with _col_ai2:
+        if st.button(f"🔄 Re-assess {_tier_label_q} ({_cached:,} cached)", key="ai_reassess_btn",
+                     help="Clears cached results for current tier and re-runs AI with latest rules"):
+            with st.spinner(f"Clearing cache and re-assessing {_tier_label_q}…"):
+                ai_cache = st.session_state.get('ai_sub_cache', {})
+                # Remove cached entries for pairs in current tier's queue_all
+                _all_tier_keys = {(p[0],p[1]) for p in _queue_all}
+                ai_cache = {k:v for k,v in ai_cache.items() if k not in _all_tier_keys}
+                st.session_state['ai_sub_cache'] = ai_cache
+                st.session_state['_ai_queue'] = _queue_all  # requeue everything for this tier
+                save_sub_cache_data(ai_cache)
+                st.success("✓ Cache cleared for this tier. Click 'Enrich with AI' to re-run.")
+                st.rerun()
 
     # Compute top_ids live so nav filter always reflects current tier
     _vel_net_live = st.session_state.get('vel_net')
