@@ -2560,9 +2560,6 @@ item_id,store_norm,ytd_units,ytd_days,true_daily
 26702,Jahra,15,13,1.1538461538461537
 26702,Qurtuba,6,6,1.0
 26702,Sabah Salem,9,7,1.2857142857142858
-26703,Jahra,9,9,1.0
-26703,Qurtuba,32,23,1.391304347826087
-26703,Sabah Salem,39,31,1.2580645161290323
 26711,Jahra,1,1,1.0
 26711,Qurtuba,35,29,1.206896551724138
 26711,Sabah Salem,41,35,1.1714285714285715
@@ -5227,8 +5224,6 @@ item_id,store_norm,ytd_units,ytd_days,true_daily
 29374,Jahra,2,2,1.0
 29374,Qurtuba,17,17,1.0
 29374,Sabah Salem,14,14,1.0
-29375,Qurtuba,5,5,1.0
-29375,Sabah Salem,4,4,1.0
 29379,Jahra,4,4,1.0
 29379,Qurtuba,20,18,1.1111111111111112
 29379,Sabah Salem,34,32,1.0625
@@ -7780,9 +7775,6 @@ item_id,store_norm,ytd_units,ytd_days,true_daily
 31851,Jahra,1,1,1.0
 31851,Qurtuba,38,28,1.3571428571428572
 31851,Sabah Salem,42,36,1.1666666666666667
-31854,Jahra,6,5,1.2
-31854,Qurtuba,45,35,1.2857142857142858
-31854,Sabah Salem,50,36,1.3888888888888888
 31857,Jahra,3,3,1.0
 31857,Qurtuba,33,30,1.1
 31857,Sabah Salem,40,40,1.0
@@ -14482,11 +14474,6 @@ item_id,store_norm,ytd_units,ytd_days,true_daily
 37978,Jahra,2,2,1.0
 37978,Qurtuba,95,53,1.7924528301886793
 37978,Sabah Salem,39,20,1.95
-37981,Qurtuba,9,9,1.0
-37981,Sabah Salem,11,10,1.1
-37982,Jahra,17,17,1.0
-37982,Qurtuba,48,40,1.2
-37982,Sabah Salem,58,45,1.288888888888889
 37984,Jahra,2,2,1.0
 37984,Qurtuba,13,13,1.0
 37984,Sabah Salem,17,17,1.0
@@ -17031,6 +17018,8 @@ item_id,store_norm,ytd_units,ytd_days,true_daily
 39467,Sabah Salem,9,9,1.0
 39468,Qurtuba,14,14,1.0
 39468,Sabah Salem,23,18,1.2777777777777777
+39469,Qurtuba,2,2,1.0
+39469,Sabah Salem,1,1,1.0
 39470,Sabah Salem,4,4,1.0
 39471,Qurtuba,1,1,1.0
 39471,Sabah Salem,4,4,1.0
@@ -18152,8 +18141,6 @@ item_id,store_norm,ytd_units,ytd_days,true_daily
 40156,Sabah Salem,28,22,1.2727272727272727
 40157,Qurtuba,8,7,1.1428571428571428
 40157,Sabah Salem,3,3,1.0
-40160,Qurtuba,9,8,1.125
-40160,Sabah Salem,9,8,1.125
 40167,Jahra,2,2,1.0
 40167,Qurtuba,30,23,1.3043478260869565
 40167,Sabah Salem,35,23,1.5217391304347827
@@ -18281,6 +18268,8 @@ item_id,store_norm,ytd_units,ytd_days,true_daily
 40226,Sabah Salem,3,3,1.0
 40227,Qurtuba,4,1,4.0
 40227,Sabah Salem,4,1,4.0
+40228,Qurtuba,7,2,3.5
+40228,Sabah Salem,8,2,4.0
 40229,Qurtuba,4,1,4.0
 40229,Sabah Salem,5,2,2.5
 40230,Qurtuba,5,3,1.6666666666666667
