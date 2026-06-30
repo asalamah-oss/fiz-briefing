@@ -500,7 +500,7 @@ SEV_ORDER_SUB = ['DIRECT']
 # Bump this string whenever run_analysis or any helper it calls (e.g. _compute_kpis)
 # is edited, so @st.cache_data forces a clean recompute instead of serving a stale
 # result computed under old code. Prevents StopIteration / empty-data crashes on redeploy.
-CODE_VERSION = "2026-06-30d"
+CODE_VERSION = "2026-06-30e"
 
 def _active_mask(df):
     """Case-insensitive Active filter. Source system has shipped both 'Active' and
@@ -1640,20 +1640,30 @@ with briefing_tab:
                     st.warning("No results returned and no errors reported — "
                                "the API responses may not have matched the expected format.")
     with _col_ai2:
-        if st.button(f"🔄 Re-assess all ({_cached:,} cached)", key="ai_reassess_btn",
-                     help="Clears ALL cached assessments and rebuilds the queue so every current "
-                          "OOS pair is re-run with the latest AI rules (e.g. fat-content fix)"):
-            with st.spinner("Clearing entire cache and rebuilding queue…"):
-                # 1. Wipe the whole cache (all tiers)
-                st.session_state['ai_sub_cache'] = {}
-                save_sub_cache_data({})
-                # 2. Empty the leftover queue; it will be rebuilt by run_analysis
+        _ra_label = f"🔄 Re-assess {_tier_label_q} ({_cached:,} cached)"
+        if st.button(_ra_label, key="ai_reassess_btn",
+                     help=f"Clears cached assessments for {_tier_label_q} and rebuilds the queue so "
+                          f"those OOS pairs re-run with the latest AI rules (e.g. fat-content fix). "
+                          f"Then click 'Enrich' to re-run them."):
+            with st.spinner(f"Clearing {_tier_label_q} cache and rebuilding queue…"):
+                ai_cache = st.session_state.get('ai_sub_cache', {})
+                _before = len(ai_cache)
+                # Tier scope: clear only entries whose OOS item is in the current tier.
+                # At 'All' (no top_ids), this clears everything.
+                if _tier_now_q > 0 and _vel_net_q is not None:
+                    _tier_ids = set(_vel_net_q.nlargest(_tier_now_q,'net_ytd')['item_id'].astype(int).tolist())
+                    ai_cache = {k: v for k, v in ai_cache.items() if k[0] not in _tier_ids}
+                else:
+                    ai_cache = {}  # All tier
+                _cleared = _before - len(ai_cache)
+                st.session_state['ai_sub_cache'] = ai_cache
+                save_sub_cache_data(ai_cache)
+                # Empty leftover queue; run_analysis rebuilds it (uncached pairs re-queue)
                 st.session_state['_ai_queue'] = []
-                # 3. Force run_analysis to recompute (it skips cached pairs when building
-                #    the queue, so with an empty cache it will queue every current OOS pair)
+                # Force run_analysis to recompute so the queue is rebuilt
                 st.session_state['_cache_gen'] = st.session_state.get('_cache_gen', 0) + 1
-                st.success("✓ Cache cleared. Reloading to rebuild the full queue — "
-                           "then click 'Enrich with AI' to re-run.")
+                st.success(f"✓ Cleared {_cleared} cached assessment(s) for {_tier_label_q}. "
+                           f"Reloading — then click 'Enrich {_tier_label_q}' to re-run.")
                 st.rerun()
 
     # Compute top_ids live so nav filter always reflects current tier
