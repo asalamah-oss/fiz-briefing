@@ -468,7 +468,12 @@ SEV_ORDER_SUB = ['DIRECT']
 # Bump this string whenever run_analysis or any helper it calls (e.g. _compute_kpis)
 # is edited, so @st.cache_data forces a clean recompute instead of serving a stale
 # result computed under old code. Prevents StopIteration / empty-data crashes on redeploy.
-CODE_VERSION = "2026-06-30a"
+CODE_VERSION = "2026-06-30b"
+
+def _active_mask(df):
+    """Case-insensitive Active filter. Source system has shipped both 'Active' and
+    'ACTIVE'; comparing exact-case silently drops every row. Use everywhere."""
+    return df['Status'].astype(str).str.strip().str.upper() == 'ACTIVE'
 
 @st.cache_data(show_spinner=False)
 def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json, code_version=CODE_VERSION):
@@ -476,8 +481,8 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json, 
     # Load inventory
     inv = pd.read_excel(io.BytesIO(inv_bytes))
     inv.columns = [c.strip() for c in inv.columns]
-    inv = inv[inv['Status']=='Active'].copy()
     inv['Item ID'] = pd.to_numeric(inv['Item ID'], errors='coerce')
+    inv = inv[_active_mask(inv)].copy()
     inv['Barcode']  = inv['Barcode'].astype(str).str.strip()
 
     # Numeric cols
@@ -1239,7 +1244,7 @@ st.session_state['inv_bytes_cache'] = inv_bytes  # cache for KPI drill-down tab
 if 'oh_bytes' in st.session_state:
     inv_temp = pd.read_excel(io.BytesIO(inv_bytes))
     inv_temp.columns = [c.strip() for c in inv_temp.columns]
-    inv_temp = inv_temp[inv_temp['Status']=='Active']
+    inv_temp = inv_temp[_active_mask(inv_temp)]
     inv_temp['Item ID'] = pd.to_numeric(inv_temp['Item ID'], errors='coerce')
     inv_item_ids = set(inv_temp['Item ID'].dropna().astype(int).tolist())
 
@@ -1428,7 +1433,7 @@ with _ab5:
             import io as _io_av
             _inv_av = pd.read_excel(io.BytesIO(_inv_bytes_avail))
             _inv_av.columns = [c.strip() for c in _inv_av.columns]
-            _inv_av = _inv_av[_inv_av['Status']=='Active'].copy()
+            _inv_av = _inv_av[_active_mask(_inv_av)].copy()
             _inv_av['Item ID'] = pd.to_numeric(_inv_av['Item ID'], errors='coerce')
             for _c in ['Jahra Dark Store Stock','Qurtuba Dark Store Stock',
                        'Sabah Salem Dark Store Stock','Total SOH']:
@@ -1472,7 +1477,7 @@ with _ab6:
             import io as _io_ss
             _inv_ss = pd.read_excel(io.BytesIO(_inv_bytes_ss))
             _inv_ss.columns = [c.strip() for c in _inv_ss.columns]
-            _inv_ss = _inv_ss[_inv_ss['Status']=='Active'].copy()
+            _inv_ss = _inv_ss[_active_mask(_inv_ss)].copy()
             _inv_ss['Item ID'] = pd.to_numeric(_inv_ss['Item ID'], errors='coerce')
             _all_ids_ss = set(_inv_ss['Item ID'].dropna().astype(int).tolist())
             _scols = {'Jahra':'Jahra Dark Store Stock',
@@ -1748,7 +1753,7 @@ with admin_tab:
         import io as _io_mt2
         _inv_mt = pd.read_excel(io.BytesIO(st.session_state['inv_bytes_cache']))
         _inv_mt.columns = [c.strip() for c in _inv_mt.columns]
-        _inv_mt = _inv_mt[_inv_mt['Status']=='Active']
+        _inv_mt = _inv_mt[_active_mask(_inv_mt)]
         _all_subcats = sorted(_inv_mt['Sub Category'].dropna().unique().tolist())
 
     _sel_subcat = st.selectbox(
@@ -1764,7 +1769,7 @@ with admin_tab:
             import io as _io_mt3
             _inv_sel = pd.read_excel(io.BytesIO(st.session_state['inv_bytes_cache']))
             _inv_sel.columns = [c.strip() for c in _inv_sel.columns]
-            _inv_sel = _inv_sel[(_inv_sel['Status']=='Active') & (_inv_sel['Sub Category']==_sel_subcat)].copy()
+            _inv_sel = _inv_sel[_active_mask(_inv_sel) & (_inv_sel['Sub Category']==_sel_subcat)].copy()
             _inv_sel['Item ID'] = pd.to_numeric(_inv_sel['Item ID'], errors='coerce')
             _inv_sel['RSP'] = pd.to_numeric(_inv_sel['RSP'], errors='coerce').fillna(0)
             _n_skus = len(_inv_sel)
@@ -1962,7 +1967,7 @@ with kpi_tab:
         if _inv_kpi_bytes:
             _inv_kpi = pd.read_excel(io.BytesIO(_inv_kpi_bytes))
             _inv_kpi.columns = [c.strip() for c in _inv_kpi.columns]
-            _inv_kpi = _inv_kpi[_inv_kpi['Status']=='Active'].copy()
+            _inv_kpi = _inv_kpi[_active_mask(_inv_kpi)].copy()
             _inv_kpi['Item ID'] = pd.to_numeric(_inv_kpi['Item ID'], errors='coerce')
             for _c in ['Jahra Dark Store Stock','Qurtuba Dark Store Stock',
                        'Sabah Salem Dark Store Stock','Ardiya - Distribution Center Stock',
