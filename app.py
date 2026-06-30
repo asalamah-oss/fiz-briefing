@@ -468,7 +468,7 @@ SEV_ORDER_SUB = ['DIRECT']
 # Bump this string whenever run_analysis or any helper it calls (e.g. _compute_kpis)
 # is edited, so @st.cache_data forces a clean recompute instead of serving a stale
 # result computed under old code. Prevents StopIteration / empty-data crashes on redeploy.
-CODE_VERSION = "2026-06-30b"
+CODE_VERSION = "2026-06-30c"
 
 def _active_mask(df):
     """Case-insensitive Active filter. Source system has shipped both 'Active' and
@@ -476,7 +476,7 @@ def _active_mask(df):
     return df['Status'].astype(str).str.strip().str.upper() == 'ACTIVE'
 
 @st.cache_data(show_spinner=False)
-def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json, code_version=CODE_VERSION):
+def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json, code_version=CODE_VERSION, cache_gen=0):
     """Run full briefing analysis. vel_key changes when velocity data is updated."""
     # Load inventory
     inv = pd.read_excel(io.BytesIO(inv_bytes))
@@ -1320,7 +1320,8 @@ if 'ai_sub_cache' not in st.session_state:
 
 with st.spinner('Analysing inventory…'):
     try:
-        data, kpis = run_analysis(inv_bytes, uploaded_inv.name, vel_key, _ytd_json, _l7_json, _net_json)
+        data, kpis = run_analysis(inv_bytes, uploaded_inv.name, vel_key, _ytd_json, _l7_json, _net_json,
+                                  cache_gen=st.session_state.get('_cache_gen', 0))
     except Exception as e:
         st.error(f'Error: {e}'); st.exception(e); st.stop()
 
@@ -1596,17 +1597,20 @@ with briefing_tab:
                     st.success(f"✓ {len(new_results)} pairs assessed and cached. Reloading…")
                     st.rerun()
     with _col_ai2:
-        if st.button(f"🔄 Re-assess {_tier_label_q} ({_cached:,} cached)", key="ai_reassess_btn",
-                     help="Clears cached results for current tier and re-runs AI with latest rules"):
-            with st.spinner(f"Clearing cache and re-assessing {_tier_label_q}…"):
-                ai_cache = st.session_state.get('ai_sub_cache', {})
-                # Remove cached entries for pairs in current tier's queue_all
-                _all_tier_keys = {(p[0],p[1]) for p in _queue_all}
-                ai_cache = {k:v for k,v in ai_cache.items() if k not in _all_tier_keys}
-                st.session_state['ai_sub_cache'] = ai_cache
-                st.session_state['_ai_queue'] = _queue_all  # requeue everything for this tier
-                save_sub_cache_data(ai_cache)
-                st.success("✓ Cache cleared for this tier. Click 'Enrich with AI' to re-run.")
+        if st.button(f"🔄 Re-assess all ({_cached:,} cached)", key="ai_reassess_btn",
+                     help="Clears ALL cached assessments and rebuilds the queue so every current "
+                          "OOS pair is re-run with the latest AI rules (e.g. fat-content fix)"):
+            with st.spinner("Clearing entire cache and rebuilding queue…"):
+                # 1. Wipe the whole cache (all tiers)
+                st.session_state['ai_sub_cache'] = {}
+                save_sub_cache_data({})
+                # 2. Empty the leftover queue; it will be rebuilt by run_analysis
+                st.session_state['_ai_queue'] = []
+                # 3. Force run_analysis to recompute (it skips cached pairs when building
+                #    the queue, so with an empty cache it will queue every current OOS pair)
+                st.session_state['_cache_gen'] = st.session_state.get('_cache_gen', 0) + 1
+                st.success("✓ Cache cleared. Reloading to rebuild the full queue — "
+                           "then click 'Enrich with AI' to re-run.")
                 st.rerun()
 
     # Compute top_ids live so nav filter always reflects current tier
