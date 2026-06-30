@@ -465,8 +465,13 @@ def get_flagged_item_ids(flags, flag_types):
 # ── MAIN ANALYSIS ─────────────────────────────────────────────────────────────
 SEV_ORDER_SUB = ['DIRECT']
 
+# Bump this string whenever run_analysis or any helper it calls (e.g. _compute_kpis)
+# is edited, so @st.cache_data forces a clean recompute instead of serving a stale
+# result computed under old code. Prevents StopIteration / empty-data crashes on redeploy.
+CODE_VERSION = "2026-06-30a"
+
 @st.cache_data(show_spinner=False)
-def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json):
+def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json, code_version=CODE_VERSION):
     """Run full briefing analysis. vel_key changes when velocity data is updated."""
     # Load inventory
     inv = pd.read_excel(io.BytesIO(inv_bytes))
@@ -1315,6 +1320,12 @@ with st.spinner('Analysing inventory…'):
         st.error(f'Error: {e}'); st.exception(e); st.stop()
 
 # ── SESSION STATE ─────────────────────────────────────────────────────────────
+if not data:
+    st.warning("⚠️ No briefing data was produced from this file. This usually means the "
+               "analysis cache is stale after a redeploy, or the inventory file has no "
+               "Active SKUs in recognised categories. Try: (1) re-upload the Master_LIst, "
+               "or (2) use 'Manage app → Reboot' / 'Clear cache' to flush the cache, then reload.")
+    st.stop()
 if 'cur_cat' not in st.session_state or st.session_state.cur_cat not in data:
     st.session_state.cur_cat  = next(iter(data))
     st.session_state.cur_sub  = data[st.session_state.cur_cat][0]['subcat']
