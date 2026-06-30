@@ -709,15 +709,14 @@ def _compute_kpis(inv, net_df, ytd_df, l7_df):
               'Ardiya - Distribution Center Stock','Total SOH','RSP']:
         inv_c[c] = pd.to_numeric(inv_c.get(c,0), errors='coerce').fillna(0)
 
-    # Revenue at risk
+    # OOS SKUs at risk (vel >= 5/day)
     if ytd_df is not None:
         all_vel = ytd_df.merge(inv_c[['Item ID','Total SOH','RSP']].rename(columns={'Item ID':'item_id'}),
                                 on='item_id', how='left')
         oos_vel = all_vel[(all_vel['Total SOH']==0) & (all_vel['true_daily']>=0.5)]
-        kpis['rev_risk'] = round(float((oos_vel['true_daily']*oos_vel['RSP']).sum()),0)
         kpis['skus_at_risk'] = int((oos_vel['true_daily']>=5).sum())
     else:
-        kpis['rev_risk'] = 0; kpis['skus_at_risk'] = 0
+        kpis['skus_at_risk'] = 0
 
     # DC transfer opps
     dc_store_opps = 0
@@ -845,7 +844,6 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier, top_ids_s
     avail = kpis.get('avail',{}).get(avail_tier,{'network':0,'full3':0,'oos_n':0})
     kpi_html = f'''
     <div class="kstrip">
-      <div class="kp kp-click" onclick="selectKpi('rev_risk')"><div class="kl">Revenue at risk · no direct sub ↗</div><div class="kv r">{kpis.get("rev_risk",0):,.0f} KD/day</div></div>
       <div class="kp"><div class="kl">OOS SKUs (vel≥5/day)</div><div class="kv r">{kpis.get("skus_at_risk",0)}</div></div>
       <div class="kp kp-avail">
         <div class="kl">Availability · Top {avail_tier}</div>
