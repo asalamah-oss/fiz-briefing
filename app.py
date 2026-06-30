@@ -967,6 +967,10 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier, top_ids_s
                     detail_html += '</div></div>'
                 detail_html += '</div>'
 
+            # Filter overstock to top N only (empty top_ids = show all)
+            _ov_filtered = [o for o in sd.get('overstock_skus',[])
+                            if not top_ids or int(o.get('item_id',0)) in top_ids]
+            sd['overstock_skus'] = _ov_filtered  # always update
             if sd.get('overstock_skus'):
                 detail_html += '<div class="dl" style="margin-top:5px;color:#d97706">⚠️ Overstock (&gt;45 days cover)</div><div class="ow">'
                 for ov in sd['overstock_skus'][:4]:
