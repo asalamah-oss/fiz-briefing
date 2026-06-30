@@ -2279,7 +2279,6 @@ item_id,store_norm,l7_units
 29366,Sabah Salem,1
 29372,Sabah Salem,1
 29374,Qurtuba,2
-29375,Qurtuba,3
 29379,Jahra,1
 29379,Qurtuba,4
 29379,Sabah Salem,3
@@ -3406,9 +3405,6 @@ item_id,store_norm,l7_units
 31848,Sabah Salem,1
 31851,Qurtuba,3
 31851,Sabah Salem,3
-31854,Jahra,3
-31854,Qurtuba,11
-31854,Sabah Salem,10
 31857,Sabah Salem,2
 31860,Qurtuba,3
 31860,Sabah Salem,4
@@ -5865,10 +5861,6 @@ item_id,store_norm,l7_units
 37967,Sabah Salem,1
 37975,Qurtuba,2
 37976,Qurtuba,3
-37981,Sabah Salem,1
-37982,Jahra,1
-37982,Qurtuba,3
-37982,Sabah Salem,2
 37984,Sabah Salem,1
 37985,Qurtuba,2
 37986,Jahra,1
@@ -7101,7 +7093,6 @@ item_id,store_norm,l7_units
 40155,Sabah Salem,3
 40156,Qurtuba,1
 40156,Sabah Salem,2
-40160,Sabah Salem,3
 40167,Sabah Salem,7
 40168,Sabah Salem,1
 40170,Sabah Salem,2
