@@ -854,3 +854,2593 @@ oos_id,sub_id,strength,reason
 27524,31552,STRONG,Same brand; different flavor/price; higher units.
 31553,39890,NONE,Different brand; format; significantly higher price.
 31553,39699,NONE,Completely different product; massively higher price.
+37758,28510,STRONG,Same type; similar price; different brand/flavor
+37758,34956,STRONG,Same type; lower price; different format/size
+37758,34961,STRONG,Same type; lower price; different format/size
+37758,25496,STRONG,Same type; similar price; slightly larger size
+37758,34958,STRONG,Same type; lower price; different flavor/format
+37758,28512,NONE,Different format; significantly higher price
+37758,28511,NONE,Different format; significantly higher price
+37758,24470,NONE,Different format; significantly higher price
+37758,29518,STRONG,Same type; similar price; different flavor
+37758,27801,NONE,Significantly higher price; different format
+37758,29519,STRONG,same category; different flavor; similar price
+37758,24469,STRONG,same category; chili flavor match; similar price
+37758,28513,STRONG,same category; chili flavor; larger size/higher price
+37758,34957,STRONG,same category; chili flavor; slightly smaller/cheaper
+37758,27209,STRONG,same category; different flavor; larger size
+37758,24725,STRONG,same category; different flavor; slightly smaller
+37758,33673,STRONG,same category; different flavor; slightly smaller
+37758,29776,STRONG,same category; different flavor; slightly smaller
+37758,25543,STRONG,same category; much smaller size; much cheaper
+37758,35722,STRONG,same category; different flavor; much smaller/cheaper
+37758,26543,STRONG,same chili flavor; smaller size; much cheaper
+37758,30609,NONE,different flavor (ketchup vs chili)
+37758,28562,NONE,different flavor (lightly salted vs chili)
+37758,25544,NONE,different flavor (paprika vs chili)
+37758,28575,NONE,different flavor (salt & vinegar vs chili)
+37758,35721,NONE,different product type (multigrain cheese chips)
+37758,28561,STRONG,same potato chips; similar size; much cheaper
+37758,26542,NONE,different flavor (salt & vinegar vs chili)
+37758,30608,NONE,different flavor (sweet & sour vs chili)
+37758,24520,NONE,different product type (wheat crusts)
+37758,35725,NONE,different brand; flavor; price too low
+37758,30525,STRONG,same category; similar price; different flavor
+37758,25476,STRONG,same category; similar price; different flavor
+37758,32449,NONE,price significantly higher; different size format
+37758,24445,STRONG,same category; similar price; different flavor
+37758,29494,STRONG,same type; chili flavor; lower price
+37758,40453,STRONG,same type; spicy flavor; similar price
+37758,32448,STRONG,same type; spicy flavor; lower price
+37758,26473,STRONG,same type; similar size; lower price
+37758,40451,STRONG,same type; similar size; similar price
+37758,24443,STRONG,same type; different brand/flavor/size
+37758,25475,STRONG,same type; different brand/flavor/size
+37758,40450,STRONG,same type; larger size; higher price
+37758,33417,STRONG,same type; different brand/flavor/size
+37758,37921,STRONG,same type; similar size/price; different brand
+37758,38670,STRONG,same type; similar size; slightly higher price
+37758,40502,STRONG,same type; similar size; slightly higher price
+37758,31498,STRONG,same type; chili flavor match; similar size
+37758,40499,STRONG,same type; smaller size; similar price
+37758,36969,NONE,multipack format; very different size/price
+37758,36968,NONE,different format (multipack); different flavour; higher price
+37758,36967,NONE,different format (multipack); different flavour; higher price
+37758,40506,NONE,different format (baked); different size; higher price
+37758,33745,NONE,different flavour; baked vs fried format
+37758,25798,NONE,different flavour; baked vs fried format
+37758,39790,NONE,different flavour; baked vs fried format
+37758,37166,NONE,different flavour; multipack format; much higher price
+37758,35656,STRONG,same brand type; similar size; different flavour
+37758,27466,STRONG,same brand type; similar size; different flavour
+37758,36386,NONE,multipack format; different flavour; higher price
+37758,35660,STRONG,same chili flavor; smaller size; lower price
+37758,37170,NONE,twin pack; much larger format; higher price
+37758,29450,STRONG,different flavor; same brand tier; similar size
+37758,37168,NONE,twin pack; much larger format; higher price
+37758,35659,STRONG,plain flavor; same brand tier; similar size
+37758,40082,STRONG,chili flavor match; wavy variant; larger size
+37758,40084,STRONG,different flavor; larger size; similar price range
+37758,39793,NONE,multipack assorted format; different structure
+37758,31287,NONE,multipack mini bags; very different format
+37758,40511,STRONG,different flavor; larger size; comparable brand tier
+37758,31286,NONE,multipack format; different flavor; price mismatch
+37758,24444,NONE,kettle style; different flavor; much higher price
+37758,33419,NONE,kettle style; different flavor; higher price
+37758,36388,NONE,multipack format; different flavor; higher price
+37758,40505,STRONG,same size; same price; similar chip format
+37758,35654,STRONG,similar single-serve chip; slightly lower price
+37758,34960,NONE,twigs/sticks format; different product type
+37758,25187,NONE,different flavor; larger size; higher price
+36632,32508,NONE,cheese puffs vs rolled tortilla chips; different type
+36632,34861,NONE,multipack cheese puffs; completely different product type
+36632,33490,NONE,cheese puffs vs chili corn chips; different flavor
+36632,32509,NONE,chiplets vs rolled corn chips; different format
+36632,25708,NONE,pufak vs rolled corn chips; different format
+36632,26540,NONE,pufak vs rolled corn chips; different format
+36632,28559,NONE,cheese corn chips vs chili lime; different flavor
+36632,29570,NONE,ketchup flavor vs chili lime; different flavor
+36632,27596,NONE,nacho cheese vs chili lime; different flavor
+36632,27609,NONE,cheese rings vs corn chips; different format
+36632,26541,NONE,salt & vinegar vs chili lime; different flavor
+36632,39005,NONE,popcorn straws vs corn chips; different type
+36632,34153,STRONG,same flavor profile; smaller size; different brand
+36632,32600,STRONG,similar format; different flavor; smaller size
+36632,30698,STRONG,same brand/format; original flavor; smaller size
+36632,38791,STRONG,similar flavor/size; different brand/price
+36632,35538,NONE,different product format; multi-pack; cheese puffs
+36632,35647,NONE,cheese puffs; different type; larger size
+36632,39791,NONE,cheese puffs; different type; multi-pack
+36632,37557,NONE,cheese puffs; different type; larger size
+36632,27465,NONE,cheese puffs; different snack type entirely
+36632,35677,NONE,cheese puffs; different snack type entirely
+36632,38669,STRONG,same flavor profile; larger size; similar price
+36632,35643,STRONG,same flavor; much smaller size; lower price
+36632,24644,STRONG,same flavor; smaller size; lower price
+36632,36389,STRONG,same flavor; multi-pack format; higher price
+36632,31988,STRONG,different brand/flavor; similar snack type
+36632,35537,NONE,multi-pack assorted; different format entirely
+36632,29921,STRONG,different flavor; similar corn chip type
+36632,40389,NONE,different flavor; different chip type entirely
+36632,40224,NONE,different format; assorted multi-pack; different type
+36632,40503,NONE,different chip type; ridged potato chip
+36632,31102,NONE,different brand; format; size; and flavor profile
+36632,38243,NONE,different brand; format; multipack vs single bag
+36632,39792,NONE,different brand; product type; much smaller size
+36632,35658,STRONG,similar spicy corn chip; close price/size
+28093,33598,STRONG,same brand; different flavor and larger size
+28093,29005,DIRECT,same brand; size; price; different flavor only
+28093,32634,STRONG,same brand; different flavor and larger size
+28093,31740,STRONG,same brand; different flavor and larger size
+28093,29009,STRONG,same brand; size; price; different flavor only
+28093,25584,NONE,different brand and product type entirely
+28093,32660,NONE,Different brand; type (stix vs chips); flavor
+28093,30765,NONE,Different brand; type (stix vs chips); flavor
+28093,26702,NONE,Different brand; type (stix vs chips)
+26673,33598,STRONG,Same brand/size; different flavor; slight price increase
+26673,29005,NONE,Different size (165g vs 40g)
+26673,32634,STRONG,Same brand/size; different flavor; slight price increase
+26673,31740,STRONG,Same brand/size/price; different flavor only
+26673,29009,NONE,Different size (165g vs 40g)
+26673,25584,NONE,Different brand; type (sticks vs chips)
+26673,32660,NONE,Different brand; type (stix vs chips)
+26673,30765,NONE,different brand; flavor; and much smaller size
+26673,26702,NONE,different brand; flavor; and much smaller size
+28093,25585,STRONG,same type; minor brand/size/price difference
+26673,25585,STRONG,same type; minor brand/size/price difference
+29009,33598,STRONG,same brand; different flavor and larger size
+29009,29005,STRONG,same brand/size/price; different flavor only
+29009,32634,STRONG,same brand; different flavor and larger size
+29009,31740,STRONG,same brand/flavor; larger size only difference
+30367,30688,NONE,wrong sub-category; bread not canned chips
+30367,32387,NONE,wrong sub-category; bread not canned chips
+30367,27460,NONE,Brioche vs multigrain; different type and size
+30367,31282,STRONG,Same brand; milk toast; larger size; similar price
+30367,30223,STRONG,Same brand; multigrain vs brioche; larger size
+30367,28275,STRONG,Same brand; original toast; larger size; lower price
+30743,30688,NONE,Brioche vs white toast; smaller size; higher price
+30743,32387,STRONG,White vs brown toast; larger size; similar price
+30743,27462,STRONG,Same format; milk toast; larger size; slight premium
+30743,27460,NONE,Multigrain vs white; different type
+30743,32388,DIRECT,White toast; larger size; slightly lower price
+30743,35923,NONE,Protein toast; different type; double the price
+30743,31282,STRONG,Same white toast; smaller size; cheaper price
+30743,30223,NONE,Multigrain type differs from white toast
+30743,28275,STRONG,Same category; original white toast; cheaper price
+30743,30367,NONE,Brioche style differs; much smaller size
+30743,27208,NONE,Whole wheat differs from white toast
+27460,30688,NONE,Brioche style differs; smaller size; higher price
+27460,32387,STRONG,Same brand; same size; similar type
+27460,27462,STRONG,Same brand; same size; milk toast close
+27460,32388,STRONG,Same brand; same size; white toast match
+27460,35923,NONE,Different brand; smaller size; much higher price
+27460,31282,STRONG,Same brand type; smaller size; much cheaper
+27460,30223,STRONG,Multigrain match; smaller size; lower price
+27460,28275,STRONG,Different grain type; smaller; cheaper
+27460,30367,NONE,Brioche different format; half the size
+27460,27208,STRONG,Whole wheat vs multigrain; similar price/size
+27460,29729,NONE,Bite bread; much smaller; different format
+27460,32645,STRONG,Multigrain match; same size; similar price
+30743,29729,NONE,Bite bread; much smaller; different format
+30743,32645,STRONG,Same brand; same size; multigrain variant
+31570,33343,NONE,Different bread type; roll vs hard roll
+31570,26415,STRONG,same purpose; smaller size; different brand/price
+31570,32237,STRONG,same burger bun type; similar weight/price
+31570,24957,STRONG,milk roll variant; same sandwich bun category
+31570,25385,STRONG,sandwich roll; similar size and price
+31570,28371,STRONG,same brand; brioche variant; higher price
+31570,27403,DIRECT,same brand; same type; same price/weight
+31570,26490,STRONG,same brand; hotdog vs hard roll format
+31570,25490,STRONG,same brand; potato variant; similar weight
+31570,33583,STRONG,same brand; slider size; larger pack
+31570,29510,STRONG,same brand; French bread variant; similar size
+24466,33343,STRONG,Similar roll format; different brand/size/price
+24466,26415,NONE,Burger buns vs French bread; wrong format
+24466,32237,STRONG,Burger buns similar format; minor size/price diff
+24466,24957,STRONG,Sandwich milk roll; similar soft bread format
+24466,25385,STRONG,Sandwich roll white; closest size and price
+24466,28371,STRONG,Brioche burger buns; same brand; slight price diff
+24466,27403,STRONG,Same brand burger buns; lower price/size diff
+24466,26490,STRONG,Same brand hotdog roll; similar size/format
+24466,25490,STRONG,Same brand potato buns; similar format/weight
+24466,33583,NONE,Slider format; significantly larger size and price
+24466,29510,DIRECT,Same brand; type; size; price match.
+26491,33343,STRONG,Similar roll type; different brand/size/price.
+26491,26415,NONE,Burger bun; not hotdog roll format.
+26491,32237,STRONG,Burger buns; not hotdog rolls specifically.
+26491,24957,STRONG,Similar soft roll; different brand/size/price.
+26491,25385,STRONG,Similar white roll; minor size/price difference.
+26491,28371,NONE,Brioche burger buns; wrong type/format/price.
+26491,27403,STRONG,Burger buns; same brand; close size/price.
+26491,26490,DIRECT,Same brand; type; similar size/price.
+26491,25490,STRONG,Same brand; different flavor/price; similar format.
+26491,33583,STRONG,same brand; different format; higher price
+26491,29510,STRONG,same brand; similar bread format; close price
+31570,33123,STRONG,burger buns; different brand; higher price
+31570,34807,NONE,bagel; very different format and price
+31570,34860,NONE,sliced loaf format; different type entirely
+31570,34808,NONE,bagel; very different format and price
+31570,34841,NONE,single milk bun; different format/price
+31570,34842,NONE,brioche pull-apart; different format entirely
+31570,34840,NONE,English muffins; different format entirely
+31570,35922,STRONG,burger buns; different brand; higher price
+31570,35954,NONE,Different product type; protein roll vs hard roll
+31570,26491,STRONG,Same brand; similar weight; different roll type
+31570,27404,STRONG,Same brand; similar weight; burger buns variant
+31570,24466,NONE,Different product type; French bread vs hard roll
+31570,36733,NONE,Different type; potato hotdog roll vs hard roll
+28371,33343,NONE,Different type; sandwich roll vs brioche buns
+28371,33123,STRONG,Same type; brioche burger buns; different brand/size
+28371,26415,STRONG,Same type; burger buns; minor brand difference
+28371,32237,STRONG,Same type; plain burger buns; similar price
+28371,24957,NONE,Different type; milk sandwich roll vs brioche buns
+28371,25385,STRONG,Same purpose; different brand; much lower price
+28371,34841,NONE,Single artisan piece; much higher price; different format
+28371,34842,NONE,Single artisan piece; much higher price; different format
+28371,35922,STRONG,Same type; protein variant; higher price; different brand
+28371,35954,NONE,Only 2 buns; wrong size/count format
+28371,26491,NONE,Hotdog rolls; wrong shape and type
+28371,27403,STRONG,Same brand; same type; lower price; plain
+28371,27404,STRONG,Same brand; same type; sesame topping added
+28371,26490,NONE,Hotdog rolls; wrong shape and type
+28371,24466,NONE,French bread; completely different format/type
+28371,29510,STRONG,Same brand; different bread type; lower price
+31570,33999,NONE,Different brand; much higher price; different type
+31570,25672,NONE,Different brand; much higher price; hotdog not burger
+31570,32646,NONE,Different brand; much higher price; different format
+31570,26061,NONE,Different brand; much higher price; different type
+31750,40225,NONE,Completely different product; massively higher price
+31750,40227,NONE,Sourdough vs pita; completely different type
+31750,40228,NONE,Tanour vs pita; different type; far higher price
+31750,40229,NONE,Whole wheat sourdough vs white pita; different type
+31750,40019,NONE,Brown rice bread vs white pita; different type
+31750,40022,NONE,Different product type; Italian baksam vs pita
+31750,40020,NONE,Whole barley bread; different grain type
+31750,40023,NONE,Whole spelt bread; different grain type
+31750,35958,STRONG,Similar Arabic flatbread; minor brand/price difference
+31750,35925,STRONG,Similar Arabic flatbread; minor brand/price difference
+31750,35921,NONE,Wrap bread; different format from pita
+31750,35926,NONE,Protein sticks; completely different product format
+31750,32468,DIRECT,Same white Arabic bread; similar size/price
+31750,33440,NONE,Brown bread; different type from white
+31750,28499,DIRECT,Same white Lebanese bread; similar format/price
+31750,29708,STRONG,Same brand; brown vs white; similar price
+31749,40225,NONE,Different brand; format; 3.78x price increase
+31749,40227,NONE,Different product type; sourdough vs pita bread
+31749,40228,NONE,Different product type; tanour vs pita bread
+31749,40229,NONE,Different product type; sourdough vs pita bread
+31749,40019,STRONG,Similar healthy bread; minor format/price difference
+31749,40022,NONE,Different product; zaatar baksam; 7x price increase
+31749,40020,STRONG,Similar healthy flatbread; minor format difference
+31749,40023,STRONG,Similar healthy flatbread; minor format difference
+31749,35958,STRONG,Similar healthy fiber bread; same format; cheaper
+31749,35925,STRONG,same health-focus pita; minor price/brand difference
+31749,35921,STRONG,protein wrap vs pita; similar health focus
+31749,35926,NONE,sticks format; very different product type
+31749,32468,NONE,plain white bread; no fiber; much cheaper
+31749,33440,STRONG,brown/fiber pita; similar health intent; cheaper
+31749,28499,NONE,plain white bread; no fiber focus
+31749,29708,STRONG,same brand; brown pita; similar format
+31750,38892,NONE,sliced sandwich bread; different format entirely
+31750,31749,STRONG,same brand; smaller size; health fiber variant
+27542,28644,STRONG,same croissant type; similar format; slightly pricier
+27542,24595,STRONG,same type; chocolate filling; minor price/brand diff
+27542,31681,STRONG,same type; different filling flavor (strawberry vs cocoa)
+27542,28638,STRONG,same type; chocolate filling; smaller single unit
+27542,27666,STRONG,same type; mini format; cocoa filling; higher price
+27542,27183,STRONG,same croissant type; no filling; minor price diff
+27542,36026,NONE,different filling type (cheese/zaatar vs chocolate)
+27542,32232,NONE,different format (puff) and filling (cheese/zaatar)
+27542,26181,STRONG,same chocolate flavor; different format (puff vs croissant)
+27542,36025,NONE,different filling type (zaatar vs chocolate)
+27542,26504,NONE,different filling type (cheese vs chocolate)
+27542,30543,STRONG,Same brand; plain vs chocolate; smaller size
+27542,35536,STRONG,Same brand; mini format; similar total weight
+27542,29509,STRONG,Same brand; zaatar vs chocolate; same price
+27542,35535,STRONG,Same brand; zaatar mini; slight price difference
+29194,28644,NONE,Cheese puff vs croissant; massive price difference
+29194,24595,NONE,Cheese puff vs croissant; completely different product
+29194,31681,NONE,Cheese puff vs croissant; completely different product
+29194,28638,NONE,Cheese puff vs croissant; different product type
+29194,27666,NONE,Cheese puff vs croissant; completely different product
+29194,27183,NONE,Cheese puff vs butter croissant; different product
+29194,36026,STRONG,same brand/price; different filling type
+29194,32232,DIRECT,same brand/size/price; similar cheese filling
+29194,26181,STRONG,same brand/size/price; different filling
+29194,24589,NONE,different format; higher price; larger size
+29194,26138,NONE,different filling; higher price; larger size
+29194,36025,STRONG,same brand/price; different filling type
+29194,26504,NONE,multipack format; different brand; higher price
+29194,30543,NONE,multipack format; different brand; higher price
+29194,35536,NONE,multipack format; different brand; higher price
+29194,29509,NONE,multipack format; different brand; higher price
+29194,35535,NONE,different flavor (zaatar vs cheese puff)
+35534,28644,STRONG,same cheese croissant; different brand/size/price
+35534,24595,NONE,different filling (cocoa vs cheese)
+35534,31681,NONE,different filling (strawberry vs cheese)
+35534,28638,NONE,different filling (hazelnut/cocoa vs cheese)
+35534,27666,NONE,different filling (cocoa vs cheese)
+35534,27183,NONE,different flavor (butter vs cheese)
+35534,36026,STRONG,same cheese croissant; minor size/price difference
+35534,32232,NONE,different format (puff vs mini croissant)
+35534,26181,NONE,different filling (chocolate vs cheese)
+35534,36025,NONE,different brand; flavor (zaatar vs cheese); much smaller
+35534,26504,STRONG,same brand/type; larger size; similar price
+35534,30543,STRONG,same brand; plain vs cheese; same format
+35534,35536,DIRECT,same brand; format; size; price; plain vs cheese
+35534,29509,STRONG,same brand; zaatar vs cheese; larger size
+35534,35535,STRONG,same brand; format; size; zaatar vs cheese
+27542,29194,NONE,puff vs croissant; different format entirely
+27542,29188,NONE,puff vs croissant; different format entirely
+27542,40226,NONE,dates vs chocolate; different brand; much pricier
+27542,40016,NONE,different brand; cheese vs chocolate; much pricier
+27542,40017,NONE,plain vs chocolate; different flavor; higher price
+27542,37865,NONE,cheese vs chocolate; different flavor/filling
+27542,32264,NONE,plain protein vs chocolate; different flavor
+27542,29225,NONE,zaatar flavor vs chocolate; different filling
+27542,35534,STRONG,same brand; cheese vs chocolate; similar size/price
+27542,27808,DIRECT,same chocolate croissant; same brand tier; similar format
+27542,27809,STRONG,plain vs chocolate; same brand; similar price
+27542,38084,NONE,keto butter; different type; much higher price
+27542,38085,NONE,focaccia vs croissant; different product type
+27542,26751,DIRECT,same chocolate croissant; same brand; similar price/format
+27542,28785,NONE,Different type: chocolate vs plain croissant.
+26488,28640,NONE,Different type: cupcake vs chocolate cupcake; massive size difference.
+26488,32579,NONE,Different type: dates cupcake vs vanilla cupcake; massive size difference.
+26488,32802,NONE,Different type: cupcake vs swiss roll cake.
+26488,40234,NONE,Different type: dates cupcake vs chocolate cupcake.
+26488,40233,NONE,Different type: dates cupcake vs orange cupcake.
+26488,30926,NONE,Different type: cupcake vs english bar cake.
+26488,29989,NONE,Different type: cupcake vs fruit cake slice.
+26488,40237,NONE,Different type: cupcake vs chocolate swiss roll.
+26488,40239,NONE,Different type: cupcake vs strawberry swiss roll.
+26488,40240,STRONG,same format (swiss roll vs cupcake); similar price
+26488,27482,NONE,cake mix vs ready-made cupcake; different format
+26488,26428,NONE,cake mix vs ready-made cupcake; different format
+26488,25883,NONE,pound cake; different format and much higher price
+26488,37765,STRONG,same brand; same price; different product type
+26488,26489,STRONG,same brand KFM; cupcakes; lower price
+26488,37766,STRONG,same brand; same price; different product type
+26488,24465,STRONG,same brand KFM; cupcakes; lower price
+26488,30176,NONE,multipack; different brand; much higher price
+26488,40352,NONE,bagel crisps; completely different product category
+26488,40351,NONE,Bagel crisps vs cupcakes; completely different product
+26488,40353,STRONG,Brownie bites similar sweet snack format
+26488,40350,STRONG,Salted caramel flavor matches; similar sweet snack
+31571,28640,STRONG,Chocolate cupcakes substitute pancakes; different type/size
+31571,32579,STRONG,Vanilla cupcakes substitute pancakes; different type/size
+31571,32802,NONE,Swiss roll cake; different format and type
+31571,40234,STRONG,Chocolate cupcake; similar small cake format
+31571,40233,STRONG,Orange cupcake; similar small cake format
+31571,30926,STRONG,English bar cake; similar bakery product format
+31571,29989,NONE,Fruit cake slice; different flavor/type entirely
+31571,40237,NONE,Pancakes vs Swiss roll; different product type
+31571,40239,NONE,Pancakes vs Swiss roll; different product type
+31571,40240,NONE,Pancakes vs Swiss roll; different product type
+31571,27482,NONE,Pancakes vs cake mix; different product type
+31571,26428,NONE,Pancakes vs cake mix; different product type
+31571,25883,NONE,Pancakes vs pound cake; different product type
+31571,37765,NONE,Pancakes vs biscotti; different product type
+31571,26489,NONE,Pancakes vs cupcakes; different product type
+31571,37766,NONE,Pancakes vs biscotti; different product type
+31571,24465,NONE,Pancakes vs cupcakes; different product type
+31571,30176,NONE,Cupcakes ≠ pancakes; different product type
+31571,40352,NONE,Bagel crisps ≠ pancakes; different product type
+31571,40351,NONE,Bagel crisps ≠ pancakes; different product type
+31571,40353,NONE,Brownie bites ≠ pancakes; different product type
+31571,40350,NONE,Brownie crisps ≠ pancakes; different product type
+31347,33223,NONE,Wrong sub-category; water ≠ cakes/cookies
+31347,28332,NONE,Wrong sub-category; water ≠ cakes/cookies
+31347,36459,NONE,Wrong sub-category; water ≠ cakes/cookies
+31347,36493,NONE,Wrong sub-category; water ≠ cakes/cookies
+31347,27569,NONE,Wrong sub-category; water ≠ cakes/cookies
+31347,38561,STRONG,same brand family; larger bottle; higher price
+31347,24715,STRONG,similar size; slightly higher price; different brand
+31347,30805,STRONG,same brand; larger bottle; similar price
+31347,24594,STRONG,similar size; very close price; more bottles
+31347,27672,STRONG,slightly larger bottle; close price; more units
+31347,38033,NONE,premium brand; significantly higher price
+31347,36955,STRONG,similar size; slightly lower price; fewer bottles
+31347,32884,STRONG,similar size; slightly higher price; fewer bottles
+33553,24435,NONE,different product; marinated vs plain chicken
+33553,34096,STRONG,same brand; larger size; slightly higher price
+33553,33554,STRONG,same brand; whole chicken; slightly larger size
+33553,38342,NONE,different cut; different brand; much higher price
+33553,25940,NONE,different cut (breast fillet vs whole chicken)
+33553,28608,NONE,different cut (breast fillet vs whole chicken)
+33553,27641,NONE,different cut (breast fillet vs whole chicken)
+33553,30658,STRONG,same type; whole chicken; slightly larger size
+33553,24794,NONE,different cut (legs vs whole chicken)
+27838,24437,NONE,different cut; large quantity/price difference
+27838,32440,NONE,different cut (drumsticks vs breast fillet)
+27838,29951,NONE,different cut (drumsticks vs breast fillet)
+27838,33848,NONE,Wings/mixed parts ≠ sliced breast fillet
+27838,28476,NONE,Thighs ≠ sliced breast fillet; different cut
+27838,33411,NONE,Whole legs ≠ sliced breast fillet
+27838,25466,NONE,Wings ≠ sliced breast fillet; different cut
+27838,28930,NONE,Wings ≠ sliced breast fillet; different cut
+27838,24435,NONE,Whole marinated chicken ≠ sliced breast fillet
+27838,31223,NONE,Liver ≠ sliced breast fillet; different part
+27838,28477,NONE,Whole marinated chicken ≠ sliced breast fillet
+27838,27519,NONE,Whole marinated chicken ≠ sliced breast fillet
+27838,34096,NONE,Whole chicken ≠ sliced breast fillet
+27838,33553,NONE,Whole chicken vs sliced breast fillet
+27838,33554,NONE,Whole chicken vs sliced breast fillet
+27838,39441,NONE,Cooked/marinated vs fresh sliced breast fillet
+27838,38342,NONE,Shish tawook vs plain sliced breast fillet
+27838,28608,STRONG,Same brand/type; slightly larger; lower price
+27838,27641,STRONG,Same brand/type; double size; same price/kg
+27838,24760,NONE,Whole chicken vs sliced breast fillet
+27838,30657,NONE,Whole chicken vs sliced breast fillet
+27838,24794,NONE,Chicken legs vs breast fillet
+27838,38555,NONE,Chicken liver vs breast fillet
+27838,38384,NONE,Shish tawook vs sliced breast fillet; different format
+27838,30038,NONE,Mixed chicken parts vs sliced breast fillet
+27838,25940,STRONG,Butterfly vs sliced breast fillet; same brand/price
+27838,28946,NONE,Whole chicken vs sliced breast fillet
+24474,36618,STRONG,Roasted turkey slice; minor size/brand difference
+24474,36619,STRONG,Maple roasted turkey slice; minor size/brand difference
+24474,39838,NONE,Soudjouk vs smoked turkey slices; different type
+24474,39623,NONE,Turkey sausages vs smoked turkey slices; different format
+24474,39624,NONE,Soudjouk vs smoked turkey slices; different type/size
+24474,24753,STRONG,Smoked turkey slices; minor brand/size difference
+36618,36619,DIRECT,Same brand; same size; same price; similar flavor
+36618,40566,STRONG,Same brand; turkey; larger size; higher price
+36618,40567,STRONG,Different brand; smoked turkey; larger size; similar price
+36618,31186,STRONG,Different brand; smoked turkey; similar size and price
+36618,30559,STRONG,Different brand; low fat turkey; larger size; similar price
+36618,24475,STRONG,Different brand; turkey breast; different flavor; similar price
+36618,25507,STRONG,Different brand; turkey breast; different flavor; similar price
+36618,27562,STRONG,Different brand; turkey breast; different flavor; similar price
+36618,30896,STRONG,Different brand; smoked turkey; same size; similar price
+24474,40566,STRONG,Different brand; turkey; larger size; higher price
+24474,40567,STRONG,same type; different brand/size/price
+24474,31186,STRONG,same brand; smaller size; same price
+24474,30559,STRONG,same brand/size; low fat variant; slightly pricier
+24474,24475,STRONG,same brand; flavored variant; slightly pricier
+24474,25507,STRONG,same brand; flavored variant; slightly pricier
+24474,27562,STRONG,same brand; flavored variant; slightly pricier
+24474,30896,STRONG,same type; different brand; similar price
+36618,24753,STRONG,same type; different brand/size; similar price
+31016,31315,NONE,minced lamb vs lamb chops; different format
+31016,28007,NONE,minced lamb vs lamb chunks; different format
+31016,38382,STRONG,Same brand; similar product; slight price difference
+35131,34837,NONE,Wrong sub-category; not fresh meat
+35131,34838,NONE,Wrong sub-category; not fresh meat
+35131,37402,NONE,Wrong sub-category; not fresh meat
+35131,37404,NONE,Wrong sub-category; not fresh meat
+35131,37401,NONE,Wrong sub-category; not fresh meat
+35131,37403,NONE,Wrong sub-category; not fresh meat
+35131,36457,NONE,Wrong sub-category; not fresh meat
+35131,39132,NONE,Wrong sub-category; not fresh meat
+35131,39131,NONE,Wrong sub-category; not fresh meat
+35131,39654,NONE,different format; price 3x higher; larger size
+35131,30389,STRONG,similar chocolate stick format; slightly cheaper
+35131,33048,NONE,puff pastry vs chocolate stick; different type
+35131,38947,NONE,puff pastry vs chocolate stick; different type
+35131,38950,NONE,puff pastry vs chocolate stick; different type
+35131,38946,NONE,puff pastry vs chocolate stick; different type
+35131,36414,NONE,cone vs stick; different format entirely
+35131,36415,NONE,cone vs stick; different format entirely
+35131,36413,NONE,cone vs stick; different format entirely
+35131,36416,NONE,cone vs stick; different format entirely
+35131,36417,NONE,different format; cone vs chocolate stick
+35131,36419,NONE,different format; cone vs chocolate stick
+35131,30611,NONE,different brand; size; price too high
+35131,31619,STRONG,chocolate wafer roll; similar chocolate format
+35131,38781,NONE,price too high; different format
+35131,32511,NONE,different format; zoo biscuit vs stick
+35131,29572,NONE,too small; different biscuit format
+35131,28564,NONE,different format; mini biscuit vs stick
+35131,38779,NONE,price too high; different format
+35131,39521,NONE,different brand; format; price too high
+35131,39070,STRONG,same chocolate biscuit stick concept; larger size
+35131,39071,STRONG,same brand/type; smaller size; lower price
+35131,32636,STRONG,chocolate-filled biscuit; similar format; different brand
+35131,24382,STRONG,chocolate-filled biscuit stick; similar concept; smaller
+35131,30575,STRONG,same Nutella B-ready; multipack format; higher price
+35131,30700,STRONG,chocolate biscuit; larger size; different brand/format
+35131,34880,NONE,wafer rolls; significantly higher price; different format
+35131,29379,NONE,wafer format; peanut flavor; very different product
+35131,24789,NONE,wafer flutes; different format; different brand
+35131,35589,NONE,wafer rolls; different format and brand entirely
+35131,33741,STRONG,same chocolate stick format; different brand/size
+35131,38525,NONE,gluten-free digestive biscuits; completely different product
+35131,40365,NONE,chocolate-covered butter biscuit; different format/type
+35131,26343,NONE,chocolate-covered orange biscuit; different format/type
+35131,39012,STRONG,chocolate sandwich cookie; similar size/price
+35131,39018,NONE,much smaller size; different format
+35131,39016,STRONG,chocolate sandwich cookie; similar size/price
+35131,39014,STRONG,chocolate sandwich cookie; similar size/price
+35131,40431,STRONG,chocolate sandwich cookie; similar size/price
+35131,39021,NONE,much smaller size; different format
+35131,39022,NONE,Different product type; chocolate stick vs cookie
+35131,39011,NONE,Different product type; chocolate stick vs cookie
+35131,39017,NONE,Different product type; chocolate stick vs cookie
+35131,39015,NONE,Different product type; chocolate stick vs cookie
+35131,39013,NONE,Different product type; chocolate stick vs cookie
+35131,39019,NONE,Different product type; chocolate stick vs cookie
+35131,40383,NONE,Different product type; chocolate stick vs cracker
+35131,38764,NONE,Different product type; chocolate stick vs cracker
+35131,31040,NONE,Different product type; chocolate stick vs biscuit
+35131,29303,NONE,Different product type; chocolate stick vs biscuit
+35131,28027,NONE,different product type; coconut biscuits vs chocolate sticks
+35131,32330,NONE,bulk multipack; different format and price
+35131,26270,NONE,bulk multipack; different format and price
+35131,28557,NONE,plain Marie biscuits vs chocolate sticks
+35131,32507,NONE,plain butter biscuits vs chocolate sticks
+35131,30823,STRONG,chocolate cookies; similar snack format and price
+35131,24731,STRONG,chocolate cookies; similar snack format and price
+35131,28347,NONE,wafer vs chocolate stick; different type
+35131,37446,NONE,sandwich biscuit vs chocolate stick; different type
+35131,37445,NONE,sandwich biscuit vs chocolate stick; different type
+35131,37729,STRONG,similar chocolate biscuit snack; smaller; cheaper
+35131,38348,STRONG,chocolate/hazelnut wafer stick; smaller size; similar price
+35131,38349,STRONG,same as #2; multipack format; higher price
+35131,25823,STRONG,chocolate wafer; similar size; slightly cheaper
+35131,35664,STRONG,same as #4; multipack format; higher price
+35131,32798,STRONG,hazelnut wafer; similar size; slightly cheaper
+35131,35665,STRONG,same as #6; multipack format; higher price
+35131,32795,STRONG,peanut butter wafer multipack; different flavor profile
+35131,29799,STRONG,vanilla wafer; similar size; slightly cheaper
+35131,37070,NONE,bulk multipack; vastly different size and price
+35131,35663,STRONG,same snack category; different format/brand/price
+35131,30476,STRONG,wafer vs chocolate stick; similar indulgent snack
+35131,24509,STRONG,mixed wafer minis; different format/price
+35131,31500,STRONG,vanilla wafer minis; similar snack category
+35131,33358,STRONG,napolitaner minis; same snack category
+35131,32797,STRONG,cappuccino wafer; same snack category/format
+35131,32796,STRONG,coconut wafer; same snack category/format
+35131,26836,STRONG,cream noisette wafer; same snack category
+35131,27910,STRONG,chocolate wafer; closest match in category
+35131,26284,STRONG,coconut wafer quadratini; same snack category
+35131,24806,STRONG,same wafer/biscuit category; minor brand/price diff
+35131,25821,STRONG,same wafer category; minor brand/size diff
+35131,24358,STRONG,same wafer category; smaller size; lower price
+35131,33660,NONE,significantly larger; much higher price difference
+35131,35513,NONE,different format; significantly higher price
+35131,35514,STRONG,same wafer/chocolate category; similar snack format
+35131,33120,STRONG,same wafer category; minor size/price difference
+35131,35511,NONE,different flavor profile; higher price difference
+35131,34395,STRONG,same chocolate wafer category; similar price
+35131,34394,STRONG,same wafer bites category; similar price
+35131,25551,NONE,different product type; multipack vs single stick
+35131,32526,NONE,different product type; multipack vs single stick
+35131,38367,NONE,different product type; multipack vs single stick
+35131,39661,NONE,different product type; biscuit vs chocolate stick
+35131,35802,NONE,different product type; coated cookie vs chocolate stick
+35131,35803,NONE,different product type; chocolate biscuit vs stick
+35131,25176,NONE,different product type; sandwich biscuit vs stick
+35131,27468,NONE,different product type; chocolate biscuit vs stick
+35131,35875,NONE,different product type; multipack biscuit vs stick
+35131,33227,NONE,different product type; wafer vs chocolate stick
+35131,35876,STRONG,same chocolate stick format; different brand/size
+35131,27485,NONE,different format; coated cake vs chocolate stick
+35131,40334,NONE,multipack format; different product type entirely
+35131,32078,NONE,multipack cookies; different type from chocolate stick
+35131,27040,STRONG,cookies vs chocolate stick; different format/type
+35131,25002,NONE,multipack cookies; different type from chocolate stick
+35131,40343,NONE,savory crackers vs sweet chocolate stick
+35131,40342,NONE,savory crackers vs sweet chocolate stick
+35131,26418,NONE,chocolate digestive biscuits; different format/type
+35131,32373,NONE,chocolate digestive biscuits; different format/type
+35131,28446,NONE,chocolate stick vs digestive biscuit; different type
+35131,24504,NONE,chocolate stick vs digestive biscuit; different type
+35131,30482,NONE,chocolate stick vs chocolate digestive; different type
+35131,26527,NONE,chocolate stick vs digestive biscuit; different type
+35131,26404,NONE,chocolate stick vs digestive thins; different type
+35131,39314,NONE,chocolate stick vs dark chocolate digestive; different type
+35131,39192,NONE,chocolate stick vs sandwich biscuit; different type
+35131,39191,NONE,chocolate stick vs sandwich biscuit; different type
+35131,37542,NONE,chocolate stick vs caramel biscuit; different type
+35131,37578,NONE,chocolate stick vs caramel biscuit; different type
+35131,37577,NONE,different brand; format; and significantly higher price
+35131,37738,STRONG,similar chocolate biscuit stick; smaller; cheaper
+35131,27865,STRONG,wafer with chocolate/hazelnut filling; similar category
+35131,35084,DIRECT,same brand; same size; same type; slightly cheaper
+34834,34837,STRONG,same brand/type; different size format; lower price
+34834,34838,STRONG,same brand/type; larger size; lower price
+34834,37402,STRONG,same brand; similar chocolate milk filling biscuit
+34834,37404,NONE,different filling flavour (milk vs chocolate)
+34834,37401,NONE,different filling flavour (strawberry vs chocolate)
+34834,37403,NONE,different filling flavour (strawberry vs chocolate)
+34834,39131,STRONG,same chocolate biscuit type; different brand/size
+34834,30646,NONE,plain bourbon biscuit; no chocolate filling
+34834,30389,NONE,chocolate stick bar; not filled biscuit
+34834,33048,NONE,puff pastry; completely different product type
+34834,38950,NONE,puff pastry; completely different product type
+34834,38946,NONE,puff pastry; completely different product type
+34834,36414,STRONG,chocolate filled cone biscuit; similar concept/format
+34834,36415,NONE,almond flavour; not chocolate filled
+34834,36413,NONE,hazelnut flavour; not chocolate filled
+34834,36416,STRONG,chocolate filled cone biscuit; similar concept/format
+34834,36417,NONE,Cone format vs filled biscuit; different product
+34834,36419,NONE,Cone format vs filled biscuit; different product
+34834,30611,STRONG,Chocolate biscuit; similar format; different brand/size
+34834,31619,NONE,Wafer rolls; different format entirely
+34834,38781,NONE,Wafer rolls; different format entirely
+34834,32511,STRONG,Chocolate biscuit; similar type; smaller size
+34834,33491,NONE,No chocolate filling; different flavor profile
+34834,29572,STRONG,Chocolate cream filled biscuit; similar concept
+34834,28564,STRONG,Chocolate biscuit minis; similar type/format
+34834,38779,NONE,Milk cream filling; not chocolate filled
+34834,39521,STRONG,Same chocolate biscuit type; smaller size/different brand
+34834,39070,STRONG,Chocolate filled biscuit; different size/brand
+34834,39071,STRONG,Chocolate filled biscuit; much smaller single serve
+34834,32636,STRONG,Chocolate filled biscuit; different brand/size
+34834,24382,STRONG,Chocolate filled biscuit; similar single-serve format
+34834,30575,STRONG,Chocolate filled biscuit; multipack; similar format
+34834,30700,STRONG,Chocolate filled biscuit; larger pack different brand
+34834,34880,STRONG,Chocolate wafer rolls; similar indulgent category
+34834,29379,NONE,Wafer type; significantly different format/brand
+34834,24789,STRONG,Chocolate cream wafer; similar indulgent biscuit category
+34834,35590,NONE,Wafer rolls vs chocolate filled biscuits; different format
+34834,35589,NONE,Single wafer roll vs multi-pack biscuits; different format
+34834,38525,NONE,Gluten-free digestive vs chocolate filled biscuits; different type
+34834,40365,STRONG,Chocolate biscuit; similar format and price range
+34834,26343,STRONG,Chocolate biscuit; similar format; slightly lower price
+34834,39012,STRONG,Chocolate cream biscuit; similar type; lower price
+34834,39018,NONE,Single small pack; very different size and price
+34834,39016,STRONG,Chocolate cookies; similar format and price range
+34834,39014,STRONG,Chocolate cookies; similar format and price range
+34834,40431,STRONG,Chocolate mini biscuits; similar format and price
+34834,39021,NONE,Different brand; format; single vs multipack
+34834,39022,NONE,Different brand; flavor; single vs multipack
+34834,39011,NONE,Different brand; type; size mismatch
+34834,39017,NONE,Different brand; type; size mismatch
+34834,39015,NONE,Different brand; type; size mismatch
+34834,39013,NONE,Different brand; type; size mismatch
+34834,39019,NONE,Different brand; type; size mismatch
+34834,40383,NONE,Different brand; type; savory vs sweet
+34834,38764,NONE,Different brand; type; savory vs sweet
+34834,31040,NONE,Different brand; type; flavor profile
+34834,29303,STRONG,same chocolate biscuit type; smaller pack format
+34834,28027,NONE,coconut biscuit; different type; single serve
+34834,32330,STRONG,chocolate filled biscuits; similar type; smaller pack
+34834,28557,NONE,plain Marie biscuit; no chocolate filling
+34834,32507,NONE,plain butter biscuit; no chocolate filling
+34834,30823,NONE,cookies; not filled biscuits; different format
+34834,25812,NONE,cookies; different format despite chocolate flavor
+34834,24731,NONE,soft cookies; different texture and format
+34834,28347,NONE,wafer; completely different type and format
+34834,27283,NONE,wafer; completely different type and format
+34834,30115,NONE,Different brand; type; format; and size
+34834,37446,NONE,Different brand; type; and format
+34834,37445,NONE,Different brand; type; and format
+34834,37729,NONE,Different brand; type; and format
+34834,38348,NONE,Different brand; type; and format
+34834,38349,NONE,Different brand; type; and format
+34834,37068,NONE,Different brand; type; and format
+34834,25823,NONE,Different brand; type; and format
+34834,35664,NONE,Different brand; type; and format
+34834,32798,NONE,Different brand; type; and format
+34834,35665,STRONG,same biscuit type; minor size/brand difference
+34834,29799,STRONG,same biscuit type; minor size/brand difference
+34834,37070,NONE,significantly larger multipack; much higher price
+34834,35663,STRONG,same biscuit type; minor size/brand difference
+34834,30476,STRONG,same biscuit type; similar format/price
+34834,31500,STRONG,same biscuit type; similar format/price
+34834,33358,STRONG,same biscuit type; similar format/price
+34834,32797,STRONG,same biscuit type; similar price/format
+34834,32796,STRONG,same biscuit type; similar price/format
+34834,26836,STRONG,same biscuit type; similar price/format
+34834,27910,STRONG,same wafer/biscuit type; minor size difference
+34834,24806,STRONG,same wafer format; different flavour only
+34834,25821,STRONG,same wafer format; vanilla vs chocolate flavour
+34834,24358,NONE,drastically smaller single-serve; incompatible format
+34834,33660,NONE,much larger assortment pack; higher price
+34834,35513,STRONG,similar size/price; wafer with chocolate filling
+34834,35514,STRONG,similar size/price; chocolate wafer format
+34834,33120,STRONG,similar size/price; wafer biscuit format
+34834,34395,NONE,much smaller size; different format
+34834,25551,NONE,cake product; different category entirely
+34834,32526,STRONG,Same chocolate biscuit type; minor format/price diff
+34834,38367,STRONG,Same chocolate biscuit type; minor format/price diff
+34834,35803,STRONG,Chocolate filled biscuit; smaller multipack; lower price
+34834,25176,NONE,Single unit vs multipack; incompatible format/quantity
+34834,27468,NONE,Single unit; incompatible format vs multipack OOS
+34834,35875,STRONG,Chocolate sandwich biscuit multipack; similar format/price
+34834,33227,STRONG,Chocolate wafer multipack; similar biscuit category/price
+34834,27485,NONE,Single unit; incompatible format vs multipack OOS
+34834,36767,STRONG,Chocolate filled biscuit multipack; similar format/price
+34834,26044,STRONG,Chocolate cream biscuit multipack; similar format/price
+34834,40334,STRONG,same filled biscuit type; different brand/size
+34834,32078,STRONG,same filled biscuit type; different brand/size
+34834,30070,STRONG,same filled biscuit type; different brand/size
+34834,40335,STRONG,same filled biscuit type; different brand/size
+34834,27040,STRONG,same filled biscuit type; different brand/size
+34834,25002,STRONG,same filled biscuit type; different brand/size
+34834,40343,NONE,crackers vs chocolate filled biscuits; different type
+34834,40342,NONE,crackers vs chocolate filled biscuits; different type
+34834,26418,NONE,chocolate coated digestive; different format/type
+34834,32373,NONE,chocolate coated digestive; different format/type
+34834,28446,NONE,Different product type; digestive vs filled biscuits
+34834,24504,NONE,Different product type; digestive vs filled biscuits
+34834,30482,NONE,Different product type; digestive vs filled biscuits
+34834,26527,NONE,Different product type; digestive vs filled biscuits
+34834,26404,NONE,Different product type; digestive vs filled biscuits
+34834,39314,NONE,Different product type; digestive vs filled biscuits
+34834,39192,NONE,Different product type; sandwich vs filled biscuits
+34834,39191,NONE,Different product type; sandwich vs filled biscuits
+34834,37542,NONE,Different format; single small unit vs multipack
+34834,37577,NONE,Different brand/type; tiramisu vs chocolate filled
+34834,27865,NONE,Different format: multipack biscuits vs single wafer
+34834,35084,NONE,Different format: biscuits vs chocolate sticks
+35131,30646,NONE,Different type: chocolate sticks vs bourbon biscuits
+35131,33491,NONE,Different type: chocolate sticks vs zoo biscuits
+35131,35590,NONE,Different type: chocolate sticks vs peanut wafer rolls
+35131,25812,NONE,Different type: chocolate sticks vs choco cookies
+35131,27283,NONE,Different type: chocolate sticks vs strawberry wafer
+35131,30115,NONE,Different type: chocolate sticks vs caramelized biscuits
+35131,37068,NONE,Different type: chocolate sticks vs milk wafers
+35131,36767,NONE,Different type: chocolate sticks vs chocolate hazelnut sandwich cookies
+35131,26044,NONE,Oreo cookies vs chocolate sticks; different format
+35131,30070,NONE,Oreo cookies vs chocolate sticks; different format
+35131,40335,NONE,Oreo cookies vs chocolate sticks; different format
+35087,34837,STRONG,Similar chocolate biscuit snack; minor size/price diff
+35087,34838,STRONG,Similar chocolate biscuit snack; minor size/price diff
+35087,37402,STRONG,Similar chocolate biscuit snack; smaller size lower price
+35087,37404,STRONG,Similar milk biscuit snack; smaller size lower price
+35087,37401,STRONG,Similar biscuit snack; different flavour strawberry vs chocolate
+35087,37403,STRONG,Similar biscuit snack; different flavour strawberry vs chocolate
+35087,39131,NONE,Cookies vs chocolate sticks; different format entirely
+35087,30646,NONE,chocolate sticks vs bourbon biscuits; different type
+35087,30389,NONE,chocolate sticks vs candy bar; different type
+35087,33048,NONE,chocolate sticks vs puff pastry; different type
+35087,38950,NONE,chocolate sticks vs filled pastry; different type
+35087,38946,NONE,chocolate sticks vs filled pastry; different type
+35087,36414,NONE,chocolate sticks vs chocolate cone; different format
+35087,36415,NONE,chocolate sticks vs chocolate cone; different format
+35087,36413,NONE,chocolate sticks vs chocolate cone; different format
+35087,36416,NONE,chocolate sticks vs chocolate cone; different format
+35087,36417,NONE,chocolate sticks vs chocolate cone; different format
+35087,36419,NONE,completely different product type and format
+35087,30611,STRONG,chocolate biscuit; similar price; different brand/size
+35087,31619,STRONG,chocolate wafer rolls; similar price; different brand
+35087,38781,STRONG,chocolate wafer rolls; slightly higher price; different brand
+35087,32511,STRONG,chocolate biscuit; lower price; different brand/size
+35087,33491,STRONG,chocolate biscuit; lower price; different brand/size
+35087,29572,NONE,single serve; much smaller; different format
+35087,28564,STRONG,chocolate biscuit; similar price; different brand/size
+35087,38779,STRONG,chocolate biscuit; similar price; different brand/size
+35087,39521,STRONG,chocolate snack; similar price; different brand/format
+35087,39070,STRONG,same chocolate stick format; different brand/size
+35087,39071,STRONG,chocolate biscuit stick; smaller size; lower price
+35087,32636,STRONG,chocolate-filled biscuit; different brand/size
+35087,24382,STRONG,chocolate biscuit stick; smaller single serve
+35087,30575,STRONG,chocolate biscuit sticks; multipack format; similar price
+35087,30700,STRONG,chocolate biscuit; larger pack; similar price
+35087,34880,STRONG,chocolate wafer rolls; similar format; higher price
+35087,29379,NONE,peanut wafer; very different product/price
+35087,24789,STRONG,chocolate wafer rolls; similar format; lower price
+35087,35590,STRONG,peanut chocolate wafer rolls; similar price/format
+35087,35589,STRONG,same chocolate stick/wafer type; smaller size
+35087,38525,NONE,gluten-free digestive biscuit; different type entirely
+35087,40365,STRONG,chocolate biscuit; different brand/size/price
+35087,26343,STRONG,chocolate biscuit; different brand/size/price
+35087,39012,STRONG,chocolate cream cookie; different brand/size
+35087,39018,STRONG,chocolate cream cookie; smaller size/format
+35087,39016,STRONG,chocolate cookie variant; different flavor/brand
+35087,39014,STRONG,chocolate cookie; different flavor/brand
+35087,40431,STRONG,chocolate cookie mini format; different brand
+35087,39021,STRONG,chocolate cookie; smaller size/different brand
+35087,39022,NONE,different product type; cookies vs chocolate sticks
+35087,39011,NONE,different product type; cookies vs chocolate sticks
+35087,39017,NONE,different product type; cookies vs chocolate sticks
+35087,39015,NONE,different product type; cookies vs chocolate sticks
+35087,39013,NONE,different product type; cookies vs chocolate sticks
+35087,39019,NONE,different product type; cookies vs chocolate sticks
+35087,40383,NONE,different product type; crackers vs chocolate sticks
+35087,38764,NONE,different product type; crackers vs chocolate sticks
+35087,31040,NONE,different product type; plain biscuits vs chocolate sticks
+35087,29303,NONE,different product type; assorted biscuits vs chocolate sticks
+35087,28027,NONE,completely different product type and format
+35087,32330,STRONG,chocolate biscuits; similar multipack format; slightly higher price
+35087,28557,NONE,plain Marie biscuits; no chocolate; different type
+35087,32507,NONE,plain butter biscuits; no chocolate; different type
+35087,30823,STRONG,chocolate cookies; similar format and price
+35087,25812,STRONG,chocolate cookies; lower price; similar chocolate type
+35087,24731,STRONG,chocolate cookies; similar format and price
+35087,28347,NONE,wafer sticks vs chocolate sticks; different type
+35087,27283,NONE,wafer sticks vs chocolate sticks; different type
+35087,30115,NONE,plain caramelized biscuits; no chocolate; different type
+35087,37446,STRONG,Same snack category; similar price; different brand
+35087,37445,STRONG,Same snack category; similar price; different brand
+35087,37729,STRONG,Same snack category; similar price; different brand
+35087,38348,STRONG,Same snack category; close price; different brand/format
+35087,38349,STRONG,Same snack category; similar price; smaller multipack
+35087,37068,NONE,Bulk multipack; significantly higher price
+35087,25823,STRONG,Same snack category; close price; different brand
+35087,35664,STRONG,Same snack category; similar price; multipack format
+35087,32798,STRONG,Same snack category; close price; different brand
+35087,35665,STRONG,Same snack category; similar price; multipack format
+35087,29799,STRONG,same wafer category; minor size/brand difference
+35087,37070,NONE,bulk multipack; price far too high
+35087,35663,STRONG,similar wafer type; slight price/size difference
+35087,30476,STRONG,wafer snack; similar price; minor format difference
+35087,31500,STRONG,wafer snack; similar price; minor format difference
+35087,33358,STRONG,wafer snack; similar price; minor format difference
+35087,32797,STRONG,wafer snack; similar price; minor format difference
+35087,32796,STRONG,wafer snack; similar price; minor format difference
+35087,26836,STRONG,wafer snack; similar price; minor format difference
+35087,27910,STRONG,wafer snack; very similar price; minor difference
+35087,24806,STRONG,Same wafer category; minor format/brand difference
+35087,25821,STRONG,Same wafer type; slight flavor/brand variation
+35087,24358,NONE,Single snack size vs. multipack; too different
+35087,33660,NONE,Large assortment box; significant price/format difference
+35087,35513,NONE,Different format; significantly higher price
+35087,35514,NONE,Dark chocolate tortina; different format/type
+35087,33120,NONE,Different format/size; price mismatch
+35087,34395,NONE,Chocolate bites format; different product type
+35087,25551,NONE,Cake product; not wafer/biscuit sticks
+35087,32526,NONE,Cake product; not wafer/biscuit sticks
+35087,38367,STRONG,same chocolate snack category; different format/price
+35087,35803,STRONG,chocolate biscuit snack; similar price/format
+35087,25176,NONE,single unit vs multipack; major price difference
+35087,27468,NONE,single unit; price too low; different format
+35087,35875,STRONG,chocolate biscuit multipack; similar price/format
+35087,33227,STRONG,chocolate wafer multipack; similar price/format
+35087,27485,NONE,single unit; price too low; wrong format
+35087,36767,STRONG,chocolate cookie multipack; similar price/format
+35087,26044,STRONG,chocolate cookie multipack; similar price/format
+35087,40334,STRONG,chocolate cookie multipack; similar price/format
+35087,32078,STRONG,Same brand family; minor price/format diff
+35087,30070,STRONG,Same brand; slight price difference
+35087,40335,STRONG,Same brand; larger size; higher price
+35087,27040,STRONG,Same brand; smaller single pack format
+35087,25002,STRONG,Same brand; near-identical price; similar format
+35087,40343,NONE,Savory crackers vs chocolate sticks; different type
+35087,40342,NONE,Savory crackers vs chocolate sticks; different type
+35087,26418,NONE,Digestive biscuits vs chocolate sticks; different type
+35087,32373,NONE,Digestive biscuits vs chocolate sticks; different type
+35087,28446,NONE,Plain digestive biscuits; completely different type
+35087,24504,NONE,Different product type; biscuits vs chocolate sticks
+35087,30482,NONE,Different product type; biscuits vs chocolate sticks
+35087,26527,NONE,Different product type; biscuits vs chocolate sticks
+35087,26404,NONE,Different product type; biscuits vs chocolate sticks
+35087,39314,NONE,Different product type; biscuits vs chocolate sticks
+35087,39192,NONE,Different product type; biscuits vs chocolate sticks
+35087,39191,NONE,Different product type; biscuits vs chocolate sticks
+35087,37542,NONE,Different product type; biscuits vs chocolate sticks
+35087,37577,NONE,Different product type; biscuits vs chocolate sticks
+35087,27865,NONE,Different product type; wafers vs chocolate sticks
+35087,35084,NONE,Same brand; similar chocolate stick format; lower price.
+31584,32878,NONE,Different product type; chocolate bar vs. egg toy.
+31584,30682,NONE,Different product type; chocolate bar vs. egg toy.
+31584,26607,NONE,Different product type; dark chocolate vs. egg toy.
+31584,25452,NONE,Different product type; nut bar vs. egg toy.
+31584,31200,NONE,Different product type; chocolate bar vs. egg toy.
+31584,27491,NONE,Different product type; rocher vs. egg toy.
+31584,27425,NONE,Different product type; wafer bar vs. egg toy.
+31584,25364,NONE,Different product type; wafer bar vs. egg toy.
+31584,25529,NONE,Different product type; chocolate bar vs. egg toy.
+31584,26674,STRONG,Same brand; similar size; lower price
+31584,26515,STRONG,Same brand; similar size; lower price
+31584,32478,DIRECT,Same product; same price; different gender
+31584,25659,STRONG,Same brand; similar size; lower price
+31584,30495,STRONG,Same supplier; similar price; different brand
+31584,37737,NONE,Different brand; larger size; higher price
+31584,40332,STRONG,Different brand; similar size; lower price
+31584,40331,STRONG,Different brand; similar size; lower price
+31584,26396,STRONG,Different brand; similar size; lower price
+31584,31468,STRONG,Different brand; larger size; similar price
+31584,40330,STRONG,same chocolate category; similar price; different brand
+31584,28422,STRONG,same chocolate category; same price; dark variant
+31584,38392,STRONG,same chocolate category; slightly higher price
+31584,30298,STRONG,same chocolate category; slightly higher price
+31584,39940,STRONG,same chocolate category; lower price; smaller size
+31584,39941,STRONG,same chocolate category; higher price; larger size
+31584,31445,STRONG,same chocolate category; much lower price; smaller
+31584,39942,STRONG,same chocolate category; similar price; larger size
+31584,26726,STRONG,same chocolate category; lower price; smaller size
+31584,40367,NONE,vastly different price; unknown brand; different format
+31584,40368,NONE,different product type; size; price too high
+31584,40369,NONE,different product type; size; price too high
+31584,27353,NONE,different format; size; price difference significant
+31584,37874,STRONG,same chocolate single bar; similar size/price
+31584,36912,STRONG,same chocolate single bar; similar size/price
+31584,29477,STRONG,same chocolate single bar; slightly larger/similar price
+31584,33778,STRONG,same chocolate single bar; similar size/price
+31584,39111,NONE,price too high; different flavour format
+31584,39786,STRONG,same chocolate single bar; similar size/price
+31584,38465,STRONG,same chocolate single bar; similar size/price
+31584,38466,STRONG,same indulgent chocolate bar; minor differences
+31584,27746,STRONG,chocolate bar; similar format; slightly cheaper
+31584,25677,STRONG,chocolate bar; similar format; cheaper price
+31584,37875,NONE,too small; very different format/price
+31584,31527,STRONG,chocolate wafer bar; similar single serve
+31584,36803,STRONG,chocolate bar; similar size and price
+31584,36804,NONE,significantly larger and more expensive
+31584,39944,STRONG,chocolate bar; similar size and price
+31584,26790,NONE,too small; very different format/price
+31584,37447,STRONG,chocolate bar; similar size; slightly cheaper
+31584,26832,STRONG,same chocolate category; smaller size; similar price
+31584,39115,STRONG,same chocolate category; smaller size; lower price
+31584,36832,STRONG,same chocolate category; similar size; similar price
+31584,36831,STRONG,same chocolate category; similar size; similar price
+31584,37722,NONE,significantly larger; much higher price; different brand
+31584,37723,NONE,significantly larger; much higher price; different brand
+31584,37721,NONE,significantly larger; much higher price; different brand
+31584,24397,STRONG,same chocolate category; larger size; similar price
+31584,37088,NONE,dark chocolate vs milk; premium brand; different type
+31584,37080,NONE,dark chocolate ganache; premium brand; different type
+31584,37087,NONE,different brand/type; higher price; no toy
+31584,39317,STRONG,similar chocolate bar; close price/size
+31584,33213,NONE,biscuit nibbles; not chocolate egg
+31584,26257,NONE,biscuit nibbles; not chocolate egg
+31584,29821,NONE,cocoa spread; completely different product type
+31584,38171,STRONG,similar chocolate bar; slightly lower price
+31584,38173,STRONG,similar chocolate bar; lower price/size
+31584,38170,NONE,very different product; much higher price
+29679,32878,STRONG,similar milk chocolate bar; close size
+29679,30682,NONE,different format; significantly higher price
+29679,26607,NONE,different format; sugar shells vs dark chocolate pearls
+29679,25452,NONE,different format; sugar shells vs nut bar
+29679,31200,NONE,different format; sugar shells vs solid chocolate bar
+29679,27491,NONE,different format; sugar shells vs praline chocolate
+29679,27425,NONE,different format; sugar shells vs wafer bar
+29679,25364,NONE,different format; sugar shells vs white wafer bar
+29679,25529,NONE,different format; sugar shells vs solid chocolate bar
+29679,26674,NONE,different format; sugar shells vs cereal bar
+29679,26515,NONE,different format; sugar shells vs creamy snack
+29679,32478,NONE,different format; sugar shells vs egg toy
+29679,25659,NONE,different format; size too small; different brand
+29679,30495,NONE,completely different product type (coconut/almond vs chocolate)
+29679,37737,STRONG,same supplier; chocolate bar; similar price/size
+29679,40332,STRONG,same supplier; Galaxy brand; similar size/price
+29679,40331,STRONG,same supplier; Galaxy brand; similar size/price
+29679,26396,NONE,very different format and size; much cheaper
+29679,31468,STRONG,same supplier; Galaxy brand; similar size/price
+29679,40330,STRONG,same supplier; Galaxy brand; similar size/price
+29679,28422,STRONG,same supplier; Galaxy brand; similar size/price
+29679,38392,STRONG,same supplier; chocolate bar; similar size/price
+29679,30298,STRONG,same supplier; similar size; different bar type
+29679,39940,NONE,significantly smaller size; different bar type
+29679,39941,STRONG,same supplier; similar type; slightly larger/pricier
+29679,31445,NONE,significantly smaller size and price
+29679,39942,STRONG,same supplier; near-identical size and price
+29679,26726,NONE,significantly smaller size; different format
+29679,40367,NONE,different brand; much higher price; different type
+29679,40368,NONE,different brand; much higher price; different type
+29679,40369,NONE,different brand; much higher price; different type
+29679,27353,NONE,different brand; different chocolate type; higher price
+29679,37874,NONE,Different format: buttons vs chocolate bar
+29679,36912,NONE,Different format: buttons vs wafer bar
+29679,29477,NONE,Different format: buttons vs wafer bar
+29679,33778,NONE,Different format: buttons vs wafer bar
+29679,39111,NONE,Different format: buttons vs wafer bar
+29679,39786,NONE,Different format: buttons vs wafer bar
+29679,38465,NONE,Different format: buttons vs wafer bar
+29679,38466,NONE,Different format: buttons vs wafer bar
+29679,27746,NONE,Different format: buttons vs chocolate bar
+29679,25677,NONE,Different format: buttons vs chocolate bar
+29679,37875,NONE,Different format/size; white chocolate vs milk chocolate
+29679,31527,NONE,Different format; wafer bar vs chocolate buttons
+29679,36803,STRONG,Same chocolate category; similar size; lower price
+29679,36804,NONE,Larger size; significant price difference
+29679,39944,NONE,Different format; bubbly chocolate vs button sweets
+29679,26790,NONE,Much smaller size; different format entirely
+29679,37447,STRONG,Similar chocolate bar; comparable size; slightly lower price
+29679,26832,STRONG,Similar size/format; slightly lower price; different flavor
+29679,39115,NONE,Different flavor/format; strawberry bubbly vs plain buttons
+29679,36832,NONE,Different format; flake texture vs button sweets
+29679,36831,STRONG,same chocolate category; smaller size; lower price
+29679,37722,NONE,different format; significantly larger; much higher price
+29679,37723,NONE,different format; significantly larger; much higher price
+29679,37721,NONE,different format; significantly larger; much higher price
+29679,24397,STRONG,similar chocolate bar; close size and price
+29679,37088,STRONG,similar single bar format; near-identical price
+29679,37080,STRONG,similar single bar format; near-identical price
+29679,37087,STRONG,similar single bar format; slightly higher price
+29679,39317,STRONG,similar single bar format; near-identical price
+29679,33213,STRONG,similar chocolate snack format; close size/price
+29679,26257,STRONG,similar chocolate candy pieces; slightly smaller size
+29679,29821,NONE,spread product; completely different format/type
+29679,38171,STRONG,chocolate bar; similar size and lower price
+29679,38173,STRONG,chocolate bar; similar format and lower price
+29679,38170,NONE,very different size; price; and product type
+29679,31584,NONE,different format; egg toy product not candy
+29679,30574,NONE,dipping snack format; different product type entirely
+29679,26630,STRONG,chocolate candy pieces; same supplier; similar size
+29679,25645,STRONG,chocolate candy pieces; same supplier; similar size
+29679,27424,STRONG,chocolate candy pieces; same supplier; slightly smaller
+29679,38189,NONE,Cocoa spread vs chocolate candies; different format
+29679,38188,NONE,Marshmallow bar vs chocolate candies; different type
+29679,36222,NONE,Different brand; type; and format entirely
+36912,32878,STRONG,Both milk chocolate bars; minor size/price diff
+36912,30682,NONE,Pearls format vs bar; significant price difference
+36912,26607,NONE,Dark chocolate vs milk chocolate; different type
+36912,25452,STRONG,Both chocolate bars; similar size; minor price diff
+36912,27491,NONE,Praline format vs wafer bar; significant price diff
+36912,27425,STRONG,Both chocolate wafer bars; similar format/size
+36912,25364,STRONG,Both chocolate wafer bars; white vs milk minor diff
+36912,25529,STRONG,same chocolate bar category; larger size; higher price
+36912,26674,STRONG,same wafer-chocolate format; same price; similar size
+36912,26515,STRONG,same chocolate bar type; similar size; slightly higher price
+36912,32478,NONE,different format; egg toy product; higher price
+36912,31584,NONE,different format; egg toy product; higher price
+36912,25659,STRONG,same chocolate bar type; similar size; slightly lower price
+36912,30574,NONE,different format; breadstick dip product; much higher price
+36912,30495,NONE,different type; coconut ball; not chocolate wafer
+36912,37737,NONE,different type; coconut chocolate bar; higher price
+36912,40332,STRONG,same chocolate bar category; similar format; higher price
+36912,40331,STRONG,same wafer chocolate type; larger size/higher price
+36912,26396,DIRECT,same wafer chocolate type; same size/price
+36912,31468,STRONG,same wafer chocolate type; larger size/higher price
+36912,40330,STRONG,chocolate bar; different filling; similar format
+36912,26630,NONE,different format; candy-coated; not wafer bar
+36912,25645,NONE,different format; candy-coated; not wafer bar
+36912,27424,NONE,different format; candy-coated minis; not wafer bar
+36912,38392,STRONG,chocolate bar; different filling; similar format
+36912,30298,STRONG,chocolate bar; different filling; similar format
+36912,39940,STRONG,chocolate wafer bar; similar size/slightly higher price
+36912,39941,STRONG,same type; larger size; higher price
+36912,31445,STRONG,same type; similar size; lower price
+36912,39942,STRONG,same type; larger size; higher price
+36912,26726,STRONG,same type; similar size; same price
+36912,40367,NONE,different brand; much higher price; different product
+36912,40368,NONE,different brand; much higher price; different product
+36912,40369,NONE,different brand; much higher price; different product
+36912,27353,NONE,different product type; different format; higher price
+36912,37874,STRONG,same brand; same price; similar size
+36912,33778,STRONG,same brand; similar type; slightly larger
+36912,39786,STRONG,Same brand; wafer; slightly larger; higher price
+36912,38465,STRONG,Same brand; wafer; larger size; higher price
+36912,38466,STRONG,Same brand; chunky wafer; larger; higher price
+36912,25677,STRONG,Same brand/supplier; different bar type; similar price
+36912,37875,NONE,White chocolate; smaller; different product type
+36912,31527,STRONG,Same brand/supplier; wafer bar; similar price/size
+36912,36803,STRONG,Same type; different brand; slightly larger/pricier
+36912,36804,NONE,Same type but significantly larger and overpriced
+36912,39944,NONE,Different format; bubbly texture; higher price
+36912,26790,NONE,Much smaller; different brand; very low price
+36912,37447,STRONG,same chocolate category; different brand/size/price
+36912,26832,STRONG,same chocolate category; higher price/size
+36912,39115,STRONG,same chocolate category; similar price
+36912,36832,STRONG,same chocolate category; slightly higher price
+36912,36831,STRONG,same chocolate category; slightly higher price
+36912,37722,NONE,significantly larger size; much higher price
+36912,33213,NONE,different format (nibbles); different brand/type
+36912,26257,NONE,different format (nibbles); different brand/type
+36912,38189,NONE,cocoa spread; not a chocolate bar
+36912,29821,NONE,cocoa spread; not a chocolate bar
+36912,38188,NONE,marshmallow bar vs chocolate wafer; different format
+36912,38171,STRONG,chocolate bar; similar format; slightly higher price
+36912,38173,STRONG,chocolate bar; similar format; similar price
+36912,38170,NONE,pistachio kunafa chocolate; different type and price
+24505,34889,NONE,different product type; significantly higher price
+24505,34891,NONE,different product type and format entirely
+24505,36958,NONE,pretzels vs chocolate wafer bag; different type
+24505,28040,NONE,kisses dual pack vs mini bag; different type
+24505,38355,NONE,different brand mix; significantly higher price
+24505,40457,NONE,peanut butter cups; different type entirely
+24505,38356,STRONG,same mini chocolate format; different brand/flavor
+24505,25958,STRONG,same peanut butter cup style; similar size
+24505,24493,STRONG,same product; larger bag format
+24505,34914,NONE,completely different candy type; not chocolate
+24505,32496,STRONG,same Kinder brand; similar mini chocolate format
+24505,35702,STRONG,same Kinder brand; larger mixed mini bag
+24505,39634,STRONG,same Kinder brand; similar mini mix format
+24505,31604,STRONG,same Kinder brand; similar small bag format
+24505,37161,STRONG,same mini chocolate bag format; different brand
+24505,36782,NONE,different chocolate type; candy-coated not wafer
+24505,31446,STRONG,same mini chocolate bag format; different brand
+24505,25186,NONE,much smaller size (34g vs 108g)
+24505,27450,STRONG,similar mini chocolate bag; different brand/size
+24505,31046,STRONG,similar mini chocolate bag; slightly larger size
+24505,29442,NONE,double pack; significantly higher price
+24505,30445,STRONG,similar mini chocolate bag; different brand
+24505,40264,STRONG,similar mini chocolate bag; slightly larger size
+24505,26989,NONE,double pack; significantly higher price
+24505,40366,NONE,different type (toffee eclairs vs chocolate wafer)
+24505,39284,STRONG,similar mini chocolate format; different brand
+24505,39481,STRONG,same mini chocolate bag format; price higher
+24505,39285,STRONG,similar chocolate bag format; slightly higher price
+24505,39109,NONE,unique flavour (pistachio kunafa); not comparable
+24505,39286,STRONG,mini chocolate mix bag; close format/price
+24505,39287,STRONG,same format; larger size; higher price
+24505,39288,STRONG,same format; much larger size; higher price
+24505,39808,STRONG,mini chocolate format; similar price point
+24505,38464,STRONG,mini chocolate bag; popcorn flavour slight difference
+24505,33728,NONE,assorted sweets mix; different product type
+24505,25030,NONE,wafer miniatures; different product type entirely
+24505,37163,STRONG,same mini chocolate bag; higher price
+24505,36824,STRONG,similar mini chocolate bag; slight price increase
+24505,39075,NONE,different format; not mini bag style
+24505,37426,STRONG,mini chocolate bag; similar size/price
+24505,37429,STRONG,mini chocolate bag; similar size/price
+24505,36833,NONE,promo multipack; double quantity/price; different format
+24505,36834,STRONG,mini chocolate bag; similar size/price
+24505,37162,NONE,special offer multipack; significantly higher price/format
+24505,36823,STRONG,mini chocolate bag; similar size/price
+24505,37164,NONE,special offer bundle; significantly higher price/format
+32254,34889,NONE,Different brand/type; bark thins vs Schoko-Bons
+32254,34891,NONE,Different brand/type; Brookside vs Schoko-Bons
+32254,36958,NONE,Pretzels vs chocolate bonbons; different format
+32254,28040,NONE,Kisses Cookies & Cream vs milk chocolate bonbons
+32254,38355,NONE,Mixed bag vs Schoko-Bons specific format
+32254,40457,NONE,Peanut butter cups vs chocolate bonbons
+32254,38356,NONE,Peanut butter cups vs chocolate bonbons
+32254,25958,NONE,Peanut butter cups vs chocolate bonbons
+32254,24493,NONE,Peanut butter cups vs chocolate bonbons
+32254,34914,NONE,Caramel candies vs chocolate bonbons; different type
+32254,32496,STRONG,Same brand/type; slightly smaller; lower price
+32254,35702,STRONG,Same brand/type; larger size; higher price
+32254,39634,STRONG,Same brand/type; similar size; higher price
+32254,31604,STRONG,Same brand; Crispy variant; smaller size
+32254,37161,NONE,Different brand; different chocolate type entirely
+32254,36782,NONE,Different brand; different chocolate type entirely
+32254,31446,NONE,Different brand; different chocolate type entirely
+32254,25186,NONE,Different brand; different format; much smaller size
+32254,27450,NONE,Different brand; different chocolate type entirely
+32254,31046,NONE,Different brand; different chocolate type entirely
+32254,29442,STRONG,same chocolate bag format; larger size; higher price
+32254,30445,STRONG,similar chocolate bag; close weight and price
+32254,40264,STRONG,similar chocolate bag format; slightly larger size
+32254,26989,STRONG,similar chocolate bag; larger promo pack; higher price
+32254,40366,STRONG,chocolate bag format; similar weight and price
+32254,39284,STRONG,chocolate bag format; similar price point
+32254,39481,STRONG,chocolate bag format; larger size; higher price
+32254,39285,STRONG,chocolate bag format; similar weight; close price
+32254,39109,STRONG,chocolate bag format; similar weight; slightly higher price
+32254,39286,STRONG,chocolate bag format; similar weight and price
+32254,39287,STRONG,Same chocolate bags category; different brand/size
+32254,39288,STRONG,Same chocolate bags category; different brand/size
+32254,39808,STRONG,Same chocolate bags category; different brand/size
+32254,38464,STRONG,Same chocolate bags category; different brand/size
+32254,33728,STRONG,Same chocolate bags category; different brand/size
+32254,25030,STRONG,Same chocolate bags category; different brand/size
+32254,37163,STRONG,Same chocolate bags category; different brand/size
+32254,36824,STRONG,Same chocolate bags category; similar price/size
+32254,39075,STRONG,Same chocolate bags category; different brand/size
+32254,37426,STRONG,Same chocolate bags category; similar price/size
+32254,37429,STRONG,same mini chocolate bag; minor brand/size diff
+32254,36833,NONE,promo 2-pack; double price; format mismatch
+32254,36834,STRONG,same mini chocolate bag; minor brand/size diff
+32254,37162,NONE,promo multipack; double price; format mismatch
+32254,36823,STRONG,same mini chocolate bag; near-identical price/size
+32254,37164,NONE,promo multipack; higher price; format mismatch
+24505,38326,NONE,different brand/type; significantly higher price
+24505,35902,STRONG,similar mini chocolate bag; close size/price
+24505,29386,STRONG,similar mini bag format; near-identical size/price
+32254,38326,NONE,different brand/type; significantly higher price
+32254,35902,STRONG,same chocolate bag format; same price
+32254,29386,STRONG,same type; minor brand/size/price difference
+24505,32364,STRONG,similar chocolate miniatures bag; slightly higher price
+24505,37876,STRONG,chocolate bag format; slightly higher price
+24505,33010,STRONG,chocolate bag format; larger size; higher price
+32254,32364,STRONG,similar chocolate miniatures bag; slightly higher price
+32254,37876,STRONG,chocolate bag format; slightly higher price
+32254,33010,STRONG,chocolate bag format; larger size; higher price
+30684,31718,NONE,pasta substituted with cheese sauce; different product
+30684,33229,STRONG,same pasta type; different size/price
+30684,27877,NONE,Different pasta type and format; much higher price
+30684,27580,NONE,Different pasta type; significantly higher price
+30684,39390,NONE,Different pasta shape (elbows vs fusilli); higher price
+30684,39391,STRONG,Same category; fusilli-adjacent shape; similar brand
+30684,39392,STRONG,Same fusilli type; different brand/size/price
+30684,30583,STRONG,Same fusilli type; minor format difference
+30684,27581,NONE,Different pasta type (vermicelli); higher price
+30684,25431,NONE,Completely different product type (rice)
+30684,25524,NONE,Completely different product type (rice)
+30684,28319,DIRECT,Same brand; size; price; pasta type
+30684,30541,STRONG,Same brand; similar price; different pasta shape
+30684,25234,NONE,Different wheat type; significantly higher price
+30684,30282,STRONG,Same brand; slightly higher price; different shape
+30684,30281,STRONG,Same brand; near-identical price; different pasta shape
+30684,34211,NONE,Different format; drastically higher price
+30684,34316,STRONG,Same brand; near-identical price; different shape
+30684,26255,STRONG,Same brand; similar price; slightly smaller size
+30684,27250,DIRECT,Same brand; identical price and size
+30684,29282,STRONG,Same brand; similar price; slightly different shape
+30684,33210,STRONG,Same brand; similar price; different pasta shape
+30684,31568,STRONG,Same brand; same size; different pasta shape
+30684,28855,STRONG,Same brand; same size; different pasta type
+30684,39249,NONE,Different brand; chickpea-based; significantly higher price
+29145,31718,NONE,Cheese sauce; completely different product type
+29145,33229,STRONG,Same type; larger size; different brand
+29145,27877,NONE,Lasagne sheets; different pasta format entirely
+29145,27580,STRONG,Same brand; pasta shape differs; similar size
+29145,39390,STRONG,Same brand; elbow pasta; minor price difference
+29145,39391,STRONG,Same brand; tricolor farfalle; minor price difference
+29145,24498,STRONG,Same brand; spaghetti match; larger multipack format
+29145,27581,STRONG,Same pasta type; different brand/size/price
+29145,25431,NONE,Rice vs pasta; completely different product
+29145,25524,NONE,Rice vs pasta; completely different product
+29145,26340,STRONG,Same brand; pasta type; slightly cheaper
+29145,28319,STRONG,Same brand; different pasta shape/size
+29145,30541,STRONG,Same brand; different pasta shape/size
+29145,25234,STRONG,Same brand; similar pasta; slightly cheaper
+29145,30282,STRONG,Same brand; different pasta shape/size
+29145,30281,STRONG,Same brand; different pasta shape/size
+29145,34211,NONE,Lasagna is significantly different format/price
+29145,34316,NONE,Different pasta type; different size; lower price
+29145,26255,NONE,Different pasta type (orzo); lower price
+29145,27250,NONE,Different pasta type (shells); different size
+29145,29282,NONE,Different pasta type (shells); different size
+29145,33210,NONE,Different pasta type (tubes); different size
+29145,31568,NONE,Different pasta type (pipe); different size
+29145,27248,STRONG,Same spaghetti type; same brand; similar price
+29145,28855,NONE,Different pasta type (vermicelli); different size
+26255,38725,NONE,Rice vs pasta; different brand; higher price
+26255,39626,NONE,Rice vs pasta; completely different product
+26255,31352,NONE,Pasta replaced with unrelated rice product
+26255,28546,NONE,Pasta replaced with unrelated rice product
+26255,39391,STRONG,Same category pasta; different shape/brand/size
+26255,39393,STRONG,Same category pasta; different shape/brand/size
+26255,31353,STRONG,Same category pasta; different brand/size/price
+26255,27581,STRONG,Same category pasta; different shape/brand/size
+26255,30584,NONE,Pasta replaced with unrelated rice product
+26255,39694,NONE,Pasta replaced with unrelated rice product
+26255,33002,NONE,Pasta replaced with unrelated rice product
+26255,30891,NONE,Pasta replaced with unrelated rice product
+26255,29274,NONE,Rice substituting pasta; completely different product type
+26255,25431,NONE,Rice substituting pasta; completely different product type
+26255,25524,NONE,Rice substituting pasta; completely different product type
+26255,26340,STRONG,Same brand; same pasta type; similar price/size
+26255,28319,STRONG,Same brand; pasta shape; similar price/size
+26255,30541,STRONG,Same brand; pasta shape; similar price/size
+26255,25234,STRONG,Same brand; pasta; slightly larger size/higher price
+26255,30282,STRONG,Same brand; pasta shape; similar price/size
+26255,30281,STRONG,Same brand; pasta shape; near-identical price/size
+26255,30684,STRONG,Same brand; pasta shape; similar price/size
+26255,34211,NONE,different pasta type; significantly higher price
+26255,28073,STRONG,same brand; similar pasta type; similar price
+26255,34316,STRONG,same brand; similar pasta; minor price difference
+26255,27250,STRONG,same brand; similar pasta; minor price difference
+26255,29282,STRONG,same brand; similar pasta; same price
+26255,33210,STRONG,same brand; similar pasta; same price
+26255,28633,STRONG,same brand; similar pasta; minor price difference
+26255,31568,STRONG,same brand; similar pasta; minor price difference
+26255,29145,NONE,different pasta type; significantly higher price
+26255,27248,NONE,different pasta type; significantly higher price
+26255,28855,NONE,Different pasta shape and type entirely
+26255,28318,NONE,Different pasta shape; higher price
+26255,39249,NONE,Chickpea pasta; different type; much higher price
+27558,38576,NONE,Hot sauce vs salad dressing; different product
+27558,38577,NONE,Hot sauce vs salad dressing; different product
+27558,38574,NONE,Hot sauce vs salad dressing; different product
+27558,38573,NONE,Hot sauce vs salad dressing; different product
+27558,38575,NONE,Hot sauce vs salad dressing; different product
+27558,38578,NONE,Hot sauce vs salad dressing; different product
+27558,26368,NONE,Hot sauce vs mustard; different product entirely
+27558,35486,NONE,Mayo sriracha is different type/flavor profile
+27558,35484,NONE,Sriracha sauce; different type from hot sauce
+27558,40344,STRONG,Same size; hot sauce; similar price
+27558,32342,STRONG,Hot sauce; similar size and format
+27558,39735,NONE,Price too high; different brand/format
+27558,39734,NONE,Different brand; much higher price
+27558,31936,NONE,Different type (buffalo wings sauce); higher price
+27558,24856,DIRECT,Same type; same price; similar size
+27558,33753,STRONG,Same type; slightly larger; minor price difference
+27558,29454,STRONG,Same hot sauce type; similar small size
+27558,39446,STRONG,same hot sauce type; smaller size; higher price
+27558,31754,NONE,hot sauce vs chili mayonnaise; different type
+27558,32399,NONE,hot sauce vs mayonnaise; different type
+27558,32715,NONE,hot sauce vs ketchup; different type
+27558,26686,NONE,hot sauce vs mayonnaise; different type
+27558,36353,NONE,hot sauce vs ketchup; different type
+27558,33735,NONE,hot sauce vs mayonnaise; different type
+27558,38748,NONE,hot sauce vs mustard; different type
+27558,29461,NONE,hot sauce vs ranch dressing; different type
+27558,38751,NONE,hot sauce vs ketchup; different type
+27558,29658,NONE,Hot sauce vs ketchup; different condiment type
+27558,26777,NONE,Hot sauce vs ketchup; different condiment type
+27558,38034,NONE,Hot sauce vs ketchup; different condiment type
+27558,35269,NONE,Hot sauce vs mustard; different condiment type
+27558,24720,NONE,Hot sauce vs brown sauce; different condiment type
+27558,39358,NONE,Hot sauce vs salad dressing; different condiment type
+27558,39360,NONE,Hot sauce vs salad dressing; different condiment type
+27558,25258,NONE,Hot sauce vs salad dressing; different condiment type
+27558,34825,NONE,Hot sauce vs dynamite sauce; different condiment type
+27558,34821,NONE,Hot sauce vs mayonnaise; different condiment type
+27558,34828,NONE,different type: sweet chili vs hot sauce
+27558,34822,NONE,different type: tartar sauce vs hot sauce
+27558,39122,NONE,different type: mayonnaise vs hot sauce
+27558,39126,NONE,different type: ketchup vs hot sauce
+27558,35307,STRONG,same type: sweet chili/hot sauce; larger size
+27558,35309,NONE,different type: ketchup vs hot sauce
+27558,34179,STRONG,same type: sriracha hot chili sauce; larger
+27558,36698,NONE,different type: French dressing vs hot sauce
+27558,36699,NONE,different type: Italian dressing vs hot sauce
+27558,34784,NONE,different type: ketchup vs hot sauce
+38738,25402,NONE,Corn oil vs butter ghee; different type
+38738,39023,NONE,Corn oil vs butter spray; different type/size
+38738,25359,STRONG,Canola spray vs corn oil; different type/size
+38738,40448,NONE,Spray format; different type; much smaller size
+38738,40447,NONE,Spray format; different type; much smaller size
+38738,40446,NONE,Spray format; different type; much smaller size
+38738,36227,NONE,Spray format; different type; much smaller size
+38738,27582,STRONG,Canola oil; similar volume (3L); different type
+38738,24858,STRONG,Corn oil promo pack; larger volume; higher price
+38738,28169,STRONG,Same corn oil type; smaller size; higher price
+38738,34110,NONE,Corn oil vs cow ghee; different product
+38738,30418,NONE,Corn oil vs cow ghee; different product
+38738,29814,NONE,Corn oil vs vegetable ghee; different product
+36232,24380,STRONG,Same laban; larger size; different brand
+36232,25405,STRONG,Same laban; much larger size; different brand
+36232,31494,STRONG,Same laban; larger size; different brand
+36232,24374,STRONG,Same laban; similar size; added vitamins
+36232,25401,STRONG,Same laban; larger size; added vitamins
+36232,25406,NONE,Full fat vs low fat laban
+36232,33355,NONE,Full fat vs low fat laban
+36232,26258,STRONG,same type; full fat; larger size; higher price
+36232,31488,STRONG,same type; different fat content; similar size
+36232,33352,NONE,different fat content; larger size; higher price
+36232,30473,NONE,flavored laban; different type entirely
+36232,32381,NONE,flavored laban; different type entirely
+36232,31493,NONE,flavored laban; different type entirely
+36232,25262,STRONG,same type; full fat; similar small size
+36232,27284,NONE,same type but price far too high
+36232,25261,STRONG,same type; low fat; similar small size
+36232,38183,NONE,kefir laban; different product type
+36232,38184,NONE,different brand; larger size; much higher price
+36232,39681,NONE,different brand; larger size; higher price
+36232,32901,STRONG,same type; similar size; slightly higher price
+36232,33072,NONE,much larger size; much higher price
+36232,25948,STRONG,same brand; kefir laban; similar size/price
+36232,34057,STRONG,same brand; full fat; similar size/price
+36232,28181,NONE,low fat vs full fat content differs
+36232,24552,DIRECT,same brand; same price; similar size/type
+36232,29157,NONE,Greek yoghurt drink; much higher price
+36232,39636,NONE,multipack format; much higher price
+36261,24380,STRONG,same laban; full fat; larger size
+36261,25405,STRONG,same laban; full fat; much larger size
+36261,31494,STRONG,same laban; full fat; larger size
+36261,24374,NONE,mint ayran vs plain full fat laban
+36261,25401,NONE,mint ayran vs plain full fat laban
+36261,25406,NONE,different fat content; full fat vs low fat
+36261,33355,NONE,different fat content; full fat vs low fat
+36261,26258,STRONG,same full fat laban; similar price; different brand
+36261,31488,NONE,different fat content; full fat vs low fat
+36261,33352,NONE,different fat content; full fat vs low fat
+36261,30473,NONE,different flavor (mint vs mango); different size
+36261,32381,NONE,different flavor (mint vs strawberry); different size
+36261,31493,NONE,different flavor (mint vs strawberry); different size
+36261,25262,STRONG,same laban type; plain vs mint flavored
+36261,27284,STRONG,same laban type; plain vs mint flavored
+36261,25261,NONE,different fat content (low fat vs full fat)
+36261,38183,STRONG,both laban; kefir style; similar size
+36261,38184,STRONG,both laban; kefir style; larger size
+36261,39681,STRONG,both plain full fat kefir laban
+36261,32901,STRONG,both ayran laban; full fat; similar size
+36261,33072,NONE,different size (1L vs 225ml); no mint
+36261,25948,NONE,kefir vs ayran/mint laban; different type
+36261,34057,NONE,no mint flavor; different product type
+36261,28181,NONE,no mint flavor; plain laban not mint
+36261,24552,STRONG,mint laban drink; similar size/format
+36261,29157,NONE,Greek yogurt drink; different type entirely
+36261,39636,NONE,multipack format; different size and price
+36261,39677,NONE,kefir type; large size; different format
+36261,27511,NONE,1L size; no mint; different format
+36261,26458,NONE,1L size; no mint; low fat
+36261,34233,STRONG,Same type; mint missing; smaller size
+36261,39029,STRONG,Mint ayran match; unclear size/weight
+36261,28465,NONE,Plain laban; no mint; different type
+36261,30510,NONE,Low fat; plain laban; no mint
+36261,32435,NONE,Goat milk; 1L; wrong type
+36261,25454,NONE,Goat milk; low fat; wrong type
+36261,39027,NONE,Goat kefir; different type entirely
+36261,25246,NONE,Kefir laban; different type entirely
+36261,39028,NONE,Goat kefir; low fat; wrong type
+36261,38565,STRONG,Same ayran type; no mint; close price
+36261,36232,STRONG,same laban drink; smaller size; lower price
+36261,29599,NONE,vastly different size and price point
+36261,33086,NONE,yoghurt; not laban drink
+36261,32191,NONE,yoghurt; not laban drink
+36262,24380,STRONG,same full fat laban; larger size
+36262,25405,NONE,vastly different size and price point
+36262,31494,NONE,vastly different size and price point
+36262,24374,STRONG,same full fat laban; similar small size
+36262,25401,STRONG,same full fat laban; similar price/size
+36262,25406,NONE,different fat content; low fat vs full fat
+36262,33355,NONE,vastly different size (225ml vs 2L)
+36262,26258,STRONG,same laban; similar price; different brand
+36262,31488,STRONG,same laban type; similar price; different brand
+36262,33352,NONE,different size format; higher price
+36262,30473,NONE,flavored laban vs plain laban
+36262,32381,NONE,flavored laban vs plain laban
+36262,31493,NONE,flavored laban vs plain laban
+36262,25262,STRONG,same plain laban; similar price; different brand
+36262,25261,NONE,different fat content (full fat vs low fat)
+36262,38183,NONE,kefir laban differs; higher price
+36262,38184,STRONG,same type; larger size; higher price
+36262,39681,STRONG,same type; full fat; similar size
+36262,39677,NONE,same type but much larger size
+36262,32901,STRONG,same type; full fat; similar size/price
+36262,27511,NONE,same type but much larger size
+36262,26458,NONE,different fat content; much larger size
+36262,34233,STRONG,same type; full fat; similar size/price
+36262,39029,NONE,flavored variant (mint); not plain
+36262,28465,DIRECT,same type; full fat; same price
+36262,30510,STRONG,same type; slightly different size/price
+36262,32435,NONE,Different fat content; size; and goat milk
+36262,25454,NONE,Low fat vs original; different size/type
+36262,39027,NONE,Goat milk kefir vs regular ayran laban
+36262,25246,NONE,Kefir type vs ayran; different format
+36262,39028,NONE,Low fat goat kefir vs full fat ayran
+36262,33072,NONE,Different size; full cream vs ayran type
+36262,25948,STRONG,Similar size; ayran-adjacent kefir; close price
+36262,34057,STRONG,Similar size; full fat laban; close price
+36262,38565,DIRECT,Same ayran type; similar size and price
+36262,36232,NONE,Smaller size; different format/type
+36262,28181,STRONG,same type; slightly smaller; lower price
+36262,29599,NONE,much larger size; much higher price
+36262,24552,STRONG,same type; added mint flavor; smaller size
+36262,33086,NONE,yogurt drink; different type; higher price
+36262,32191,NONE,yogurt drink; different type; higher price
+36262,29157,NONE,yogurt drink; different type; higher price
+36262,39636,NONE,multipack format; much higher price
+27736,26746,STRONG,same type; same brand family; lower price
+27736,35050,STRONG,same type; same brand family; lower price
+27736,30929,STRONG,same type; same brand family; lower price
+27736,27799,STRONG,same brown eggs; larger pack; similar price
+27736,40633,NONE,white eggs vs brown free-range eggs
+27736,27800,NONE,white eggs vs brown free-range eggs
+27736,31123,NONE,white eggs vs brown free-range eggs
+33983,33989,NONE,low fat vs full cream yoghurt
+33983,26837,NONE,different fat content; full fat vs full cream
+33983,37831,NONE,protein yoghurt vs full cream yoghurt
+33983,31845,STRONG,same format; full cream; different brand
+33983,30844,NONE,different size/format; 1L vs 6x170g
+33983,33706,STRONG,same format; full cream; slightly larger size
+33983,29556,STRONG,same type; similar size; minor price/brand diff
+27275,34035,STRONG,same brand/size; full fat; sour variant noted
+27275,29287,STRONG,same size/full fat; slight price increase; different variant
+27275,31804,STRONG,same brand/full fat; promo pack; lower price
+27275,33989,NONE,different fat content; different size/format
+27275,26837,NONE,different size/format; single unit vs multipack
+27275,36791,STRONG,full fat; similar multipack format; close price
+27275,37831,NONE,protein yoghurt; different type/format
+27275,29556,STRONG,full fat; similar multipack size; close price
+28130,33989,NONE,different fat content; different size/format
+28130,32547,STRONG,same low fat; promo pack; slight price diff
+28130,26837,NONE,full fat vs low fat
+28130,37831,NONE,protein yoghurt; different product type
+28130,26766,STRONG,same low fat; same format; lower price
+28130,35237,DIRECT,same low fat; same format; lower price
+28130,29556,NONE,full fat Royale vs low fat
+29556,28130,STRONG,same format; low fat vs Royale; slight price up
+29556,34035,NONE,full fat sour vs full fat Royale
+29556,31804,NONE,full fat vs Royale (full fat); different brand/type
+29556,40185,NONE,full fat vs full fat Royale; different brand
+29556,33989,NONE,Single cup vs 6-pack; low fat vs full fat
+29556,32547,STRONG,Same multipack format; similar price; low fat
+29556,26837,NONE,Single cup vs 6-pack; fat content unclear
+29556,36840,STRONG,Same multipack format; similar price; plain yoghurt
+29556,39682,NONE,Single cup vs 6-pack; kefir vs yoghurt
+29556,36791,STRONG,Same multipack format; same price; full fat
+29556,37831,NONE,Protein yoghurt; different format and type
+29556,34781,NONE,Goat milk vs cow milk yoghurt
+29556,26523,NONE,Single large tub; different size/format; lower price
+29556,27275,STRONG,Same 6-pack format; similar price; full fat
+29556,34782,NONE,Goat yogurt vs regular dairy yogurt
+29556,34245,STRONG,Same format; similar size; slight price difference
+29556,31845,NONE,Full cream vs Royale (fat content differs)
+29556,26766,NONE,Low fat but different brand/size; original is Royale (not low fat)
+29556,33692,NONE,Skimmed vs Royale (fat content differs)
+29556,30844,NONE,Full cream; different size format entirely
+35237,28130,STRONG,Same type; fat content; size; higher price
+35237,33989,NONE,Single 125g vs 6-pack; incompatible format/price
+35237,32547,STRONG,Same fat content; similar format and price
+35237,26837,NONE,Full fat vs low fat yoghurt
+35237,36840,STRONG,same low fat; multipack; slightly higher price
+35237,37831,NONE,different fat content; single vs multipack format
+35237,34782,NONE,goat milk yoghurt vs cow milk yoghurt
+35237,34245,STRONG,same low fat; same size/format; different brand
+35237,26766,DIRECT,same low fat; same size/format; near price
+33706,33989,NONE,full cream vs low fat; single vs multipack
+33706,26837,NONE,full fat vs full cream; single vs multipack
+33706,39682,NONE,kefir yoghurt vs plain yoghurt; different format
+33706,37831,NONE,protein yoghurt; single vs multipack; different fat
+33706,31845,STRONG,same full cream; same format; slightly lower price
+33706,30844,STRONG,Same full cream yoghurt; different brand/size
+29287,34035,STRONG,Same brand/fat; sour vs creamy difference
+29287,31804,STRONG,Same brand/fat; minor format difference
+29287,40185,STRONG,Same full fat plain; different brand
+29287,33989,NONE,Low fat vs full fat
+29287,26837,STRONG,Same full fat plain; different brand
+29287,39682,NONE,Kefir yogurt vs regular yoghurt
+29287,36791,STRONG,Same full fat plain; different brand
+29287,37831,NONE,Protein yoghurt vs regular yoghurt
+29287,34781,NONE,Goat milk vs cow milk yoghurt
+29287,26523,STRONG,Same full fat; different size/format/brand
+29287,27275,DIRECT,Same full fat; same format; similar price
+35237,36270,NONE,Different fat content; also lacto-free vs regular
+29556,29287,STRONG,Same full fat yoghurt; slight price increase
+29556,36270,NONE,Different fat content; also lacto-free vs regular
+29556,33706,STRONG,Same brand type; same price; similar format
+33983,39682,NONE,Kefir yogurt vs plain yogurt; different product
+33983,36270,NONE,Different fat content; also lacto-free vs regular
+26837,28130,NONE,Different fat content; low fat vs full fat
+26837,34035,NONE,Sour yoghurt vs plain yoghurt; different product
+26837,29287,STRONG,same type; full fat; larger multipack format
+26837,31804,STRONG,same type; full fat; multipack promo format
+26837,40185,STRONG,same brand; full fat; multipack promo format
+26837,32547,NONE,low fat vs full fat
+26837,36840,NONE,low fat vs full fat
+26837,39682,STRONG,same type; full fat; similar single unit format
+26837,36791,STRONG,same type; full fat; multipack promo format
+26837,26523,STRONG,same type; full fat; different brand/size
+26837,27275,STRONG,same type; full fat; multipack different brand
+26837,34782,NONE,low fat vs full fat
+26837,34245,NONE,Full fat vs low fat yogurt
+26837,31845,STRONG,Full fat; multipack; similar type; higher price
+26837,26766,NONE,Full fat vs low fat yogurt
+26837,33692,NONE,Full fat vs skimmed yogurt
+26837,30844,STRONG,Full fat; larger format; similar type
+26837,36270,NONE,Probiotic lactose-free vs regular full fat yogurt
+26837,33706,STRONG,Full fat; multipack; same type; similar brand
+37148,25100,NONE,Cottage cheese vs processed cheese triangles
+37148,38570,STRONG,Same cottage cheese type; similar size; lower price
+37148,28921,NONE,Cottage cheese vs processed spreadable cheese (Kiri)
+37148,31955,NONE,Cottage cheese vs processed portion cheese type
+37148,29467,NONE,Cottage cheese vs processed portion cheese type
+37148,33382,NONE,Cottage cheese vs processed portion cheese type
+37148,24796,NONE,Cottage cheese vs processed cheese snack type
+24399,25100,NONE,Cream cheese vs processed triangle cheese type
+24399,29447,NONE,Cream cheese vs processed triangle cheese type
+24399,39931,STRONG,Same cream cheese type; similar size; lower price
+24399,39929,STRONG,Same cream cheese type; similar size; lower price
+24399,25993,STRONG,Same cream cheese type; similar size; similar price
+24399,36228,NONE,Much larger size; double the price
+24399,26526,STRONG,Same type; larger size; higher price
+24399,29846,STRONG,Same type; similar price; similar size
+24399,28921,NONE,Different format; portion cheese not spreadable
+24399,31955,NONE,Different format; portion cheese not spreadable
+24399,32404,STRONG,Same spreadable type; larger size; similar price
+24399,28255,NONE,Different format; snack product with breadsticks
+24399,25160,NONE,Different variety; Greek style not original
+24399,32403,STRONG,Same spreadable type; similar size and price
+24399,29467,NONE,Different cheese type; portion processed cheese
+24399,33382,NONE,Different cheese type; portion processed cheese
+24399,24796,NONE,Different format/type: dip & crunch snack product
+24399,29203,NONE,Different format/type: dip & crunch snack product
+24399,33374,DIRECT,Same brand/size/type; different fat content
+24399,40496,NONE,Different fat content; larger size
+24399,40495,STRONG,Same brand/type; larger size; similar price
+26412,25100,NONE,Different format: triangles vs spreadable cream cheese
+26412,29447,NONE,Different format: portioned vs spreadable cream cheese
+26412,31489,STRONG,Same brand/type; cheddar vs creamy; smaller size
+26412,24379,STRONG,Same brand/type; cheddar vs creamy; similar price
+26412,32102,NONE,Different brand; cheddar spread vs creamy cheese
+26412,39925,NONE,Cheddar spread vs creamy cheese; different type
+26412,32316,NONE,Cheddar spread vs creamy cheese; different type
+26412,32146,NONE,Cheddar spread vs creamy cheese; different type
+26412,34069,NONE,Cheddar spread vs creamy cheese; different type
+26412,39931,STRONG,Same cream cheese type; smaller size; lower fat
+26412,39929,NONE,Different fat content; light vs full fat
+26412,25993,STRONG,Same cream cheese type; similar size; lower price
+26412,36228,STRONG,Same cream cheese type; same size; similar price
+26412,26526,DIRECT,Same cream cheese; same 2x500g format; similar price
+26412,29846,STRONG,Same cream cheese type; unclear size; similar price
+26412,31434,NONE,Firm white cheese ≠ spreadable cream cheese
+26412,35977,NONE,Labneh ≠ spreadable cream cheese
+26412,35973,NONE,Helix cheese ≠ spreadable cream cheese
+26412,35974,NONE,Shalal cheese ≠ spreadable cream cheese
+26412,25103,NONE,Labneh ≠ spreadable cream cheese
+26412,28211,NONE,Labneh ≠ spreadable cream cheese
+26412,38570,NONE,Cottage cheese ≠ spreadable cream cheese
+26412,28921,STRONG,Kiri spreadable cream cheese; larger pack size
+26412,31955,NONE,Same type but far smaller size/quantity
+26412,32404,STRONG,Kiri spreadable cream cheese; similar size/price
+26412,28255,NONE,Different format: snack kit vs plain spread
+26412,25160,STRONG,Same spreadable cream cheese; smaller size
+26412,32403,STRONG,Same spreadable cream cheese; smaller portions
+26412,35601,NONE,White cheese jar; different type/format
+26412,29467,NONE,Portion triangle cheese; different format/type
+26412,33382,NONE,Portion triangle cheese; different format/type
+26412,26180,NONE,Emmental base; different cheese type
+26412,24796,NONE,Snack kit format; not plain spread
+26412,29203,NONE,Snack kit format; not plain spread
+26412,33374,STRONG,Same cream cheese; light vs full fat
+26412,40496,NONE,different type: spreadable cream vs cream cheese
+26412,40495,NONE,different type: spreadable cream vs cream cheese
+34780,25100,NONE,different type: cottage vs processed triangles
+34780,26412,NONE,different type: cottage vs spreadable creamy cheese
+34780,30145,NONE,different type: cottage vs processed triangles
+34780,39216,STRONG,same type; size; minor price difference
+34780,39217,NONE,different fat content: low vs full fat
+34780,35640,STRONG,same type; size; minor price difference
+34780,38570,STRONG,same type; similar size; minor price difference
+34780,28921,NONE,different type: cottage vs processed portions
+34780,31955,NONE,Different cheese type: cottage vs portion cheese
+34780,37148,STRONG,Same cottage cheese type; similar size/price
+24399,26412,NONE,Different format; price much higher (3x)
+24399,30145,NONE,Different format: triangles vs cream cheese spread
+24399,28343,STRONG,Same cream cheese type; similar price/size
+24399,38886,STRONG,Same cream cheese type; similar size/price
+34780,39218,STRONG,Same cottage cheese type; same size/similar price
+34780,29467,NONE,Different cheese type: cottage vs portion cheese
+34780,33382,NONE,Different cheese type: cottage vs portion cheese
+34780,24796,NONE,Different product: snack format; not cottage cheese
+29151,24916,NONE,flavored vs plain; different fat content
+29151,31998,NONE,flavored vs plain; different fat content
+29151,27464,NONE,flavored vs plain; different fat content
+29151,30922,NONE,flavored dessert vs plain; fat content unknown
+29151,31036,NONE,flavored dessert vs plain; not equivalent
+29151,27013,STRONG,same plain Greek yogurt; minor size/price diff
+29151,39711,NONE,full fat vs fat-free; different fat content
+29151,38202,STRONG,same non-fat plain Greek; minor size/price diff
+29151,39712,NONE,bundle pack; full fat vs fat-free
+29151,30202,STRONG,same brand; plain Greek; minor price diff
+29151,34142,NONE,different flavor (plain vs strawberry)
+29151,36268,NONE,different brand; size; higher price; fat content differs
+29151,36269,NONE,different flavor (plain vs strawberry)
+29151,38888,STRONG,fat-free plain Greek; larger size; higher price
+38201,24916,NONE,different flavor (full fat plain vs blueberry)
+38201,31998,NONE,different flavor (full fat plain vs mango)
+38201,27464,NONE,different flavor (full fat plain vs strawberry)
+38201,30922,NONE,different flavor (full fat plain vs lemon pie)
+38201,31036,NONE,different flavor (full fat plain vs mix berries)
+38201,27013,NONE,different fat content (full fat vs plain 150g)
+38201,39711,STRONG,same brand/fat; multipack format; higher price
+38201,38202,STRONG,same brand/size; different fat content → NONE
+38201,39712,NONE,full fat vs non fat
+38201,30202,NONE,plain Greek yogurt; similar size/price; different brand
+38201,38888,NONE,different size (450g vs 170g); much higher price
+29151,25204,NONE,flavoured (blueberry) vs plain Greek yogurt
+29151,32383,NONE,0% fat vs regular fat Almarai Greek yogurt
+29151,33076,NONE,fat content unclear but Almarai plain vs Nada 0% fat
+29151,39683,NONE,full fat vs fat free; different size
+29151,38201,NONE,plain Greek yogurt; similar size/price; different brand
+29151,28212,NONE,Full fat vs 0% fat different
+29151,27148,NONE,Full fat vs 0% fat different
+29151,33083,NONE,Added honey; flavoured not plain
+29151,32186,NONE,Full fat vs 0% fat; flavoured
+29151,34103,NONE,Low fat vs 0% fat different
+29151,25109,STRONG,Same brand/size/price; low fat vs 0%
+29151,25108,NONE,Flavoured not plain; different product
+29151,30162,NONE,Flavoured not plain; different product
+29151,34102,STRONG,Same brand; plain; larger size only
+29151,28218,NONE,Flavoured with cereals; not plain
+29151,33082,STRONG,Same brand/fat; multipack format; higher price
+29151,32253,NONE,Different fat content; added blueberry flavour
+29151,36266,NONE,Different brand; kefir type; higher price
+29151,36265,NONE,Different brand; flavoured; different fat content
+29151,36267,NONE,Different brand; flavoured; different fat content
+29151,38887,STRONG,Fat free matches; different brand/size/price
+24693,24916,NONE,Different fat content; flavoured; cheaper
+24693,25204,NONE,Different fat content; flavoured; multipack
+24693,32383,NONE,Different fat content (full fat vs plain low fat)
+24693,31998,NONE,Different fat content; flavoured variety
+24693,33076,NONE,Multi-pack bundle; wrong format/size
+24693,27464,NONE,Flavored; not plain; different fat content unclear
+24693,39683,STRONG,Plain full fat Greek; larger size; similar price
+24693,30922,NONE,Flavored (lemon); not plain Greek yogurt
+24693,31036,NONE,Flavored (berries); not plain Greek yogurt
+24693,27013,STRONG,Plain Greek; same size; lower price; different brand
+24693,38201,STRONG,Full fat Greek; similar size; lower price
+24693,39711,NONE,Multi-pack bundle; wrong format/size
+24693,38202,NONE,Non-fat vs full fat; different fat content
+24693,39712,NONE,Non-fat vs full fat; multi-pack format
+24693,28212,STRONG,Same type; multipack format; similar fat content
+24693,27148,STRONG,Same type; full fat; slightly larger size
+24693,33083,NONE,Added honey flavoring; different fat content unclear
+24693,25108,NONE,Different flavor; 0% fat vs full fat
+24693,30162,NONE,Different flavor (passion fruit); not plain
+24693,30202,STRONG,Same type; plain; similar size and price
+24693,34102,NONE,Different format (high protein); larger size
+24693,28218,NONE,Different flavor/format (strawberry with cereals)
+24693,33082,NONE,Zero fat vs full fat; different content
+24693,36266,NONE,Kefir probiotic; different product type
+34766,40137,NONE,Different cheese type; flavored block vs string
+34766,40198,NONE,Different cheese type; flavored block vs string
+34766,40199,NONE,Different cheese type; flavored block vs string
+34766,40200,NONE,Different cheese type; flavored block vs string
+34766,40201,NONE,Different cheese type; flavored block vs string
+34766,40136,NONE,Different cheese type; block vs string format
+34766,37006,NONE,Different cheese type; balade vs mozzarella string
+33405,28636,STRONG,Same type; fat content; size; minor price diff
+33405,25988,NONE,Different size format; 2.85L vs 1L original
+33405,33545,NONE,Different size format; 2L vs 1L original
+37029,28636,STRONG,same fat; cow vs goat; larger size
+37029,25988,STRONG,same fat; cow vs goat; larger size
+37029,33545,STRONG,same fat; cow vs goat; larger size
+28636,33405,STRONG,same brand type; full fat; similar size
+28636,25455,NONE,goat milk vs cow milk; higher price
+28636,37029,NONE,goat milk vs cow milk; smaller size
+28636,36701,NONE,kefir probiotic; different product type entirely
+28636,36279,NONE,camel milk; completely different milk type
+33545,33405,STRONG,same fat content; smaller size; different brand
+33545,25455,NONE,goat milk vs cow milk; different type
+33545,37029,NONE,Different animal source (cow vs goat milk)
+33545,36701,NONE,Kefir probiotic; different product type entirely
+33545,36279,NONE,Different animal source (cow vs camel milk)
+27344,33405,STRONG,Same brand/size; lacks lactose-free feature
+27344,25455,NONE,Different animal source (cow vs goat milk)
+27344,37029,NONE,Different animal source and smaller size
+27344,36701,NONE,Kefir probiotic; different product type entirely
+27344,36279,NONE,Different animal source (cow vs camel milk)
+25988,33405,STRONG,Same type/fat; smaller size; same brand family
+25988,25455,NONE,Different animal source (cow vs goat milk)
+25988,37029,NONE,Goat milk ≠ cow milk; different type
+25988,31215,STRONG,Same full fat cow milk; smaller size
+25988,36701,NONE,Kefir probiotic ≠ fresh milk; different type
+25988,36279,NONE,Camel milk ≠ cow milk; different type
+33357,28438,NONE,1.5% fat ≠ full fat; different fat content
+33357,32384,NONE,Low fat ≠ full fat; different fat content
+33357,24502,NONE,Natural cheddar ≠ processed sandwich cheese; different type
+33357,35971,NONE,Different size; type; and significantly higher price
+33357,35970,NONE,Different size; type; and significantly higher price
+33356,28438,NONE,1.5% fat ≠ full fat; different fat content
+33356,32384,NONE,different fat content (low fat vs full fat)
+33356,24502,NONE,different size; natural vs processed cheese type
+33356,35971,NONE,different size; different cheese type (white vs burger)
+33356,35970,NONE,different size; different cheese type (white vs burger)
+33356,38891,STRONG,same brand/size; cheddar vs burger cheese slices
+33356,38569,NONE,completely different product (caviar; not cheese)
+33356,40195,NONE,completely different product (cheese rings; not slices)
+33357,38891,STRONG,same brand/size; cheddar vs sandwich cheese slices
+33357,38569,NONE,completely different product (caviar; not cheese)
+33357,40195,NONE,completely different product (cheese rings; not slices)
+25354,38891,NONE,Light vs full fat cheddar; different fat content
+25354,32384,STRONG,Low fat cheddar slices; larger size; lower price
+25354,24502,STRONG,Natural cheddar slices; same size; similar price
+25354,38569,NONE,Completely different product; caviar not cheese
+25354,35971,STRONG,Light white cheese slices; larger size; similar price
+25354,35970,NONE,Full fat vs light; different fat content
+25354,40195,NONE,Turkey cheese rings; different format and type
+25101,26156,STRONG,Shredded mozzarella full fat; smaller size; lower price
+25101,29025,STRONG,Shredded mozzarella full fat; larger size; higher price
+25101,33970,NONE,Lite vs full fat mozzarella; different fat content
+25101,33969,STRONG,Same type; larger size; slight price increase
+25101,32104,STRONG,Same type; same price; smaller size
+25101,29284,NONE,Mixed cheese type (Mozzarella & Kashkaval blend)
+25101,36223,NONE,Same type but significantly larger size/higher price
+25101,34010,STRONG,Same type; lower price; similar size
+25101,36231,STRONG,Same type; similar size and price
+25101,31759,STRONG,Same type; similar price; promo pack
+25101,26980,NONE,Same type but double size/price difference
+25101,36421,STRONG,Same type; smaller size; lower price
+25101,33846,STRONG,Same type; similar size and price
+31019,36421,NONE,Parmesan vs pizza shredded cheese; different type
+33476,28436,NONE,Portion pack vs tub; different format/category
+33476,31490,NONE,Portion pack vs tub; different format/category
+33476,34221,NONE,Portion pack vs tub; different format/category
+33476,29722,NONE,Portion pack vs tub; different format/category
+33476,36331,NONE,Portion pack vs tub; different format/category
+33476,27783,NONE,Portion pack vs tub; different format/category
+33476,36062,NONE,Portion pack vs tub; different format/category
+33476,24747,NONE,Portion pack vs tub; different format/category
+33476,40142,NONE,Portion pack vs tub; different format/category
+33476,40141,STRONG,same type; larger size; similar price
+33476,40143,NONE,beetroot flavour added; different product
+33476,24430,STRONG,same type; full fat; smaller size
+33476,25457,NONE,different fat content (low fat vs original)
+33476,31537,NONE,different milk type (goat vs cow)
+33476,29484,NONE,different milk type (goat vs cow)
+33476,37014,STRONG,same type; cow milk; larger size
+33476,37005,STRONG,same type; cow milk; larger size
+33476,37011,NONE,different milk type (goat vs cow)
+33476,38693,NONE,different fat content (0% fat vs original)
+29793,36798,NONE,Fresh cream vs butter; different product type
+29793,28961,NONE,Fresh cream vs cooking cream; different type
+29793,26261,NONE,Fresh cream vs cooking cream; different type
+29793,26166,NONE,Fresh cream vs cooking cream; different type
+29793,39926,NONE,Fresh cream vs butter; different product type
+29793,33057,NONE,Fresh cream vs spreadable butter; different type
+29793,39341,NONE,Fresh cream vs butter; different product type
+29793,26578,STRONG,Same brand; cream type; similar price/size
+24553,36798,NONE,Sour cream vs butter; different product type
+24553,28961,NONE,Sour cream vs cooking cream; different type
+24553,26261,NONE,Sour cream vs cooking cream; different product
+24553,26166,NONE,Sour cream vs cooking cream; different product
+24553,39926,NONE,Sour cream vs butter; different product type
+24553,33057,NONE,Sour cream vs butter; different product type
+24553,39341,NONE,Sour cream vs butter; different product type
+24553,26578,STRONG,Same brand; same size; similar cream type
+31773,26879,NONE,4x1L milk vs 200ml; wrong format/size
+31773,27559,NONE,4x1L vs 1L single; wrong sub-category
+31773,29446,NONE,4x1L vs 1L single; wrong sub-category
+31773,24377,NONE,Lactose free vs full cream; different product
+31773,37978,NONE,Different fat content: lactose free vs full cream
+31773,28435,NONE,Different fat content: low fat vs full cream
+31773,30642,STRONG,Same brand/type; smaller size; similar price
+31773,39796,STRONG,Same brand/type; different pack format only
+31773,27128,NONE,Different fat content: lactose free vs full cream
+31773,35988,NONE,Different fat content: lactose free vs full cream
+31773,30643,NONE,Different fat content: low fat vs full cream
+31773,38562,NONE,Different fat content: lactose free vs full cream
+31773,32086,NONE,Different fat content: skimmed vs full cream
+31773,36739,NONE,Different fat content: lactose free vs full cream
+29090,31038,NONE,Different product type: hummus vs mutabal
+35382,30685,NONE,Different fruit type: apple vs pomegranate
+35382,34081,NONE,Different format: 8x125ml vs single 1.4L
+35382,24568,NONE,Different fruit type: apple vs mixed berry
+35382,29622,NONE,Different format and fruit type mismatch
+35382,33005,NONE,Different format; brand; and fruit type
+35382,39147,NONE,Different format: multipack vs single 1L
+35382,39151,NONE,Different format and fruit type: apple vs cocktail
+35382,38541,NONE,Different fruit type: apple vs hibiscus/mixed
+35382,36128,NONE,Different fruit type: apple vs mixed berry
+35382,31639,NONE,Different fruit (apple vs cranberry/aronia)
+35382,39748,NONE,Different fruit (apple vs mixed berry)
+35382,39747,NONE,Different fruit (apple vs mixed fruit)
+35382,36137,NONE,Cola; not juice; different product type
+35382,39717,NONE,Different fruit (apple vs cocktail/mixed)
+35382,35381,STRONG,Same product; larger pack; same brand
+35382,33349,STRONG,Same brand; apple juice; different size
+35382,33350,STRONG,Same brand; apple juice; smaller size
+35382,35365,STRONG,Same brand; apple juice; multipack format
+35382,35010,NONE,Different fruit (apple vs cocktail fruit)
+35382,29501,STRONG,Same brand; cocktail vs apple; different size
+35382,31486,STRONG,Same brand; cocktail vs apple; smaller size
+35382,35280,STRONG,Same brand; cocktail vs apple; larger pack
+35382,35360,STRONG,Same brand; cocktail vs apple; different format
+35382,27820,DIRECT,Same brand; same size; cocktail vs apple
+35010,25599,NONE,Different brand; different fruit type
+35010,30685,NONE,Different brand; different fruit type
+35010,29623,NONE,Different brand; different fruit type
+35010,26596,NONE,Different brand; different fruit type
+35010,34081,NONE,Different brand; different fruit type
+35010,24568,NONE,different format (multi-pack vs single large bottle)
+35010,27646,NONE,different format (multi-pack vs single large bottle)
+35010,32000,NONE,different format; different fruit type (apple)
+35010,29986,NONE,different format; different fruit type (mixed fruit)
+35010,30666,NONE,different format (multi-pack vs single large bottle)
+35010,33005,NONE,different brand; flavour; format; much lower price
+35010,39147,STRONG,same cocktail flavour; similar price; different size
+35010,39151,STRONG,same cocktail flavour; similar price; similar size
+35010,36127,NONE,different fruit type (mango vs cocktail)
+35010,38541,NONE,different fruit type (hibiscus/mixed vs cocktail)
+35010,36128,NONE,Different fruit type (cocktail vs mixed berry)
+35010,36132,NONE,Different fruit type (cocktail vs orange/carrot)
+35010,36126,NONE,Different fruit type (cocktail vs orange/carrot)
+35010,39146,NONE,Different fruit type (cocktail vs orange)
+35010,29591,NONE,Different fruit type (cocktail vs apple)
+35010,31639,NONE,Different fruit type (cocktail vs cranberry/aronia)
+35010,27618,NONE,Different fruit type (cocktail vs peach)
+35010,28616,NONE,Different fruit type (cocktail vs lemonade)
+35010,39746,NONE,Different fruit type (cocktail vs mango)
+35010,40276,NONE,Different fruit type (cocktail vs mango)
+35010,40275,NONE,different format; added sugar; cola drink
+35010,36137,NONE,cola drink; different type entirely
+35010,36139,NONE,concentrate; different format and type
+35010,38769,NONE,single serve; different fruit; no added sugar
+35010,38635,NONE,different fruit type; single serve
+35010,38636,NONE,different fruit type; single serve
+35010,39717,STRONG,same cocktail flavor; similar price; multipack
+35010,39716,NONE,different fruit type (mango vs cocktail)
+35010,39984,NONE,different fruit type (mango vs cocktail)
+35010,39985,NONE,different fruit type (pineapple vs cocktail)
+35010,36827,NONE,different flavor; different pack size format
+35010,24561,NONE,different flavor; different pack size format
+35010,30166,NONE,different brand; different flavor (lemonade)
+35010,34104,NONE,different flavor (orange & pineapple vs cocktail)
+35010,26143,NONE,different flavor (orange vs cocktail fruit)
+35010,29156,NONE,different flavor (apple vs cocktail fruit)
+35010,29155,NONE,different flavor (kiwi & lime vs cocktail)
+35010,27154,NONE,different flavor (lemon mint vs cocktail fruit)
+35010,32190,NONE,different flavor (strawberry vs cocktail fruit)
+35010,29154,STRONG,tropical cocktail close to cocktail fruit nectar
+35010,35381,NONE,different pack size (40 vs 6 units)
+35010,35382,STRONG,same brand/size; apple vs cocktail flavor
+35010,35391,NONE,different pack size and flavor
+35010,35011,STRONG,same size/price; orange vs cocktail flavor
+35010,33349,NONE,different format (1L vs 6x125ml)
+35010,35366,NONE,different pack size (24 vs 6 units)
+35010,33350,NONE,different format (single vs 6-pack)
+35010,35365,STRONG,similar price; different flavor/size
+35010,35374,NONE,different flavor and pack size
+35010,35406,NONE,different flavor and pack size
+35010,35390,STRONG,same product; larger pack; same brand
+35010,29501,NONE,different product; no "no added sugar"
+35010,35278,NONE,different product; no "no added sugar"
+35010,31486,NONE,different product; no "no added sugar"
+35010,35280,NONE,different product; no "no added sugar"
+35010,35360,NONE,different product; no "no added sugar"
+35010,27820,NONE,different product; no "no added sugar"
+35010,24369,NONE,different fruit type; mango vs cocktail
+35010,26409,NONE,different fruit type; mango vs cocktail
+35010,35369,NONE,different fruit type; mango vs cocktail
+35010,35279,NONE,Different fruit type; mango vs cocktail
+35010,35281,NONE,Different fruit type; mango vs cocktail
+35010,33686,NONE,Different fruit type; mango vs cocktail
+35010,35389,NONE,Different fruit type; mango/grape vs cocktail
+35010,25485,NONE,Different fruit type; orange vs cocktail
+35010,39993,NONE,Different fruit type; orange/grape vs cocktail
+35010,39992,NONE,Different fruit type; orange/grape vs cocktail
+35010,35378,NONE,Different fruit type; passion fruit vs cocktail
+35010,35411,NONE,Different fruit type; peach vs cocktail
+35010,39720,NONE,Different fruit type; pineapple/grape vs cocktail
+35010,35415,NONE,different fruit type; different size/format
+35010,31348,NONE,different fruit type; single vs multipack
+35010,35380,NONE,different fruit type; different size/format
+35010,25580,NONE,different fruit type; added sugar vs none
+29052,37051,NONE,different brand; sparkling vs cola zero
+29052,36613,STRONG,zero sugar cola; similar format; minor brand diff
+29052,37053,NONE,different flavor (lime/lemon vs cola)
+29052,37052,NONE,different flavor (orange vs cola)
+29052,40087,NONE,regular cola; not zero sugar variant
+29052,40088,STRONG,zero cola; similar format; minor brand difference
+29052,40091,NONE,Different brand; flavor; size; and not zero sugar
+29052,40092,STRONG,Zero sugar; similar size; minor brand/price diff
+29052,40089,NONE,Not zero sugar; different flavor/brand
+29052,40090,NONE,Not zero sugar; different flavor/brand
+29052,34238,NONE,Different brand; flavor; significantly higher price
+29052,30391,NONE,Different brand; flavor; single vs multipack
+29052,31406,NONE,Different brand; flavor; blackcurrant vs cola
+29052,34167,NONE,Different brand; citrus flavor; not zero sugar
+29052,29244,NONE,Different brand; citrus flavor; not zero sugar
+29052,30248,STRONG,Cola flavor; same pack size (30u); similar price
+29052,26319,STRONG,same diet cola; different size/brand
+29052,26318,STRONG,same diet cola; multipack format matches better
+29052,33173,NONE,lemon flavor differs from cola
+29052,30249,NONE,lemon flavor differs from cola
+29052,34283,STRONG,zero sugar lemon cola; close match
+29052,25248,STRONG,zero sugar lemon cola; multipack format
+29052,34345,STRONG,cola type matches; different brand/size
+29052,34637,STRONG,cola multipack; different brand
+29052,34347,NONE,lemon flavor; different from cola
+29052,34348,NONE,unknown flavor; different brand/type
+29052,34349,NONE,Different brand; flavor; not cola/zero
+29052,34351,NONE,Different brand; flavor; not cola/zero
+29052,34350,NONE,Different brand; flavor; not cola/zero
+29052,34352,NONE,Different brand; flavor; not cola/zero
+29052,32517,NONE,Regular cola; not zero/sugar-free
+29052,32513,NONE,Regular cola; not zero/sugar-free
+29052,32515,NONE,Regular cola; not zero/sugar-free
+29052,24521,STRONG,Same brand; zero/light; smaller size
+29052,26548,STRONG,Same brand; zero/light; slightly larger size
+29052,32514,STRONG,Same brand; zero; smaller size only
+29052,26547,STRONG,same brand/type; smaller single can format
+29052,28137,STRONG,same format/price; regular not zero
+29052,29053,STRONG,same format/price; Light vs Zero variant
+29052,27599,STRONG,same brand Zero; different size/format
+29052,27598,STRONG,same brand Zero; different size/format
+29052,26546,NONE,different brand/flavour; Fanta Orange
+29052,29574,NONE,different brand/flavour; Fanta Orange
+29052,31621,NONE,different brand/flavour; Fanta Strawberry
+29052,31620,NONE,different brand/flavour; Fanta Orange
+29052,26549,NONE,different brand/flavour; Sprite
+29052,25545,STRONG,same supplier; different flavor; same size
+29052,31622,STRONG,same supplier; different flavor; larger size
+29052,27597,STRONG,same supplier; zero variant; larger size
+29052,27472,NONE,different brand; different format; larger size
+29052,29452,STRONG,different brand; same size; different flavor
+29052,28754,STRONG,different brand; slightly larger; different flavor
+29052,33028,STRONG,different brand; same multipack format; similar price
+29052,30478,NONE,different brand; different format; larger size
+29052,27471,STRONG,different brand; same size; sugar-free variant
+29052,31793,STRONG,different brand; slightly larger; sugar-free variant
+29052,34024,STRONG,same format; sugar-free; different brand
+29052,33360,NONE,different size/format; not multipack
+29052,29451,NONE,single unit; not multipack
+29052,26728,NONE,single unit; not multipack
+29052,31158,STRONG,same multipack cans; sugar-free; different brand
+29052,32393,NONE,different flavour; single unit; not multipack
+29052,33658,NONE,different flavour; single unit; not multipack
+29052,25412,NONE,different flavour; single unit; not multipack
+29052,26417,NONE,different flavour; single unit; not multipack
+29052,28755,NONE,different flavour; single unit; not multipack
+29052,28756,NONE,different brand; flavor; not zero sugar
+29052,27106,STRONG,both zero sugar; similar size/price
+29052,27470,NONE,different size; not zero sugar
+29052,31503,NONE,different size; not zero sugar
+29052,32537,NONE,not zero sugar; different brand
+29052,26086,STRONG,same format/size; similar price; different brand
+29052,40427,NONE,not zero sugar; different brand
+29052,33133,NONE,different size; zero sugar but larger
+29052,25715,STRONG,both zero sugar; same size/price
+29052,29618,NONE,fruit drink; completely different product
+29052,29075,STRONG,same format/size; minor brand/price difference
+33363,37051,NONE,single unit vs multipack; major price difference
+33363,36613,NONE,single unit vs multipack; major price difference
+33363,37053,NONE,single unit vs multipack; major price difference
+33363,37052,NONE,single unit vs multipack; major price difference
+33363,40087,STRONG,similar single can; minor size/price difference
+33363,40088,STRONG,similar single can; minor size/price difference
+33363,40091,STRONG,similar single can; minor size/price difference
+33363,40092,STRONG,similar single can; minor size/price difference
+33363,40089,STRONG,similar single can; minor size/price difference
+33363,40090,STRONG,same category; smaller size; slightly higher price
+33363,34238,NONE,vastly different price; different product type
+33363,30391,STRONG,similar soft drink; slightly larger size; close price
+33363,31406,STRONG,bulk pack of #3; same product
+33363,34167,STRONG,similar soft drink; slightly larger size; close price
+33363,29244,STRONG,bulk pack of #5; same product
+33363,30248,STRONG,bulk cola pack; same brand family
+33363,26319,STRONG,similar soft drink; diet variant; close price
+33363,26318,STRONG,bulk pack of #8; same product
+33363,33173,STRONG,similar soft drink; lemon flavor; close price
+33363,30249,NONE,multipack format; different flavor; price too high
+33363,34283,STRONG,same category; similar size; minor price diff
+33363,25248,NONE,multipack format; price too high
+33363,34345,STRONG,same category; similar size; minor price diff
+33363,34637,NONE,multipack format; price too high
+33363,34347,STRONG,same category; similar size; minor price diff
+33363,34348,STRONG,same category; similar size; minor price diff
+33363,34349,STRONG,same category; similar size; minor price diff
+33363,34351,STRONG,same category; similar size; minor price diff
+33363,34350,STRONG,same category; similar size; minor price diff
+33363,34352,NONE,Different brand; flavor; significantly larger size
+33363,32517,NONE,Different format; vastly different size/price
+33363,32513,DIRECT,Same size; same price; similar format
+33363,32515,STRONG,Same brand family; slightly larger size/price
+33363,24521,STRONG,Same size/price; diet variant differs
+33363,26548,NONE,Diet variant; larger size; different price
+33363,32514,STRONG,Same size/price; zero sugar variant
+33363,26547,NONE,Zero sugar; larger size; different price
+33363,28137,NONE,Multipack format; vastly different price
+33363,29053,NONE,Multipack; diet variant; vastly different price
+33363,27599,NONE,different brand; size; and type (diet cola)
+33363,27598,NONE,different brand; size; and type (zero cola)
+33363,26546,STRONG,same size; similar price; different brand/flavor
+33363,29574,STRONG,same format; slightly larger; different brand/flavor
+33363,31621,STRONG,same format; similar price; different flavor
+33363,31620,NONE,different size (1.25L vs 150ml); different brand
+33363,26549,NONE,different type (lemon-lime); different size
+33363,25545,STRONG,same size/format; same price; different brand/flavor
+33363,31622,STRONG,slightly larger; similar price; different brand/flavor
+33363,27597,NONE,zero sugar variant; different type/flavor
+33363,27472,STRONG,same brand family; larger size; higher price
+33363,29452,DIRECT,same size; same price; same manufacturer
+33363,28754,STRONG,same manufacturer; slightly larger size; minor price diff
+33363,33028,STRONG,same manufacturer; bulk multipack format; same unit size
+33363,30478,STRONG,same manufacturer; diet variant; larger size
+33363,27471,STRONG,same manufacturer; diet variant; same size/price
+33363,31793,STRONG,same manufacturer; diet variant; slightly larger size
+33363,34024,STRONG,same manufacturer; diet bulk pack; same unit size
+33363,33360,STRONG,same manufacturer; diet cola; larger size
+33363,29451,STRONG,same manufacturer; diet cola; same size/price
+33363,26728,STRONG,same supplier; diet variant; slightly larger size
+33363,31158,NONE,bulk multipack; incompatible format/size/price
+33363,32393,NONE,different flavor type; much larger size
+33363,33658,STRONG,same supplier; fruit flavor; slightly larger size
+33363,25412,NONE,different flavor type; much larger size
+33363,26417,STRONG,same supplier; fruit flavor; identical size/price
+33363,28755,STRONG,same supplier; fruit flavor; slightly larger size
+33363,28756,NONE,different drink type (cola/citrus vs fruit)
+33363,27106,NONE,different drink type; zero sugar variant
+33363,27470,NONE,different drink type; much larger size
+33363,31503,STRONG,Same brand/size; different product type
+33363,32537,STRONG,Same supplier; slight size/price difference
+33363,26086,NONE,Bulk pack; different format entirely
+33363,40427,NONE,Different product; higher caffeine; double price
+33363,33133,NONE,Much larger size; different product type
+33363,25715,STRONG,Same supplier; minor size/price difference
+33363,29618,DIRECT,Same brand/product; minor size/price difference
+33363,29075,NONE,Bulk pack; different format entirely
+35357,39715,STRONG,Same type/size; different brand; lower price
+35357,30164,NONE,Different size; single vs multipack format
+35357,28214,NONE,different flavor (chocolate vs dates)
+35357,25112,NONE,different flavor (chocolate vs strawberry)
+35357,33084,NONE,different flavor (chocolate vs vanilla)
+35357,35448,NONE,different size/format (6x250ml vs 30x125ml)
+35357,33378,STRONG,same brand/flavor family; smaller size/pack
+35357,35276,NONE,different pack size (6x250ml vs 30x125ml)
+35357,27458,STRONG,same brand/flavor; smaller pack format
+35357,32380,NONE,different flavor (chocolate vs strawberry)
+35357,25400,NONE,different flavor (chocolate vs banana)
+35357,24761,NONE,different flavor (chocolate vs banana)
+35357,35277,STRONG,Same brand/flavor; larger pack; similar unit price
+35357,32379,STRONG,Same brand; lactose free variant; single unit
+35357,31485,STRONG,Same brand; different flavor; single unit
+35357,35443,STRONG,Same brand; different flavor; same pack size
+28495,39715,STRONG,Different brand; low fat vs full fat
+28495,30164,NONE,Different brand; protein drink; much higher price
+28495,28214,NONE,Different flavor; protein drink; dates variant
+28495,25112,NONE,Different flavor; protein drink; strawberry variant
+28495,33084,NONE,Different flavor; protein drink; vanilla variant
+28495,35448,NONE,Different flavor; banana; bulk multipack format
+28495,33378,NONE,Different flavor (banana vs chocolate)
+28495,35276,STRONG,Same flavor; smaller size; multipack format
+28495,27458,STRONG,Same flavor; smaller size; multipack format
+28495,32380,NONE,Different flavor (strawberry vs chocolate)
+28495,25400,NONE,Different flavor (banana vs chocolate)
+28495,24761,NONE,Different flavor (banana vs chocolate)
+28495,35277,STRONG,Same flavor; larger multipack; same brand
+28495,32379,STRONG,Same flavor; lactose-free variant; slight price difference
+28495,31485,NONE,Different flavor (strawberry vs chocolate)
+28495,35443,NONE,Different flavor (strawberry vs chocolate)
+35441,34148,NONE,Different brand; fresh vs long life milk
+35441,27587,STRONG,Same product; smaller pack size
+35441,25240,STRONG,Same brand; full cream; smaller unit
+35441,24740,STRONG,Same brand; full cream; smaller unit
+35441,35422,STRONG,Same brand; full cream; similar multipack
+35441,35420,NONE,Different fat content; half cream vs full cream
+35441,35434,NONE,Different fat content; half cream vs full cream
+35441,32378,STRONG,Same brand; full cream; larger single unit
+35441,27130,STRONG,Same brand; full cream; multipack format
+35441,31483,NONE,Different fat content; skimmed vs full cream
+25398,27587,STRONG,Same brand; full cream; smaller multi-pack format
+25398,25240,STRONG,Same brand; full cream; smaller size; fortified
+25398,24740,STRONG,Same brand; full cream; smaller single size
+25398,35422,STRONG,Same brand; full cream; multi-pack larger size
+25398,35434,NONE,Different fat content; half cream vs full cream
+25398,35421,NONE,Different fat content; half cream vs full cream
+25398,32378,DIRECT,Same brand; full cream; same size; similar price
+25398,27130,STRONG,Same brand; full cream; multi-pack format
+32762,39971,NONE,Wrong sub-category; frozen chicken not milk
+32762,40002,NONE,Wrong sub-category; frozen chicken not milk
+32762,40000,NONE,different format; much less quantity (250g vs 1kg)
+32762,40001,NONE,different format; much less quantity (250g vs 1kg)
+32762,39444,NONE,different product type; far less quantity
+32762,37986,NONE,different format (burger vs strips)
+32762,39898,STRONG,similar format (tenders); similar price; larger pack
+32762,32352,STRONG,similar format (tenders); close price; 750g
+32762,32777,NONE,different format (cubes vs strips)
+32762,30433,STRONG,same plain breast; similar size/price
+32762,33755,NONE,different format (burger vs strips)
+32762,29410,NONE,different cut (drumsticks vs breast strips)
+32762,39896,NONE,Franks vs breast strips; different product type
+32762,32351,NONE,Nuggets vs breast strips; different product type
+32762,26051,NONE,Shish Tawook vs breast strips; different format
+32762,32083,NONE,Tikka vs breast strips; different format/type
+32762,27892,STRONG,Broasted strips; similar format; different brand/size
+32762,27893,NONE,Crispy nuggets vs breast strips; different type
+32762,24347,NONE,Burgers vs breast strips; different product type
+32762,38659,NONE,Popcorn chicken vs breast strips; different type
+32762,30434,STRONG,Tender breast; same type; similar size/format
+32762,40186,NONE,Whole chicken vs breast strips; different cut
+32762,37961,NONE,breaded fillet vs plain breast strips
+32762,37962,NONE,popcorn format vs plain breast strips
+32762,28535,NONE,tenders vs plain breast strips; different format
+32762,37959,NONE,nuggets vs plain breast strips; different format
+32762,37960,STRONG,strips; similar format; smaller size; lower price
+32762,31277,STRONG,skinless boneless breast; same type; smaller size
+32762,37963,NONE,tempura nuggets vs plain breast strips
+32762,28114,STRONG,same brand; air fryer strips; smaller size
+32762,26807,NONE,shawarma vs plain breast strips; different format
+32762,34156,NONE,popcorn format vs plain breast strips
+32762,32268,NONE,Different product type; strips vs nuggets
+32762,32269,NONE,Different product type; strips vs shish tawook
+32762,28846,NONE,Different product type; strips vs tikka
+32762,33724,NONE,Different product type; strips vs burger
+32762,30874,NONE,Different product type; strips vs burger
+32762,30873,STRONG,Same type strips; same price; different brand
+32762,24479,NONE,Completely different product; hotdog franks
+32762,27604,NONE,Different product type; chunks vs strips
+32762,36298,STRONG,Same type strips; similar size; different brand
+32762,36296,NONE,Different product type; strips vs nuggets
+32762,36295,STRONG,same type; smaller size; similar price
+32762,37984,NONE,different flavor/format; smaller size
+32762,24331,NONE,whole chicken vs strips; much cheaper
+32762,26670,NONE,shawarma format; different product entirely
+32762,36229,NONE,lollipop format; different cut entirely
+32762,31893,NONE,drumstick vs breast strips; different cut
+32762,38454,NONE,shawarma format; different product entirely
+32762,36297,STRONG,popcorn vs strips; same brand category
+32762,36301,STRONG,spicy strips; same format; smaller size
+25386,38533,NONE,corn vs fries; different vegetable type
+25386,37435,NONE,Fries vs artichoke bottoms; different product type
+25386,38537,NONE,Fries vs blueberries/strawberries; different product type
+25386,37436,NONE,Fries vs broad beans; different product type
+25386,37444,NONE,Fries vs broccoli; different product type
+25386,37434,NONE,Fries vs broccoli mix; different product type
+25386,37433,NONE,Fries vs brussels sprouts; different product type
+25386,38531,NONE,Fries vs green beans; different product type
+25386,37443,NONE,Fries vs garden mix; different product type
+25386,37437,NONE,Fries vs Malaysian wokmix; different product type
+25386,38542,NONE,Fries vs molokhia; different product type
+25386,37432,NONE,Fries vs mixed vegetables; different product type
+25386,37442,NONE,Fries vs spinach; different product type
+25386,37441,NONE,Fries vs peas; different product type
+25386,37440,NONE,Fries vs mixed vegetables; different product type
+25386,38535,NONE,Fries vs peas & carrots; different product type
+25386,37439,NONE,Fries vs mushrooms; different product type
+25386,38532,NONE,Fries vs sweet corn; different product type
+25386,38536,NONE,Fries vs spinach; different product type
+25386,38437,NONE,Fries vs beef dumplings; completely different product
+25386,38538,NONE,Fries vs lamb dumplings; completely different product
+25386,38436,NONE,Veal dumplings ≠ frozen fries
+25386,39900,NONE,Minced molokhia ≠ frozen fries
+25386,33744,NONE,Chopped molokhiya ≠ frozen fries
+25386,27546,NONE,Chopped molokhia ≠ frozen fries
+25386,24468,NONE,Frozen okra ≠ frozen fries
+25386,28862,STRONG,Same brand/size; crinkle cut fries; similar price
+25386,25410,STRONG,Same brand fries; larger size; higher price
+25386,30466,DIRECT,Same brand/size/price; seasoned fries variant
+25386,34482,NONE,Green beans ≠ frozen fries
+25386,34481,NONE,Green peas ≠ frozen fries
+25386,34484,NONE,Fries vs Mexican vegetable mix; different type
+25386,34483,NONE,Fries vs sweet corn; different type
+35864,38533,NONE,Fries vs corn on cob; different type
+35864,37435,NONE,Fries vs artichoke bottoms; different type
+35864,38537,NONE,Fries vs berries; completely different type
+35864,37444,NONE,Fries vs broccoli; different type
+35864,37434,NONE,Fries vs broccoli mix; different type
+35864,38531,NONE,Fries vs green beans; different type
+35864,37443,NONE,Fries vs garden mix; different type
+35864,37437,NONE,Fries vs wokmix; different type
+35864,38542,NONE,Fries vs minced molokhia; different vegetable type
+35864,37432,NONE,Fries vs mixed vegetables; different product type
+35864,38535,NONE,Fries vs peas & carrots; different vegetable type
+35864,37439,NONE,Fries vs sliced mushrooms; different vegetable type
+35864,38532,NONE,Fries vs sweet corn; different vegetable type
+35864,39900,NONE,Fries vs minced molokhia; different vegetable type
+35864,33744,NONE,Fries vs chopped molokhia; different vegetable type
+35864,27546,NONE,Fries vs chopped molokhia; different vegetable type
+35864,24487,NONE,Fries vs frozen okra; different vegetable type
+35864,24468,NONE,Fries vs frozen okra; different vegetable type
+35864,28862,STRONG,Same brand; fries type; minor size/price diff
+35864,32391,STRONG,Same brand; fries; minor size/price difference
+35864,25410,NONE,Same brand but vastly different size/price
+35864,30466,DIRECT,Same brand; fries; same price; similar size
+35864,34983,NONE,Different vegetable type entirely
+35864,34482,NONE,Different vegetable type entirely
+35864,39412,NONE,Different product type entirely (edamame beans)
+26382,38533,NONE,Different product type entirely (corn cob)
+26382,37435,NONE,Different product type entirely (artichoke)
+26382,38531,NONE,Different product type entirely (green beans)
+26382,37443,NONE,Fries vs garden mix; different product type
+26382,37437,NONE,Fries vs wokmix; different product type
+26382,38542,NONE,Fries vs molokhia; different product type
+26382,37432,NONE,Fries vs mixed vegetables; different product type
+26382,37439,NONE,Fries vs mushrooms; different product type
+26382,38532,NONE,Fries vs sweet corn; different product type
+26382,39900,NONE,Fries vs molokhia; different product type
+26382,33744,NONE,Fries vs molokhia; different product type
+26382,27546,NONE,Fries vs molokhia; different product type
+26382,24487,NONE,Fries vs okra; different product type
+26382,24468,NONE,Different product type: fries vs okra
+26382,28862,STRONG,Same fry type; smaller size; similar price
+26382,32391,STRONG,Same fry type; smaller size; similar price
+26382,25410,STRONG,Same fry type; same size; slight premium
+26382,30466,STRONG,Same fry type; smaller size; similar price
+26382,34983,NONE,Different product type: fries vs corn
+26382,34482,NONE,Different product type: fries vs green beans
+25386,24487,NONE,Different product type: fries vs okra
+25386,32391,STRONG,Same fry type; same size; similar price
+25386,34983,NONE,Different product type: fries vs corn
+25386,39412,NONE,Fries vs edamame beans; different product type
+25386,34984,NONE,Fries vs corn on cob; different vegetable
+35864,37436,NONE,Fries vs broad beans; different product type
+35864,37441,NONE,Fries vs garden peas; different product type
+35864,37440,NONE,Fries vs mixed vegetables; different product type
+35864,38538,NONE,Fries vs lamb dumplings; completely different product
+35864,38436,NONE,Fries vs veal dumplings; completely different product
+35864,34984,NONE,Fries vs corn on cob; different product type
+35864,34481,NONE,Fries vs green peas; different product type
+35864,34484,NONE,Fries vs Mexican mix; different product type
+35864,34483,NONE,Fries vs sweet corn; different product type
+26382,37436,NONE,Fries vs broad beans; different product type
+26382,37441,NONE,Fries vs garden peas; different product type
+26382,37440,NONE,Fries vs mixed vegetables; different product type
+26382,38538,NONE,Fries vs lamb dumplings; completely different product
+26382,38436,NONE,Fries vs veal dumplings; completely different product
+26382,34984,NONE,Fries vs corn on cob; different product type
+26382,34481,NONE,Fries vs green peas; different product type
+26382,34484,NONE,Fries vs Mexican mix; different product type
+26382,34483,NONE,Fries vs sweet corn; different product type
+24773,28852,NONE,Beef burgers ≠ beef meatballs; different format
+24773,30432,NONE,Beef burgers ≠ beef meatballs; different format
+24773,28269,NONE,Beef burger sliders ≠ beef meatballs; different format
+24773,25654,STRONG,Same type (beef meatballs); larger size; higher price
+24773,32486,NONE,Wagyu beef burger ≠ beef meatballs; different format
+24773,37958,NONE,Beef burger ≠ beef meatballs; different format
+24773,34236,NONE,Minced beef ≠ meatballs; different format/preparation
+24773,26808,NONE,Minced mutton ≠ beef meatballs; different meat type
+24773,33248,STRONG,Same type (beef meatballs); different brand; higher price
+24773,29320,NONE,Beef shawarma ≠ beef meatballs; different format
+24773,28354,NONE,different product type; arayes vs meatballs
+24773,27290,STRONG,same beef; minced vs meatballs; similar price
+24773,33455,NONE,different product type; burger vs meatballs
+24773,28766,NONE,different product type; hotdog vs meatballs
+24773,40617,STRONG,same brand; beef burger vs meatballs; close price
+24773,40616,NONE,different meat type; mutton vs beef
+31518,25089,NONE,different vegetable type; corn vs lettuce
+31518,26300,NONE,different lettuce variety; gem vs romaine
+31518,26506,NONE,different vegetable type; beetroot vs lettuce
+31518,39458,NONE,different vegetable type; mushroom vs lettuce
+31518,27843,NONE,Different vegetable type entirely
+31518,30498,NONE,Different vegetable type entirely
+31518,33388,NONE,Different vegetable type entirely
+31518,33580,NONE,Different vegetable type entirely
+31518,31519,NONE,Different vegetable type entirely
+31518,33584,NONE,Different vegetable type entirely
+31518,29471,STRONG,Same lettuce type; different origin; larger size
+31518,25666,DIRECT,Same type; size; price; different origin
+31518,28524,NONE,Different vegetable type entirely
+31518,39461,NONE,Different vegetable type entirely
+31518,33386,NONE,Different vegetable type: lettuce vs mushroom
+31518,39955,NONE,Different vegetable type: lettuce vs mint
+31518,39960,NONE,Different vegetable type: lettuce vs mint
+35552,27498,NONE,Different vegetable type: mushroom vs carrot
+35552,28458,NONE,Different vegetable type: mushroom vs cucumber
+35552,26300,NONE,Different vegetable type: mushroom vs lettuce
+35552,39469,NONE,Different vegetable type: mushroom vs beans
+35552,26506,NONE,Different vegetable type: mushroom vs beetroot
+35552,27499,NONE,Different vegetable type: mushroom vs broccoli
+35552,39458,STRONG,Same mushroom type; similar size; minor price difference
+35552,27843,NONE,Different vegetable type entirely
+35552,24412,NONE,Different vegetable type entirely
+35552,24409,NONE,Different vegetable type entirely
+35552,28866,NONE,Different vegetable type entirely
+35552,28553,NONE,Different vegetable type entirely
+35552,27497,NONE,Different vegetable type entirely
+35552,26441,NONE,Different vegetable type entirely
+35552,35433,NONE,Different vegetable type entirely
+35552,39765,NONE,Different vegetable type entirely
+35552,24410,NONE,Different vegetable type entirely
+35552,30498,NONE,Different vegetable type; mushroom vs garlic
+35552,33388,NONE,Different vegetable type; mushroom vs ginger
+35552,28199,NONE,Different vegetable type; mushroom vs asparagus
+35552,33580,NONE,Different vegetable type; mushroom vs green beans
+35552,26838,NONE,Different vegetable type; mushroom vs capsicum
+35552,31519,NONE,Different vegetable type; mushroom vs chili
+35552,33584,NONE,Different vegetable type; mushroom vs pepper
+35552,39473,NONE,Different vegetable type; mushroom vs habanero
+35552,39470,NONE,Different vegetable type; mushroom vs habanero
+35552,29471,NONE,Different vegetable type; mushroom vs lettuce
+35552,25511,NONE,Different vegetable type (mushroom vs lemon)
+35552,25666,NONE,Different vegetable type (mushroom vs lettuce)
+35552,28675,NONE,Different vegetable type (mushroom vs eggplant)
+35552,26713,NONE,Different vegetable type (mushroom vs capsicum)
+35552,32416,NONE,Different vegetable type (mushroom vs capsicum)
+35552,39464,STRONG,Same mushroom type; different variety/size/price
+35552,28524,NONE,Different vegetable type (mushroom vs okra)
+35552,33387,NONE,Different vegetable type (mushroom vs onion)
+35552,35425,NONE,Different vegetable type (mushroom vs onion)
+35552,28678,STRONG,Same mushroom type; different variety/size/price
+35552,24621,NONE,Different vegetable type; potato vs mushroom
+35552,39460,NONE,Different vegetable type; cabbage vs mushroom
+35552,30734,NONE,Different vegetable type; onion vs mushroom
+35552,39461,STRONG,Same type; sliced format; slightly higher price
+35552,29681,NONE,Different vegetable type; sweet potato vs mushroom
+35552,28797,NONE,Different vegetable type; potato vs mushroom
+35552,25760,NONE,Different vegetable type; potato vs mushroom
+35552,29671,NONE,Different vegetable type; tomato vs mushroom
+35552,36916,NONE,Different vegetable type; tomato vs mushroom
+35552,33386,STRONG,Same type; same size; slightly higher price
+35552,24411,NONE,Different vegetable type: mushroom vs onion
+35552,25438,NONE,Different vegetable type: mushroom vs zucchini
+35552,39953,NONE,Different vegetable type: mushroom vs coriander
+35552,39958,NONE,Different vegetable type: mushroom vs coriander
+35552,39957,NONE,Different vegetable type: mushroom vs dill
+35552,39955,NONE,Different vegetable type: mushroom vs mint
+35552,39954,NONE,Different vegetable type: mushroom vs parsley
+35552,39959,NONE,Different vegetable type: mushroom vs parsley
+35552,39956,NONE,Different vegetable type: mushroom vs rocket
+35552,39961,NONE,Different vegetable type: mushroom vs rocket
+35552,35565,NONE,Different vegetable type; mushroom vs chives
+35552,35559,NONE,Different vegetable type; mushroom vs lettuce
+35552,35556,NONE,Different vegetable type; mushroom vs lettuce
+35552,35555,NONE,Different vegetable type; mushroom vs lettuce
+35552,35558,NONE,Different vegetable type; mushroom vs lettuce
+35552,35567,NONE,Different vegetable type; mushroom vs kale
+35552,35574,NONE,Different vegetable type; mushroom vs potatoes
+35552,35765,NONE,Different vegetable type; mushroom vs baby corn
+35552,39833,NONE,Different vegetable type; mushroom vs keffir lime
+35552,35799,STRONG,Same mushroom category; minor size/brand difference
+35552,35792,STRONG,same mushroom type; different brand/price
+35552,35811,NONE,different vegetable type entirely
+35552,35768,NONE,different vegetable type entirely
+35552,35771,NONE,different vegetable type entirely
+35552,35782,STRONG,mushroom type; smaller size; higher price
+31515,24413,NONE,different fruit type entirely
+31515,38276,NONE,different fruit type entirely
+31515,27495,NONE,different vegetable type entirely
+31515,27494,NONE,different product type entirely
+31515,28119,STRONG,same brand/type; slightly smaller size/price
+31515,25509,NONE,Different fruit type (blackberries vs pomelo)
+24510,24413,NONE,Different fruit type (watermelon vs avocado)
+24510,38276,NONE,Different fruit type (watermelon vs avocado)
+24510,27495,NONE,Fruit vs vegetable (watermelon vs squash)
+24510,27494,NONE,Different fruit type (watermelon vs coconut)
+24510,25509,NONE,Different fruit type (watermelon vs pomelo)
+24510,33930,STRONG,Same fruit; different origin; minor size/price difference
+26676,31727,NONE,Different vegetable type (coriander vs mixed leaves)
+26675,31727,NONE,Different type (rocket vs mixed baby leaves)
+26675,31726,STRONG,Same type; minor size/price difference
+36737,36672,NONE,Different fruit type: pomegranate vs melon
+36737,24942,NONE,Different fruit type: pomegranate vs melon
+36668,36672,NONE,Different fruit type: watermelon vs melon
+36668,24942,NONE,Different fruit type: watermelon vs melon
+36669,36672,NONE,Different fruit type: pineapple vs melon
+36669,24942,NONE,Different fruit type: pineapple vs melon
+24467,40409,NONE,Wrong sub-category: fabric softener vs detergent
+24467,40410,NONE,Wrong sub-category: fabric softener vs detergent
+24467,40408,NONE,Wrong sub-category: fabric softener vs detergent
+24467,40406,NONE,Wrong sub-category: fabric softener vs stain remover
+24467,36742,NONE,Fabric softener vs abaya shampoo/detergent; different product
+24467,35920,NONE,Fabric softener vs laundry detergent; different product type
+24467,38957,NONE,Fabric softener vs power gel detergent; different type
+24467,27988,NONE,Fabric softener vs power gel detergent; different type
+24467,31550,NONE,Fabric softener vs power gel detergent; different type
+24467,26899,NONE,Fabric softener vs detergent powder; different product type
+24467,37945,NONE,Fabric softener vs detergent powder; different product type
+24467,27522,NONE,Fabric softener vs black gel detergent; different type
+24467,35718,NONE,Fabric softener vs gel detergent; different product type
+24467,31593,NONE,Fabric softener vs laundry detergent; different product type
+24467,38955,NONE,Fabric softener replaced with laundry detergent
+24467,35719,NONE,Fabric softener replaced with laundry detergent
+24467,39228,NONE,Fabric softener replaced with fabric shampoo/detergent
+24467,39233,NONE,Fabric softener replaced with laundry gel detergent
+24467,39231,NONE,Fabric softener replaced with detergent powder
+24467,39226,NONE,Fabric softener replaced with detergent powder
+24467,39230,STRONG,Both fabric conditioners/softeners; similar size
+24467,39227,NONE,Fabric softener replaced with detergent powder
+24467,39221,NONE,Fabric softener replaced with spray starch
+24467,32041,NONE,Fabric softener replaced with stain remover
+24467,32945,NONE,Fabric softener vs stain remover; different product type
+24467,38898,NONE,Fabric softener vs stain remover; different product type
+24467,38899,NONE,Fabric softener vs stain remover; different product type
+24467,31085,NONE,Fabric softener vs stain remover; different product type
+24467,38897,NONE,Fabric softener vs stain remover; different product type
+24467,26383,NONE,Fabric softener vs stain remover; different product type
+24467,34850,NONE,Fabric softener vs detergent powder; different product type
+24467,38004,NONE,Fabric softener vs detergent powder; different product type
+24467,38005,NONE,Fabric softener vs detergent gel; different product type
+24467,32943,NONE,Fabric softener vs detergent gel; different product type
+24467,24955,NONE,Stain remover ≠ fabric softener
+24467,31068,NONE,Stain remover ≠ fabric softener
+24467,34848,STRONG,Same type; similar price; different brand/size
+24467,38007,NONE,Same type but price more than double
+24467,38008,NONE,Same type but price more than double
+24467,34847,STRONG,Same type; same size; similar price
+24467,34849,STRONG,Same type; similar price; different brand/size
+24467,30655,STRONG,Same type; same size; similar price
+24467,34852,NONE,Laundry pods ≠ fabric softener
+24467,38022,NONE,Laundry detergent ≠ fabric softener
+24467,38024,NONE,Fabric softener vs laundry detergent; different product type
+24467,34846,NONE,Fabric softener vs laundry detergent; different product type
+24467,35844,NONE,Fabric softener vs laundry detergent; different product type
+24467,40531,NONE,Fabric softener vs laundry detergent; different product type
+24467,35843,NONE,Fabric softener vs laundry detergent; different product type
+24467,35840,NONE,Fabric softener vs laundry detergent; different product type
+24467,33296,NONE,Fabric softener vs stain remover; different product type
+24467,38447,STRONG,Same brand; same type; similar size/price
+24467,32023,STRONG,Same brand; same type; slightly smaller/cheaper
+24467,32928,STRONG,Same brand; same type; slightly larger/pricier
+24467,33923,STRONG,Same brand; fabric softener; slightly smaller/cheaper
+24467,31594,STRONG,Same product; twin pack; higher price
+24467,38451,NONE,Fabric softener vs laundry capsules
+24467,32703,NONE,Fabric softener vs powder detergent
+24467,24968,NONE,Fabric softener vs powder detergent
+24467,24925,NONE,Fabric softener vs liquid detergent
+24467,32907,NONE,Fabric softener vs liquid detergent
+24467,31800,NONE,Fabric softener vs concentrated gel detergent
+24467,32754,NONE,Fabric softener vs powder detergent combo
+24467,32460,NONE,Fabric softener vs lint roller
+37159,38961,STRONG,Same disinfectant function; different brand/size
+37159,26469,NONE,Glass cleaner ≠ antiseptic disinfectant
+37159,37061,STRONG,Floor disinfectant; similar function; different brand
+37159,37062,STRONG,Disinfectant cleaner; similar function; different brand
+37159,39220,NONE,Carpet/sofa cleaner ≠ antiseptic disinfectant
+37159,25201,STRONG,Same brand; floor cleaner; similar disinfectant function
+37159,32607,STRONG,Same brand; all-purpose cleaner; disinfectant function
+37159,33335,STRONG,Same brand; all-purpose cleaner; disinfectant function
+37159,26495,STRONG,Same brand; antibacterial spray; disinfectant function
+37159,24349,DIRECT,Same brand; same type; smaller size
+37159,29429,STRONG,Same brand/product; smaller size; lower price
+37159,28416,STRONG,Same brand; disinfectant; different format/size
+37159,28141,STRONG,Similar disinfectant purpose; different brand/size
+37159,37514,NONE,Completely different product type (laundry brush)
+37159,37513,NONE,Completely different product type (floor wiper)
+37159,37509,NONE,Completely different product type (mop)
+37159,37507,NONE,Completely different product type (broom)
+37159,37508,NONE,Completely different product type (mop)
+37159,37511,NONE,Completely different product type (feather duster)
+37159,32026,STRONG,Similar disinfectant/cleaning purpose; different brand
+37159,28937,NONE,Bleach ≠ antiseptic disinfectant; different product type
+37159,32027,NONE,Bleach ≠ antiseptic disinfectant; different product type
+37159,33928,NONE,Gel cleaner ≠ antiseptic disinfectant; different type
+37159,28520,NONE,Multi-purpose cleaner ≠ antiseptic disinfectant; different type
+37159,26978,NONE,Scented cleaner ≠ antiseptic disinfectant; different type
+37159,33929,NONE,Surface cleaner ≠ antiseptic disinfectant; different type
+37159,31649,NONE,Whitening product ≠ antiseptic disinfectant; different type
+37159,27206,NONE,Vegetable wash ≠ antiseptic disinfectant; different type
+37159,28361,NONE,Rubber gloves ≠ antiseptic disinfectant; different product
+37159,34927,NONE,Cream cleaner ≠ antiseptic disinfectant; different type
+37159,31874,NONE,Different product type; cleaner vs disinfectant
+37159,30488,NONE,Different product type; cleaner vs disinfectant
+37159,33100,NONE,Completely different product; cloth vs disinfectant
+37159,31239,NONE,Completely different product; cloth vs disinfectant
+37159,28309,NONE,Completely different product; gloves vs disinfectant
+37159,29175,NONE,Completely different product; wipes vs disinfectant
+37159,32211,NONE,Completely different product; cloth vs disinfectant
+37159,33853,NONE,Different product type; glass cleaner vs disinfectant
+37159,37512,NONE,Completely different product; wiper vs disinfectant
+37159,38648,NONE,Completely different product; scrubbing pad vs disinfectant
+36640,39887,STRONG,same format; different brand/flavor/size/price
+36640,39886,STRONG,same format; different brand/flavor/size/price
+36640,39885,STRONG,same format; flavor match; different brand/price
+36640,40416,NONE,multipack format; different brand; much higher price
+36640,39752,NONE,multipack format; different brand; much higher price
+36640,39751,NONE,multipack format; different brand; much higher price
+36640,37710,NONE,multipack format; different brand; much higher price
+36640,40178,STRONG,same brand; similar size; minor price difference
+36640,36641,DIRECT,same brand; same size; same price
+36640,36646,DIRECT,same brand; same size; same price
+36640,40181,STRONG,same brand; same format; similar price
+36640,39987,NONE,price 10x higher; different brand/flavor
+36640,39991,NONE,price 10x higher; different brand/flavor
+36640,39988,NONE,price 10x higher; different brand/flavor
+36640,39990,NONE,price 10x higher; different brand/flavor
+36640,32074,NONE,different flavor (yogurt/pistachio); higher price
+36640,40208,STRONG,same sub-category; similar price; different flavor
+36640,28484,STRONG,same sub-category; similar price; different flavor
+36640,40209,STRONG,same sub-category; similar price; different flavor
+36640,24678,STRONG,same sub-category; similar price; different flavor
+36640,24442,STRONG,same brand type; fruit ice lolly; slightly cheaper
+36642,39887,NONE,fruit lolly vs cream stick; very different price
+36642,39886,NONE,fruit lolly vs cream stick; very different price
+36642,40416,NONE,multipack format; very different price
+36642,39752,NONE,multipack format; very different price
+36642,39749,STRONG,same flavor type; multipack format differs
+36642,39846,NONE,multipack freeze pops; very different format/price
+36642,37710,NONE,multipack freeze pops; very different format/price
+36642,40178,NONE,different flavor type; cream-based vs fruit lolly
+36642,36641,STRONG,same brand; ice cream stick; similar price
+36642,36646,STRONG,Same brand; similar format; minor size/price diff
+36642,35191,NONE,Price 4x higher; very different format
+36642,40181,STRONG,Same brand; similar price; stick format
+36642,39987,NONE,Different brand; price 11x higher
+36642,39991,NONE,Different brand; price 11x higher
+36642,39988,NONE,Different brand; price 11x higher
+36642,39990,NONE,Different brand; price 11x higher
+36642,32074,NONE,Different brand; yoghurt base; price 6x higher
+36642,40208,STRONG,Same price; stick format; different brand/flavor
+36642,28484,STRONG,Same category; stick format; similar price
+36642,32446,STRONG,Same raspberry flavor; slight price difference
+36642,40209,NONE,Different flavor (cacao vs raspberry); different format
+36642,24678,NONE,Different type (chocolate coating vs fruit lolly)
+36642,27095,DIRECT,Same raspberry lolly; same brand family; lower price
+36642,24442,STRONG,Same lolly format; different flavor/brand
+34777,39887,NONE,Different type and massive price difference
+34777,39886,NONE,Different type and massive price difference
+34777,40416,NONE,Multipack; different brand; massive price difference
+34777,39752,NONE,Multipack; different brand; massive price difference
+34777,37710,NONE,Completely different product; massive price difference
+34777,40178,NONE,Different flavor; hazelnut vs orange; higher price
+34777,36641,STRONG,Same format; similar size; different flavor/brand
+34777,36646,STRONG,Same format; similar size; different flavor/brand
+34777,40181,STRONG,Same format; similar size; chocolate coating added
+34777,39987,NONE,Major price difference; different brand/premium product
+34777,39991,NONE,Major price difference; different brand/premium product
+34777,39988,NONE,Major price difference; different brand/premium product
+34777,39990,NONE,Major price difference; different brand/premium product
+34777,32074,NONE,Different type; frozen yogurt vs fruit lolly
+34777,40208,STRONG,Same brand; chocolate stick; slightly larger size
+34777,28484,NONE,fruit lolly vs chocolate/vanilla ice cream stick
+34777,40209,NONE,fruit lolly vs chocolate ice cream stick
+34777,24678,NONE,fruit lolly vs chocolate ice cream stick
+34777,24442,STRONG,same brand; same format; same size; same price
+36640,30693,NONE,budget fruit stick vs premium chocolate bar ice cream
+36640,30060,NONE,strawberry fruit stick vs vanilla dairy ice cream
+36640,31610,NONE,fruit stick vs premium full-fat dairy ice cream
+36640,27589,NONE,fruit stick vs premium full-fat dairy ice cream
+36640,24513,NONE,fruit stick vs premium full-fat dairy ice cream
+36640,32505,NONE,fruit stick vs premium full-fat dairy ice cream
+36640,32522,NONE,different type; price too high (5x)
+36640,36623,STRONG,similar stick; close price; different flavor
+36640,26047,STRONG,similar stick; slightly larger; minor price diff
+36640,29038,STRONG,similar stick format; close price; different flavor
+36640,27525,STRONG,similar stick; close price; different flavor
+36642,30693,NONE,different type; price too high (7x)
+36642,30060,NONE,different type/flavor; price too high (4x)
+36642,31610,NONE,different type; price too high (5x)
+36642,27589,NONE,different type; price too high (5x)
+36642,24513,NONE,different type; price too high (6x)
+36642,32505,NONE,raspberry lolly vs premium chocolate ice cream
+36642,32522,NONE,raspberry lolly vs premium white chocolate bar
+36642,36623,STRONG,similar stick format; close price match
+36642,26047,STRONG,similar ice cream stick; slightly higher price
+36642,29038,STRONG,similar stick format; peanut butter flavor differs
+36642,27525,STRONG,similar local brand stick; same price range
+31552,39884,STRONG,same cone format; different brand/flavor/price
+31552,39882,STRONG,same cone format; different brand/price
+31552,39883,STRONG,same cone format; different brand/price
+31552,39893,NONE,mini cones multipack; significantly higher price/format
+31552,25007,STRONG,same format; different brand/flavor; lower price
+31552,30079,STRONG,same format; different brand/flavor; lower price
+31552,25473,STRONG,same brand; similar format; slightly lower price
+31552,33416,DIRECT,same brand/size/price; different flavor only
+31554,39890,NONE,different product type; significantly higher price
+31554,39699,NONE,completely different product; 15x higher price
+25766,24755,NONE,different product format; cotton wool vs pads
+25766,30920,NONE,different product format; balls vs pads
+25766,36385,STRONG,same product; no promotional bundle; lower price
+25766,36474,NONE,different brand/format; significantly higher price
+25766,38517,NONE,Cotton pads vs cotton pads; but 5.5x price increase
+25766,29214,NONE,Cotton pads substituted with cotton buds
+25766,29213,NONE,Cotton pads substituted with cotton buds
+25766,32430,NONE,Cotton pads substituted with cotton buds
+25766,31268,STRONG,Similar cotton pads; slightly lower price
+25766,28462,STRONG,Same format round makeup pads; same count
+25766,31532,NONE,Cotton pads substituted with cotton balls
+25766,33552,NONE,Cotton pads substituted with cotton buds
+25766,38520,STRONG,Same cotton balls type; minor price difference
+30604,25541,STRONG,Same brand/format; different fruit flavor only
