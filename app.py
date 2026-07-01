@@ -32,19 +32,36 @@ def gh_read(path):
         return None, None
 
 def gh_write(path, content, sha=None):
-    """Write a file to GitHub repo. sha required for updates."""
-    try:
-        url = f"https://api.github.com/repos/{_gh_repo()}/contents/{path}"
-        payload = {
-            "message": f"auto: update {path}",
-            "content": base64.b64encode(content.encode('utf-8')).decode('utf-8'),
-        }
-        if sha:
-            payload["sha"] = sha
-        r = requests.put(url, headers=_gh_headers(), json=payload, timeout=15)
-        return r.status_code in [200, 201]
-    except Exception:
-        return False
+    """Write a file to GitHub repo. Auto-fetches SHA for existing files and retries
+    once on SHA conflict (409/422). Returns True on success, False otherwise."""
+    url = f"https://api.github.com/repos/{_gh_repo()}/contents/{path}"
+    b64 = base64.b64encode(content.encode('utf-8')).decode('utf-8')
+    for _attempt in range(2):
+        try:
+            # If no SHA supplied, fetch the current one so we UPDATE rather than
+            # fail a create-over-existing (GitHub returns 422 without a SHA).
+            if sha is None:
+                try:
+                    _r = requests.get(url, headers=_gh_headers(), timeout=10)
+                    if _r.status_code == 200:
+                        sha = _r.json().get('sha')
+                except Exception:
+                    pass
+            payload = {"message": f"auto: update {path}",
+                       "content": b64}
+            if sha:
+                payload["sha"] = sha
+            r = requests.put(url, headers=_gh_headers(), json=payload, timeout=15)
+            if r.status_code in (200, 201):
+                return True
+            if r.status_code in (409, 422):
+                # SHA stale/conflict — re-fetch and retry once
+                sha = None
+                continue
+            return False
+        except Exception:
+            return False
+    return False
 
 st.set_page_config(page_title="Fiz · Availability Briefing", page_icon="📦",
                    layout="wide", initial_sidebar_state="collapsed")
@@ -237,13 +254,13 @@ def load_sub_cache_data():
     return {}, None
 
 def save_sub_cache_data(cache_dict):
-    """Save AI assessments back to GitHub."""
+    """Save AI assessments back to GitHub. Returns True on success."""
     rows = ["oos_id,sub_id,strength,reason"]
     for (oos_id, sub_id), (strength, reason) in cache_dict.items():
         reason_clean = str(reason).replace(',', ';').replace('\n', ' ')
         rows.append(f"{oos_id},{sub_id},{strength},{reason_clean}")
     _, sha = gh_read("data/sub_assessments.csv")
-    gh_write("data/sub_assessments.csv", "\n".join(rows), sha)
+    return gh_write("data/sub_assessments.csv", "\n".join(rows), sha)
 
 def ai_assess_batch(pairs, progress_cb=None):
     """
@@ -279,16 +296,17 @@ def ai_assess_batch(pairs, progress_cb=None):
         prompt = (
             f"Kuwait grocery substitute assessment. Sub-category: {subcat}\n\n"
             + "\n".join(lines)
-            + "\n\nFor each pair: is the substitute a DIRECT replacement?\n"
-            + "DIRECT = customer would fully accept (same type, same fat content, similar price, same use)\n"
-            + "NONE = not a direct substitute\n\n"
+            + "\n\nFor each pair, classify the substitute:\n"
+            + "DIRECT = customer fully accepts (same type, same fat content, same size/format, similar price)\n"
+            + "STRONG = customer likely accepts (same type & fat content, minor difference in brand/size/price)\n"
+            + "NONE = not an acceptable substitute\n\n"
             + "IMPORTANT RULES:\n"
             + "- Different fat content = NONE (low fat vs full fat vs fat free vs skimmed vs full cream)\n"
             + "- Different cheese type = NONE (cheddar vs feta vs mozzarella vs halloumi etc)\n"
             + "- Processed cheese vs natural cheese = NONE\n"
             + "- Different milk alternative type = NONE (oat vs almond vs soy vs coconut vs dairy)\n"
             + "- Different fruit or vegetable type = NONE\n\n"
-            + "Reply: [n]. [DIRECT/NONE] — [reason max 8 words]"
+            + "Reply: [n]. [DIRECT/STRONG/NONE] — [reason max 8 words]"
         )
         # Up to 3 attempts with backoff on transient errors (429/5xx/network)
         _ok = False
@@ -500,7 +518,7 @@ SEV_ORDER_SUB = ['DIRECT']
 # Bump this string whenever run_analysis or any helper it calls (e.g. _compute_kpis)
 # is edited, so @st.cache_data forces a clean recompute instead of serving a stale
 # result computed under old code. Prevents StopIteration / empty-data crashes on redeploy.
-CODE_VERSION = "2026-06-30e"
+CODE_VERSION = "2026-07-01b"
 
 def _active_mask(df):
     """Case-insensitive Active filter. Source system has shipped both 'Active' and
@@ -572,10 +590,10 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json, 
 
             oos_out = []
             for _, oos in oos_sig.head(6).iterrows():
-                # Find best substitute at this store
-                best_str = None; best_sub_desc = None; best_sub_soh = 0
-                best_sub_reason = ""
-                # Step 1: algo pre-filter (instant, free)
+                # Step 1: algo pre-filter (instant, free). Collect candidate pairs.
+                # AI resolution + queue-building happens OUTSIDE run_analysis (see
+                # resolve_subs_and_queue) because this function is @st.cache_data and
+                # cannot reliably read the live cache or write session_state.
                 candidates = []
                 for _, s_row in in_stock_df.iterrows():
                     if s_row['Item ID'] == oos['Item ID']: continue
@@ -584,34 +602,12 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json, 
                         float(s_row.get('RSP',0)), str(s_row.get('Vendor','')), str(s_row.get('Description','')),
                         cat, subcat)
                     if algo_str is None: continue
-                    candidates.append((s_row, algo_str))
-                # Step 2: use AI cache if available, else fall back to algo result
-                ai_cache = st.session_state.get('ai_sub_cache', {})
-                for s_row, algo_str in candidates:
-                    key = (int(oos['Item ID']), int(s_row['Item ID']))
-                    if key in ai_cache:
-                        strength, reason = ai_cache[key]
-                        # Only DIRECT counts
-                        if strength != 'DIRECT': continue
-                        best_str = 'DIRECT'
-                        best_sub_desc = str(s_row['Description'])[:45]
-                        best_sub_soh = int(s_row[soh_col])
-                        best_sub_reason = reason
-                        break  # Found a DIRECT — stop looking
-                    else:
-                        # No AI result yet — queue for assessment, show nothing
-                        if '_ai_queue' not in st.session_state:
-                            st.session_state['_ai_queue'] = []
-                        queue_item = (
-                            int(oos['Item ID']), int(s_row['Item ID']),
-                            str(oos.get('Description','')), str(oos.get('Vendor','')),
-                            float(oos.get('RSP',0)),
-                            str(s_row['Description']), str(s_row.get('Vendor','')),
-                            float(s_row.get('RSP',0)), int(s_row[soh_col]), subcat
-                        )
-                        if queue_item not in st.session_state['_ai_queue']:
-                            st.session_state['_ai_queue'].append(queue_item)
-                        # No fallback — wait for AI
+                    candidates.append((
+                        int(s_row['Item ID']), str(s_row['Description'])[:45],
+                        str(s_row.get('Vendor','')), float(s_row.get('RSP',0)),
+                        int(s_row[soh_col])
+                    ))
+                best_str = None; best_sub_desc = None; best_sub_soh = 0; best_sub_reason = ""
 
                 # Resolution label
                 dc_soh = float(oos.get('Ardiya - Distribution Center Stock',0))
@@ -631,17 +627,8 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json, 
                             other_overstocked = True; break
                     resolution = 'OVERSTOCK_ELSEWHERE' if other_overstocked else 'RAISE_PO'
 
-                # Severity — DIRECT substitute only
+                # Provisional severity (finalized outside once best_str is resolved)
                 v = float(oos.get('true_daily',0))
-                has_direct = (best_str == 'DIRECT')
-                if v >= 5 and not has_direct:
-                    sev = 'URGENT'
-                elif v >= 0.5 and not has_direct:
-                    sev = 'ACTION'
-                elif has_direct:
-                    sev = 'NOTE'
-                else:
-                    sev = 'NOTE'
 
                 oos_out.append({
                     'item_id':   int(oos['Item ID']),
@@ -653,11 +640,16 @@ def run_analysis(inv_bytes, inv_filename, vel_key, ytd_json, l7_json, net_json, 
                     'rsp':       float(oos.get('RSP',0)),
                     'dc_soh':    int(dc_soh),
                     'resolution':resolution,
-                    'severity':  sev,
-                    'best_sub_strength': best_str,
-                    'best_sub_desc':     best_sub_desc,
-                    'best_sub_soh':      best_sub_soh,
-                    'best_sub_reason':   best_sub_reason,
+                    'severity':  'ACTION' if v>=5 else 'ACTION',  # provisional, fixed outside
+                    'best_sub_strength': None,
+                    'best_sub_desc':     None,
+                    'best_sub_soh':      0,
+                    'best_sub_reason':   "",
+                    '_candidates':       candidates,   # list of (sub_id,desc,vendor,rsp,soh)
+                    '_oos_desc':         str(oos.get('Description','')),
+                    '_oos_vendor':       str(oos.get('Vendor','')),
+                    '_oos_rsp':          float(oos.get('RSP',0)),
+                    '_subcat':           subcat,
                 })
 
             # Overstock items
@@ -998,10 +990,12 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier, top_ids_s
                     if _is_dimmed:
                         detail_html += f'<div class="oi" style="{_dim_style}"><div class="on">{oos["desc"][:52]}</div><div class="ov">{oos["vendor"][:25]}</div><div class="os" style="color:#888">⚑ Flagged — excluded from KPIs</div></div>'
                         continue
-                    if oos.get('best_sub_strength') == 'DIRECT':
+                    if oos.get('best_sub_strength') in ('DIRECT','STRONG'):
+                        _bs = oos.get('best_sub_strength')
                         reason_txt = oos.get('best_sub_reason','')
                         reason_html = f' <span style="font-size:9px;color:#888">· {reason_txt}</span>' if reason_txt else ''
-                        detail_html += f'<div class="ur"><span class="ut utd">DIRECT</span><span class="ud">{oos["best_sub_desc"]}{reason_html}</span><span class="us">{oos["best_sub_soh"]}u</span></div>'
+                        _badge_style = 'utd' if _bs == 'DIRECT' else 'uts'
+                        detail_html += f'<div class="ur"><span class="ut {_badge_style}">{_bs}</span><span class="ud">{oos["best_sub_desc"]}{reason_html}</span><span class="us">{oos["best_sub_soh"]}u</span></div>'
                     else:
                         detail_html += '<div class="ns">No substitute — raise PO immediately</div>'
                     detail_html += '</div></div>'
@@ -1357,6 +1351,71 @@ with st.spinner('Analysing inventory…'):
     except Exception as e:
         st.error(f'Error: {e}'); st.exception(e); st.stop()
 
+# ── RESOLVE SUBSTITUTES + BUILD QUEUE (outside cache, always fresh) ────────────
+# run_analysis is @st.cache_data and cannot read the live cache or write session
+# state reliably, so it only collects candidate pairs. We resolve best-sub against
+# the current cache and (re)build the enrich queue here, every run.
+def resolve_subs_and_queue(data, kpis):
+    ai_cache = st.session_state.get('ai_sub_cache', {})
+    queue = []
+    seen = set()
+    for cat, subcats in data.items():
+        for sd in subcats:
+            for store, store_d in sd.get('stores', {}).items():
+                for oos in store_d.get('oos_skus', []):
+                    oid = oos['item_id']
+                    best = None; strong = None
+                    for cand in oos.get('_candidates', []):
+                        sub_id, sdesc, svendor, srsp, ssoh = cand
+                        key = (oid, sub_id)
+                        if key in ai_cache:
+                            strength, reason = ai_cache[key]
+                            if strength == 'DIRECT':
+                                best = ('DIRECT', sdesc, ssoh, reason); break
+                            elif strength == 'STRONG' and strong is None:
+                                strong = ('STRONG', sdesc, ssoh, reason)
+                        else:
+                            qk = key
+                            if qk not in seen:
+                                seen.add(qk)
+                                queue.append((oid, sub_id, oos.get('_oos_desc',''),
+                                              oos.get('_oos_vendor',''), oos.get('_oos_rsp',0.0),
+                                              sdesc, svendor, srsp, ssoh, oos.get('_subcat','')))
+                    if best is None and strong is not None:
+                        best = strong
+                    if best:
+                        oos['best_sub_strength'], oos['best_sub_desc'], \
+                            oos['best_sub_soh'], oos['best_sub_reason'] = best
+                    # Finalize severity now that best_sub is known
+                    v = oos.get('velocity', 0)
+                    has = oos.get('best_sub_strength') in ('DIRECT','STRONG')
+                    if has:
+                        oos['severity'] = 'NOTE'
+                    elif v >= 5:
+                        oos['severity'] = 'URGENT'
+                    elif v >= 0.5:
+                        oos['severity'] = 'ACTION'
+                    else:
+                        oos['severity'] = 'NOTE'
+    st.session_state['_ai_queue'] = queue
+    # Recompute sub-cat severity + KPI counts (were provisional inside run_analysis)
+    _SEV_ORDER = ['URGENT','ACTION','NOTE','OVERSTOCK']
+    u=a=n=0
+    for cat, subcats in data.items():
+        for sd in subcats:
+            sevs = [o['severity'] for stx in sd.get('stores',{}).values()
+                    for o in stx.get('oos_skus',[])]
+            if 'URGENT' in sevs: sd['severity']='URGENT'
+            elif 'ACTION' in sevs: sd['severity']='ACTION'
+            elif sevs: sd['severity']='NOTE'
+            # (leave OVERSTOCK-only as-is)
+            u += sevs.count('URGENT'); a += sevs.count('ACTION'); n += sevs.count('NOTE')
+    if isinstance(kpis, dict):
+        kpis['urgent'], kpis['action'], kpis['note'] = u, a, n
+
+if data:
+    resolve_subs_and_queue(data, kpis)
+
 # ── SESSION STATE ─────────────────────────────────────────────────────────────
 if not data:
     st.warning("⚠️ No briefing data was produced from this file. This usually means the "
@@ -1633,8 +1692,13 @@ with briefing_tab:
                     assessed_keys = {(p[0],p[1]) for p in _queue}
                     st.session_state['_ai_queue'] = [p for p in _queue_all
                                                      if (p[0],p[1]) not in assessed_keys]
-                    save_sub_cache_data(ai_cache)
-                    st.success(f"✓ {len(new_results)} pairs assessed and cached. Reloading…")
+                    _saved = save_sub_cache_data(ai_cache)
+                    if _saved:
+                        st.success(f"✓ {len(new_results)} pairs assessed and saved to GitHub. Reloading…")
+                    else:
+                        st.warning(f"⚠️ {len(new_results)} pairs assessed but the save to GitHub FAILED — "
+                                   "they're in this session only and will be lost on reload. "
+                                   "Check GITHUB_TOKEN in secrets, then re-run.")
                     st.rerun()
                 elif not _errs:
                     st.warning("No results returned and no errors reported — "
