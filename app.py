@@ -89,7 +89,7 @@ VARIANT_KW = {'zero','diet','light','sugar free','no sugar','low fat','full fat'
 CAT_ORDER = ['Dairy & Eggs','Drinks','Confectionary','Fruits & Vegetables','Snacks','Ice Cream',
     'Bakery','Cupboard','Home Care','Personal Care','Water','Frozen Food','Baby','Meats',
     'Health & Lifestyle','Coffee, Tea & Creamer','Pets','Baking Essentials','Ready to Eat','Pharma','Stationary']
-SEV_ORDER  = ['URGENT','ACTION','NOTE','OVERSTOCK']
+SEV_ORDER  = ['CRITICAL','URGENT','ACTION','NOTE','OVERSTOCK']
 FLAG_KEYS  = ['dl','os','pe','dc','ssl','sf']
 FLAG_LABELS= {'dl':'Discontinued here','os':'Out of season','pe':'Promo ended',
               'dc':'Discontinued','ssl':'Supplier service level','sf':'Wrong substitute'}
@@ -261,6 +261,19 @@ def save_sub_cache_data(cache_dict):
         rows.append(f"{oos_id},{sub_id},{strength},{reason_clean}")
     _, sha = gh_read("data/sub_assessments.csv")
     return gh_write("data/sub_assessments.csv", "\n".join(rows), sha)
+
+@st.cache_data(show_spinner=False, ttl=3600)
+def load_kvi_ids():
+    """Load the Key Value Item list from GitHub. Returns set of item_ids."""
+    csv_txt, _ = gh_read("data/kvi_list.csv")
+    if not csv_txt:
+        return set()
+    import io as _kio
+    try:
+        df = pd.read_csv(_kio.StringIO(csv_txt))
+        return set(pd.to_numeric(df['item_id'], errors='coerce').dropna().astype(int).tolist())
+    except Exception:
+        return set()
 
 def ai_assess_batch(pairs, progress_cb=None):
     """
@@ -518,7 +531,7 @@ SEV_ORDER_SUB = ['DIRECT']
 # Bump this string whenever run_analysis or any helper it calls (e.g. _compute_kpis)
 # is edited, so @st.cache_data forces a clean recompute instead of serving a stale
 # result computed under old code. Prevents StopIteration / empty-data crashes on redeploy.
-CODE_VERSION = "2026-07-01b"
+CODE_VERSION = "2026-07-02a"
 
 def _active_mask(df):
     """Case-insensitive Active filter. Source system has shipped both 'Active' and
@@ -810,9 +823,10 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier, top_ids_s
     _dimmed_ids_w  = get_flagged_item_ids(flags, OPERATIONAL_FLAGS)
     # Use directly passed top_ids_set (live computed) or fall back to kpis
     top_ids = top_ids_set if top_ids_set is not None else set(kpis.get('top_ids', {}).get(avail_tier, []))
-    SI   = {'URGENT':'🔴','ACTION':'🟡','NOTE':'🔵','OVERSTOCK':'🟠'}
-    SEVC = {'URGENT':'sv-u','ACTION':'sv-a','NOTE':'sv-n','OVERSTOCK':'sv-o'}
-    SEVL = {'URGENT':'🔴 Urgent — high-velocity OOS, no adequate substitute',
+    SI   = {'CRITICAL':'🚨','URGENT':'🔴','ACTION':'🟡','NOTE':'🔵','OVERSTOCK':'🟠'}
+    SEVC = {'CRITICAL':'sv-c','URGENT':'sv-u','ACTION':'sv-a','NOTE':'sv-n','OVERSTOCK':'sv-o'}
+    SEVL = {'CRITICAL':'🚨 KVI CRITICAL — Key Value Item OOS with no substitute (basket-killer)',
+            'URGENT':'🔴 Urgent — high-velocity OOS, no adequate substitute',
             'ACTION':'🟡 Action needed — OOS with substitute available or moderate velocity',
             'NOTE':  '🔵 Note — low-velocity OOS',
             'OVERSTOCK':'🟠 Overstock — SKUs exceeding 45 days cover'}
@@ -1069,6 +1083,7 @@ body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-si
 .kv2{{font-size:18px;font-weight:500;color:#1a1a1a;line-height:1.2}}
 .kv2.r{{color:#dc2626}}.kv2.a{{color:#d97706}}.kv2.g{{color:#16a34a}}
 .sv{{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:500;margin-bottom:8px}}
+.sv-c{{background:#7f1d1d;color:#fff;font-weight:700}}
 .sv-u{{background:#fee2e2;color:#b91c1c}}.sv-a{{background:#fef3c7;color:#92400e}}
 .sv-n{{background:#dbeafe;color:#1e40af}}.sv-o{{background:#ffedd5;color:#9a3412}}
 .excl{{font-size:10px;color:#888;font-style:italic;padding:3px 8px;background:#fff;border-radius:6px;margin-bottom:8px;border:1px solid #e2ddd8}}
@@ -1355,7 +1370,7 @@ with st.spinner('Analysing inventory…'):
 # run_analysis is @st.cache_data and cannot read the live cache or write session
 # state reliably, so it only collects candidate pairs. We resolve best-sub against
 # the current cache and (re)build the enrich queue here, every run.
-def resolve_subs_and_queue(data, kpis):
+def resolve_subs_and_queue(data, kpis, kvi_ids):
     ai_cache = st.session_state.get('ai_sub_cache', {})
     queue = []
     seen = set()
@@ -1386,10 +1401,14 @@ def resolve_subs_and_queue(data, kpis):
                     if best:
                         oos['best_sub_strength'], oos['best_sub_desc'], \
                             oos['best_sub_soh'], oos['best_sub_reason'] = best
-                    # Finalize severity now that best_sub is known
+                    oos['is_kvi'] = oid in kvi_ids
+                    # Finalize severity now that best_sub is known.
+                    # KVI + OOS + no sub = CRITICAL (highest priority, velocity-independent)
                     v = oos.get('velocity', 0)
                     has = oos.get('best_sub_strength') in ('DIRECT','STRONG')
-                    if has:
+                    if oos['is_kvi'] and not has:
+                        oos['severity'] = 'CRITICAL'
+                    elif has:
                         oos['severity'] = 'NOTE'
                     elif v >= 5:
                         oos['severity'] = 'URGENT'
@@ -1399,22 +1418,28 @@ def resolve_subs_and_queue(data, kpis):
                         oos['severity'] = 'NOTE'
     st.session_state['_ai_queue'] = queue
     # Recompute sub-cat severity + KPI counts (were provisional inside run_analysis)
-    _SEV_ORDER = ['URGENT','ACTION','NOTE','OVERSTOCK']
-    u=a=n=0
+    c=u=a=n=0
     for cat, subcats in data.items():
         for sd in subcats:
             sevs = [o['severity'] for stx in sd.get('stores',{}).values()
                     for o in stx.get('oos_skus',[])]
-            if 'URGENT' in sevs: sd['severity']='URGENT'
+            if 'CRITICAL' in sevs: sd['severity']='CRITICAL'
+            elif 'URGENT' in sevs: sd['severity']='URGENT'
             elif 'ACTION' in sevs: sd['severity']='ACTION'
             elif sevs: sd['severity']='NOTE'
-            # (leave OVERSTOCK-only as-is)
-            u += sevs.count('URGENT'); a += sevs.count('ACTION'); n += sevs.count('NOTE')
+            c += sevs.count('CRITICAL'); u += sevs.count('URGENT')
+            a += sevs.count('ACTION'); n += sevs.count('NOTE')
     if isinstance(kpis, dict):
+        kpis['critical'] = c
         kpis['urgent'], kpis['action'], kpis['note'] = u, a, n
+    # Re-sort sub-cats within each category by FINAL severity (CRITICAL floats up)
+    _rank = {'CRITICAL':0,'URGENT':1,'ACTION':2,'NOTE':3,'OVERSTOCK':4}
+    for cat in data:
+        data[cat].sort(key=lambda x: (_rank.get(x.get('severity','NOTE'),3), -x.get('ytd',0)))
 
 if data:
-    resolve_subs_and_queue(data, kpis)
+    kvi_ids = load_kvi_ids()
+    resolve_subs_and_queue(data, kpis, kvi_ids)
 
 # ── SESSION STATE ─────────────────────────────────────────────────────────────
 if not data:
@@ -1477,6 +1502,10 @@ def _oos_counts(data_dict, sev):
                         break  # count subcat-store once
     return count
 
+_live_c = sum(1 for v in _filtered_data.values() for r in v if r['severity']=='CRITICAL'
+              and not all(int(o.get('item_id',0)) in _excluded_ids
+                         for sd in r['stores'].values()
+                         for o in sd.get('oos_skus',[])))
 _live_u = sum(1 for v in _filtered_data.values() for r in v if r['severity']=='URGENT'
               and not all(int(o.get('item_id',0)) in _excluded_ids
                          for sd in r['stores'].values()
@@ -1490,14 +1519,49 @@ _live_n = sum(1 for v in _filtered_data.values() for r in v if r['severity']=='N
                          for sd in r['stores'].values()
                          for o in sd.get('oos_skus',[])))
 
-_k1,_k2,_k3,_k4,_k5,_k6,_k7 = st.columns(7)
-_k1.metric("🔴 Urgent",        _live_u)
-_k2.metric("🟡 Action",        _live_a)
-_k3.metric("🔵 Note",          _live_n)
-_k4.metric("OOS vel≥5/day", kpis.get('skus_at_risk',0))
-_k5.metric("DC transfer opps", kpis.get('dc_opps',0))
-_k6.metric("Real overstock",   kpis.get('overstock_count',0))
-_k7.metric("Dead stock",       kpis.get('dead_stock_count',0))
+# ── KVI availability rate per store (KVIs in stock ÷ total KVIs) ───────────────
+_kvi_ids_kpi = load_kvi_ids()
+_kvi_avail = {}
+try:
+    _inv_kvi_full = pd.read_excel(io.BytesIO(inv_bytes))
+    _inv_kvi_full.columns = [c.strip() for c in _inv_kvi_full.columns]
+    _inv_kvi_full = _inv_kvi_full[_active_mask(_inv_kvi_full)].copy()
+    _inv_kvi_full['Item ID'] = pd.to_numeric(_inv_kvi_full['Item ID'], errors='coerce')
+    _inv_kvi = _inv_kvi_full[_inv_kvi_full['Item ID'].isin(_kvi_ids_kpi)].copy()
+    _tot_kvi = len(_inv_kvi)
+    if _tot_kvi:
+        _scols = [c for c in ['Jahra Dark Store Stock','Qurtuba Dark Store Stock','Sabah Salem Dark Store Stock'] if c in _inv_kvi.columns]
+        for _st, _col in [('Jahra','Jahra Dark Store Stock'),
+                          ('Qurtuba','Qurtuba Dark Store Stock'),
+                          ('Sabah Salem','Sabah Salem Dark Store Stock')]:
+            if _col in _inv_kvi.columns:
+                _instock = (pd.to_numeric(_inv_kvi[_col], errors='coerce').fillna(0) > 0).sum()
+                _kvi_avail[_st] = 100.0 * _instock / _tot_kvi
+        if _scols:
+            _net_any = (pd.to_numeric(_inv_kvi[_scols].apply(lambda s: pd.to_numeric(s, errors='coerce')).fillna(0).max(axis=1)) > 0).sum()
+            _kvi_avail['Network'] = 100.0 * _net_any / _tot_kvi
+        _kvi_avail['_total'] = _tot_kvi
+except Exception:
+    _kvi_avail = {}
+
+_k1,_k2,_k3,_k4,_k5,_k6,_k7,_k8 = st.columns(8)
+_k1.metric("🚨 KVI Critical", _live_c)
+_k2.metric("🔴 Urgent",        _live_u)
+_k3.metric("🟡 Action",        _live_a)
+_k4.metric("🔵 Note",          _live_n)
+_k5.metric("OOS vel≥5/day", kpis.get('skus_at_risk',0))
+_k6.metric("DC transfer opps", kpis.get('dc_opps',0))
+_k7.metric("Real overstock",   kpis.get('overstock_count',0))
+_k8.metric("Dead stock",       kpis.get('dead_stock_count',0))
+
+# KVI availability row
+if _kvi_avail:
+    st.markdown("**🔑 KVI availability** — % of the 200 Key Value Items in stock")
+    _kv1,_kv2,_kv3,_kv4 = st.columns(4)
+    _kv1.metric("Network", f"{_kvi_avail.get('Network',0):.1f}%")
+    _kv2.metric("Jahra", f"{_kvi_avail.get('Jahra',0):.1f}%")
+    _kv3.metric("Qurtuba", f"{_kvi_avail.get('Qurtuba',0):.1f}%")
+    _kv4.metric("Sabah Salem", f"{_kvi_avail.get('Sabah Salem',0):.1f}%")
 
 _ab1,_ab2,_ab3,_ab4,_ab4b,_ab5,_ab6 = st.columns([1,1,1,1,1,2,2])
 with _ab1:
