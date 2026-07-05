@@ -528,7 +528,7 @@ SEV_ORDER_SUB = ['DIRECT']
 # Bump this string whenever run_analysis or any helper it calls (e.g. _compute_kpis)
 # is edited, so @st.cache_data forces a clean recompute instead of serving a stale
 # result computed under old code. Prevents StopIteration / empty-data crashes on redeploy.
-CODE_VERSION = "2026-07-03a"
+CODE_VERSION = "2026-07-03b"
 
 def _active_mask(df):
     """Case-insensitive Active filter. Source system has shipped both 'Active' and
@@ -1680,28 +1680,47 @@ flagged_tab, briefing_tab, kpi_tab, admin_tab = st.tabs(["🚩 Flagged items", "
 with flagged_tab:
     flags = st.session_state.flags
     flagged_rows = []
+
+    # Build a lookup of item_id -> metadata from ALL data (not tier-filtered)
+    # so flagged items show regardless of current tier
+    _item_meta = {}
     for cat, items in data.items():
         for r in items:
             for store in ['Jahra','Qurtuba','Sabah Salem']:
-                for oi, oos in enumerate(r['stores'].get(store,{}).get('oos_skus',[])):
-                    _iid = int(oos.get('item_id', 0))
-                    fkey = _flag_key(r['subcat'], store, _iid)
-                    f_st = flags.get(fkey,{})
-                    for fk, fl in FLAG_LABELS.items():
-                        if f_st.get(fk):
-                            flagged_rows.append({
-                                'Flag':        fl,
-                                'Sub-category':r['subcat'],
-                                'Category':    cat,
-                                'Store':       store,
-                                'SKU':         oos['desc'],
-                                'Vendor':      oos['vendor'],
-                                'Velocity':    oos['velocity'],
-                                'YTD':         oos['ytd'],
-                                'RSP':         oos['rsp'],
-                                'Resolution':  RESOLUTION_LABELS.get(oos.get('resolution',''),''),
-                                'Severity':    oos['severity'],
-                            })
+                for oos in r['stores'].get(store,{}).get('oos_skus',[]):
+                    _iid = int(oos.get('item_id',0))
+                    _item_meta[(r['subcat'], store, _iid)] = {
+                        'cat': cat, 'subcat': r['subcat'], 'store': store,
+                        'desc': oos['desc'], 'vendor': oos['vendor'],
+                        'velocity': oos['velocity'], 'ytd': oos['ytd'],
+                        'rsp': oos['rsp'], 'severity': oos['severity'],
+                        'resolution': RESOLUTION_LABELS.get(oos.get('resolution',''),''),
+                    }
+
+    # Walk flags dict directly — works regardless of tier
+    for fkey, f_st in flags.items():
+        if not f_st.get('any'): continue
+        parts = fkey.split('|')
+        if len(parts) < 3: continue
+        subcat, store = parts[0], parts[1]
+        try: iid = int(parts[2])
+        except: continue
+        meta = _item_meta.get((subcat, store, iid))
+        for fk, fl in FLAG_LABELS.items():
+            if f_st.get(fk):
+                flagged_rows.append({
+                    'Flag':        fl,
+                    'Sub-category': subcat,
+                    'Category':    meta['cat'] if meta else '—',
+                    'Store':       store,
+                    'SKU':         meta['desc'] if meta else f'Item {iid}',
+                    'Vendor':      meta['vendor'] if meta else '—',
+                    'Velocity':    meta['velocity'] if meta else 0,
+                    'YTD':         meta['ytd'] if meta else 0,
+                    'RSP':         meta['rsp'] if meta else 0,
+                    'Resolution':  meta['resolution'] if meta else '—',
+                    'Severity':    meta['severity'] if meta else '—',
+                })
     if flagged_rows:
         df_flags = pd.DataFrame(flagged_rows).sort_values(['Flag','Category','Sub-category'])
         st.markdown(f"**{len(df_flags)} flagged items** across {df_flags['Flag'].nunique()} flag types")
