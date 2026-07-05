@@ -528,7 +528,7 @@ SEV_ORDER_SUB = ['DIRECT']
 # Bump this string whenever run_analysis or any helper it calls (e.g. _compute_kpis)
 # is edited, so @st.cache_data forces a clean recompute instead of serving a stale
 # result computed under old code. Prevents StopIteration / empty-data crashes on redeploy.
-CODE_VERSION = "2026-07-03b"
+CODE_VERSION = "2026-07-03c"
 
 def _active_mask(df):
     """Case-insensitive Active filter. Source system has shipped both 'Active' and
@@ -1560,6 +1560,50 @@ if _kvi_avail:
     _kv2.metric("Jahra", f"{_kvi_avail.get('Jahra',0):.1f}%")
     _kv3.metric("Qurtuba", f"{_kvi_avail.get('Qurtuba',0):.1f}%")
     _kv4.metric("Sabah Salem", f"{_kvi_avail.get('Sabah Salem',0):.1f}%")
+
+# ── Legend ────────────────────────────────────────────────────────────────────
+with st.expander("🗺️ Legend — severity levels, badges & flags", expanded=False):
+    st.markdown("""
+**Severity levels (OOS items)**
+
+| Badge | Meaning |
+|---|---|
+| 🚨 **KVI CRITICAL** | Key Value Item — OOS with no substitute. Staple your customers expect; losing it risks the whole basket. |
+| 🔴 **URGENT** | High-velocity OOS (≥5 units/day), no substitute. Bleeding sales now. |
+| 🟡 **ACTION** | Moderate-velocity OOS (≥0.5/day), no substitute. Needs a PO or transfer. |
+| 🔵 **NOTE** | OOS but a substitute is available (DIRECT or STRONG). Customer can be directed to an alternative. |
+| 🟠 **OVERSTOCK** | SKU exceeding 45 days of cover. Capital tied up, risk of waste. |
+
+**Substitute badges**
+
+| Badge | Meaning |
+|---|---|
+| 🟢 **DIRECT** | Customer would fully accept — same type, fat content, size, similar price. |
+| 🟡 **STRONG** | Customer would likely accept — same type, minor difference in brand, size, or price. |
+| 🔴 No substitute | No acceptable alternative in stock. Raise a PO or DC transfer. |
+
+**Resolution icons**
+
+| Icon | Meaning |
+|---|---|
+| 🚀 Raise PO direct | Order directly from supplier. |
+| 🚀 Raise PO | Order via standard PO process. |
+| 🔄 DC transfer eligible | Stock available at the DC — arrange a transfer before raising a PO. |
+
+**Flag checkboxes** (on each OOS item)
+
+| Flag | Effect |
+|---|---|
+| Discontinued here | Hides the item from this store's briefing permanently. Excluded from availability. |
+| Out of season | Dims the item (40% opacity), excluded from KPI counts. Auto-clears when back in stock. |
+| Promo ended | Same as out of season. |
+| Discontinued | Hides from all stores permanently. |
+| Supplier service level | Dims the item — known supply issue (e.g. Hormuz closure). Auto-clears when back in stock. |
+| Wrong substitute | Flags the suggested sub as incorrect. Triggers AI to find a better alternative. |
+
+**KVI availability %** — share of the 200 Key Value Items (staples that drive store choice and customer loyalty) that are in stock at each store. Target: as close to 100% as possible.
+""")
+
 
 _ab1,_ab2,_ab3,_ab4,_ab4b,_ab5,_ab6 = st.columns([1,1,1,1,1,2,2])
 with _ab1:
