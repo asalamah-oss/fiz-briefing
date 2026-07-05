@@ -500,29 +500,26 @@ def is_promo(desc):
 PERMANENT_FLAGS   = {'dl', 'dc'}     # hide from briefing + exclude from availability
 OPERATIONAL_FLAGS = {'os', 'pe', 'ssl'}  # dim in briefing + exclude from KPIs
 
-def flag_state(item_id, store, oi, flags):
-    """Returns ('hidden', 'dimmed', or 'normal') for an OOS SKU."""
-    fkey = f"{store}|{item_id}"
-    # Try both key formats
-    for k in [fkey, f"{store}|{item_id}|{oi}"]:
-        fval = flags.get(k, {})
-        if any(fval.get(f) for f in PERMANENT_FLAGS):
-            return 'hidden'
-        if any(fval.get(f) for f in OPERATIONAL_FLAGS):
-            return 'dimmed'
+def _flag_key(subcat, store, item_id):
+    """Stable flag key — subcat|store|item_id. Never positional."""
+    return f"{subcat}|{store}|{item_id}"
+
+def flag_state(item_id, store, subcat, flags):
+    """Returns 'hidden', 'dimmed', or 'normal' for an OOS SKU."""
+    fval = flags.get(_flag_key(subcat, store, item_id), {})
+    if any(fval.get(f) for f in PERMANENT_FLAGS):  return 'hidden'
+    if any(fval.get(f) for f in OPERATIONAL_FLAGS): return 'dimmed'
     return 'normal'
 
 def get_flagged_item_ids(flags, flag_types):
-    """Returns set of item_ids that have any of the given flag types set."""
+    """Returns set of item_ids that have any of the given flag types set.
+    Key format is now always subcat|store|item_id — item_id is the last part."""
     ids = set()
     for fkey, fval in flags.items():
         if any(fval.get(f) for f in flag_types):
-            # Extract item_id from key formats: "store|item_id" or "subcat|store|oi"
             parts = fkey.split('|')
-            for p in parts:
-                try:
-                    ids.add(int(p))
-                except: pass
+            try: ids.add(int(parts[-1]))  # item_id is always last
+            except: pass
     return ids
 
 # ── MAIN ANALYSIS ─────────────────────────────────────────────────────────────
@@ -531,7 +528,7 @@ SEV_ORDER_SUB = ['DIRECT']
 # Bump this string whenever run_analysis or any helper it calls (e.g. _compute_kpis)
 # is edited, so @st.cache_data forces a clean recompute instead of serving a stale
 # result computed under old code. Prevents StopIteration / empty-data crashes on redeploy.
-CODE_VERSION = "2026-07-02a"
+CODE_VERSION = "2026-07-03a"
 
 def _active_mask(df):
     """Case-insensitive Active filter. Source system has shipped both 'Active' and
@@ -973,7 +970,8 @@ def build_widget_html(data, kpis, cur_cat, cur_sub, flags, avail_tier, top_ids_s
             if sd.get('oos_skus'):
                 detail_html += '<div class="dl" style="margin-top:5px">Out of stock</div><div class="ow">'
                 for oi, oos in enumerate(sd['oos_skus']):
-                    fkey  = f"{cur_sub}|{store}|{oi}"
+                    _iid  = int(oos.get('item_id', 0))
+                    fkey  = _flag_key(cur_sub, store, _iid)
                     f_st  = flags.get(fkey,{})
                     flagged = f_st.get('any',False)
                     res   = RESOLUTION_LABELS.get(oos.get('resolution','RAISE_PO'),'📦 Raise PO')
@@ -1686,7 +1684,8 @@ with flagged_tab:
         for r in items:
             for store in ['Jahra','Qurtuba','Sabah Salem']:
                 for oi, oos in enumerate(r['stores'].get(store,{}).get('oos_skus',[])):
-                    fkey = f"{r['subcat']}|{store}|{oi}"
+                    _iid = int(oos.get('item_id', 0))
+                    fkey = _flag_key(r['subcat'], store, _iid)
                     f_st = flags.get(fkey,{})
                     for fk, fl in FLAG_LABELS.items():
                         if f_st.get(fk):
@@ -1840,23 +1839,23 @@ with briefing_tab:
             for fkey, fval in nf.items():
                 old_fval = st.session_state.flags.get(fkey, {})
                 if fval.get('sf') and not old_fval.get('sf'):
-                    # New wrong substitute flag — append to sub_feedback.csv
+                    # New wrong substitute flag — fkey is subcat|store|item_id
                     parts = fkey.split('|')
-                    if len(parts) >= 2:
+                    if len(parts) >= 3:
                         _subcat, _store = parts[0], parts[1]
-                        _oi = int(parts[2]) if len(parts) > 2 else 0
-                        _oos_desc = ''
-                        _sub_desc = ''
-                        _strength = ''
+                        try: _fitem_id = int(parts[2])
+                        except: _fitem_id = 0
+                        _oos_desc = _sub_desc = _strength = ''
                         try:
                             _r = next((r for cat_items in data.values()
                                       for r in cat_items if r['subcat']==_subcat), None)
                             if _r:
-                                _oos = _r['stores'].get(_store,{}).get('oos_skus',[])
-                                if _oi < len(_oos):
-                                    _oos_desc = _oos[_oi].get('desc','')
-                                    _sub_desc = _oos[_oi].get('best_sub_desc','')
-                                    _strength = _oos[_oi].get('best_sub_strength','')
+                                _oos_list = _r['stores'].get(_store,{}).get('oos_skus',[])
+                                _oos_item = next((o for o in _oos_list if int(o.get('item_id',0))==_fitem_id), None)
+                                if _oos_item:
+                                    _oos_desc = _oos_item.get('desc','')
+                                    _sub_desc = _oos_item.get('best_sub_desc','')
+                                    _strength = _oos_item.get('best_sub_strength','')
                         except: pass
                         _fb_row = f"{kpis.get('file_date','')},{_subcat},{_store},{_oos_desc},{_sub_desc},{_strength},wrong_substitute\n"
                         _fb_csv, _fb_sha = gh_read("data/sub_feedback.csv")
@@ -1864,7 +1863,7 @@ with briefing_tab:
                             _fb_csv = "date,subcat,store,oos_desc,sub_desc,algo_strength,feedback\n"
                         gh_write("data/sub_feedback.csv", _fb_csv + _fb_row, _fb_sha)
             # Auto-clear operational flags for SKUs now back in stock
-            PERSISTENT_FLAGS = {'dl', 'dc'}  # Discontinued here, Discontinued
+            PERSISTENT_FLAGS = {'dl', 'dc'}
             if 'inv_bytes_cache' in st.session_state:
                 try:
                     import io as _io3
@@ -1873,26 +1872,18 @@ with briefing_tab:
                     _inv_check['Item ID'] = pd.to_numeric(_inv_check['Item ID'], errors='coerce')
                     _inv_check['Total SOH'] = pd.to_numeric(_inv_check.get('Total SOH', 0), errors='coerce').fillna(0)
                     _in_stock_ids = set(_inv_check[_inv_check['Total SOH']>0]['Item ID'].dropna().astype(int).tolist())
-                    keys_to_clear = []
                     for _fkey, _fval in nf.items():
-                        # fkey format: "subcat|store|oi" — need item_id
-                        # Check via data if this OOS SKU is now back in stock
+                        # fkey is now subcat|store|item_id — item_id is parts[2]
                         _fparts = _fkey.split('|')
                         if len(_fparts) >= 3:
-                            _fsubcat, _fstore, _foi = _fparts[0], _fparts[1], int(_fparts[2])
-                            _fr = next((r for cat_items in data.values()
-                                       for r in cat_items if r['subcat']==_fsubcat), None)
-                            if _fr:
-                                _foos_list = _fr['stores'].get(_fstore,{}).get('oos_skus',[])
-                                if _foi < len(_foos_list):
-                                    _fitem_id = _foos_list[_foi].get('item_id',0)
-                                    if _fitem_id in _in_stock_ids:
-                                        # SKU back in stock — clear non-persistent flags
-                                        for _fk in list(_fval.keys()):
-                                            if _fk not in PERSISTENT_FLAGS and _fk != 'any':
-                                                nf[_fkey][_fk] = 0
-                                        nf[_fkey]['any'] = any(
-                                            nf[_fkey].get(k,0) for k in PERSISTENT_FLAGS)
+                            try: _fitem_id = int(_fparts[2])
+                            except: continue
+                            if _fitem_id in _in_stock_ids:
+                                for _fk in list(_fval.keys()):
+                                    if _fk not in PERSISTENT_FLAGS and _fk != 'any':
+                                        nf[_fkey][_fk] = 0
+                                nf[_fkey]['any'] = any(
+                                    nf[_fkey].get(k,0) for k in PERSISTENT_FLAGS)
                 except:
                     pass
             st.session_state.flags=nf
