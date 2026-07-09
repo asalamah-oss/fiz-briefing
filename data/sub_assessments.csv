@@ -137,12 +137,6 @@ oos_id,sub_id,strength,reason
 29009,29005,STRONG,same brand/size/price; different flavor only
 29009,32634,STRONG,same brand; different flavor and larger size
 29009,31740,STRONG,same brand/flavor; larger size only difference
-30367,30688,NONE,wrong sub-category; bread not canned chips
-30367,32387,NONE,wrong sub-category; bread not canned chips
-30367,27460,NONE,Brioche vs multigrain; different type and size
-30367,31282,STRONG,Same brand; milk toast; larger size; similar price
-30367,30223,STRONG,Same brand; multigrain vs brioche; larger size
-30367,28275,STRONG,Same brand; original toast; larger size; lower price
 30743,30688,NONE,Brioche vs white toast; smaller size; higher price
 30743,32387,STRONG,White vs brown toast; larger size; similar price
 30743,27462,STRONG,Same format; milk toast; larger size; slight premium
@@ -154,31 +148,8 @@ oos_id,sub_id,strength,reason
 30743,28275,STRONG,Same category; original white toast; cheaper price
 30743,30367,NONE,Brioche style differs; much smaller size
 30743,27208,NONE,Whole wheat differs from white toast
-27460,30688,NONE,Brioche style differs; smaller size; higher price
-27460,32387,STRONG,Same brand; same size; similar type
-27460,27462,STRONG,Same brand; same size; milk toast close
-27460,32388,STRONG,Same brand; same size; white toast match
-27460,35923,NONE,Different brand; smaller size; much higher price
-27460,31282,STRONG,Same brand type; smaller size; much cheaper
-27460,30223,STRONG,Multigrain match; smaller size; lower price
-27460,28275,STRONG,Different grain type; smaller; cheaper
-27460,30367,NONE,Brioche different format; half the size
-27460,27208,STRONG,Whole wheat vs multigrain; similar price/size
-27460,29729,NONE,Bite bread; much smaller; different format
-27460,32645,STRONG,Multigrain match; same size; similar price
 30743,29729,NONE,Bite bread; much smaller; different format
 30743,32645,STRONG,Same brand; same size; multigrain variant
-31570,33343,NONE,Different bread type; roll vs hard roll
-31570,26415,STRONG,same purpose; smaller size; different brand/price
-31570,32237,STRONG,same burger bun type; similar weight/price
-31570,24957,STRONG,milk roll variant; same sandwich bun category
-31570,25385,STRONG,sandwich roll; similar size and price
-31570,28371,STRONG,same brand; brioche variant; higher price
-31570,27403,DIRECT,same brand; same type; same price/weight
-31570,26490,STRONG,same brand; hotdog vs hard roll format
-31570,25490,STRONG,same brand; potato variant; similar weight
-31570,33583,STRONG,same brand; slider size; larger pack
-31570,29510,STRONG,same brand; French bread variant; similar size
 24466,33343,STRONG,Similar roll format; different brand/size/price
 24466,26415,NONE,Burger buns vs French bread; wrong format
 24466,32237,STRONG,Burger buns similar format; minor size/price diff
@@ -201,39 +172,6 @@ oos_id,sub_id,strength,reason
 26491,25490,STRONG,Same brand; different flavor/price; similar format.
 26491,33583,STRONG,same brand; different format; higher price
 26491,29510,STRONG,same brand; similar bread format; close price
-31570,33123,STRONG,burger buns; different brand; higher price
-31570,34807,NONE,bagel; very different format and price
-31570,34860,NONE,sliced loaf format; different type entirely
-31570,34808,NONE,bagel; very different format and price
-31570,34841,NONE,single milk bun; different format/price
-31570,34842,NONE,brioche pull-apart; different format entirely
-31570,34840,NONE,English muffins; different format entirely
-31570,35922,STRONG,burger buns; different brand; higher price
-31570,35954,NONE,Different product type; protein roll vs hard roll
-31570,26491,STRONG,Same brand; similar weight; different roll type
-31570,27404,STRONG,Same brand; similar weight; burger buns variant
-31570,24466,NONE,Different product type; French bread vs hard roll
-31570,36733,NONE,Different type; potato hotdog roll vs hard roll
-28371,33343,NONE,Different type; sandwich roll vs brioche buns
-28371,33123,STRONG,Same type; brioche burger buns; different brand/size
-28371,26415,STRONG,Same type; burger buns; minor brand difference
-28371,32237,STRONG,Same type; plain burger buns; similar price
-28371,24957,NONE,Different type; milk sandwich roll vs brioche buns
-28371,25385,STRONG,Same purpose; different brand; much lower price
-28371,34841,NONE,Single artisan piece; much higher price; different format
-28371,34842,NONE,Single artisan piece; much higher price; different format
-28371,35922,STRONG,Same type; protein variant; higher price; different brand
-28371,35954,NONE,Only 2 buns; wrong size/count format
-28371,26491,NONE,Hotdog rolls; wrong shape and type
-28371,27403,STRONG,Same brand; same type; lower price; plain
-28371,27404,STRONG,Same brand; same type; sesame topping added
-28371,26490,NONE,Hotdog rolls; wrong shape and type
-28371,24466,NONE,French bread; completely different format/type
-28371,29510,STRONG,Same brand; different bread type; lower price
-31570,33999,NONE,Different brand; much higher price; different type
-31570,25672,NONE,Different brand; much higher price; hotdog not burger
-31570,32646,NONE,Different brand; much higher price; different format
-31570,26061,NONE,Different brand; much higher price; different type
 31750,40225,NONE,Completely different product; massively higher price
 31750,40227,NONE,Sourdough vs pita; completely different type
 31750,40228,NONE,Tanour vs pita; different type; far higher price
@@ -300,21 +238,6 @@ oos_id,sub_id,strength,reason
 29194,35536,NONE,multipack format; different brand; higher price
 29194,29509,NONE,multipack format; different brand; higher price
 29194,35535,NONE,different flavor (zaatar vs cheese puff)
-35534,28644,STRONG,same cheese croissant; different brand/size/price
-35534,24595,NONE,different filling (cocoa vs cheese)
-35534,31681,NONE,different filling (strawberry vs cheese)
-35534,28638,NONE,different filling (hazelnut/cocoa vs cheese)
-35534,27666,NONE,different filling (cocoa vs cheese)
-35534,27183,NONE,different flavor (butter vs cheese)
-35534,36026,STRONG,same cheese croissant; minor size/price difference
-35534,32232,NONE,different format (puff vs mini croissant)
-35534,26181,NONE,different filling (chocolate vs cheese)
-35534,36025,NONE,different brand; flavor (zaatar vs cheese); much smaller
-35534,26504,STRONG,same brand/type; larger size; similar price
-35534,30543,STRONG,same brand; plain vs cheese; same format
-35534,35536,DIRECT,same brand; format; size; price; plain vs cheese
-35534,29509,STRONG,same brand; zaatar vs cheese; larger size
-35534,35535,STRONG,same brand; format; size; zaatar vs cheese
 27542,29194,NONE,puff vs croissant; different format entirely
 27542,29188,NONE,puff vs croissant; different format entirely
 27542,40226,NONE,dates vs chocolate; different brand; much pricier
@@ -352,50 +275,6 @@ oos_id,sub_id,strength,reason
 26488,40351,NONE,Bagel crisps vs cupcakes; completely different product
 26488,40353,STRONG,Brownie bites similar sweet snack format
 26488,40350,STRONG,Salted caramel flavor matches; similar sweet snack
-31571,28640,STRONG,Chocolate cupcakes substitute pancakes; different type/size
-31571,32579,STRONG,Vanilla cupcakes substitute pancakes; different type/size
-31571,32802,NONE,Swiss roll cake; different format and type
-31571,40234,STRONG,Chocolate cupcake; similar small cake format
-31571,40233,STRONG,Orange cupcake; similar small cake format
-31571,30926,STRONG,English bar cake; similar bakery product format
-31571,29989,NONE,Fruit cake slice; different flavor/type entirely
-31571,40237,NONE,Pancakes vs Swiss roll; different product type
-31571,40239,NONE,Pancakes vs Swiss roll; different product type
-31571,40240,NONE,Pancakes vs Swiss roll; different product type
-31571,27482,NONE,Pancakes vs cake mix; different product type
-31571,26428,NONE,Pancakes vs cake mix; different product type
-31571,25883,NONE,Pancakes vs pound cake; different product type
-31571,37765,NONE,Pancakes vs biscotti; different product type
-31571,26489,NONE,Pancakes vs cupcakes; different product type
-31571,37766,NONE,Pancakes vs biscotti; different product type
-31571,24465,NONE,Pancakes vs cupcakes; different product type
-31571,30176,NONE,Cupcakes ≠ pancakes; different product type
-31571,40352,NONE,Bagel crisps ≠ pancakes; different product type
-31571,40351,NONE,Bagel crisps ≠ pancakes; different product type
-31571,40353,NONE,Brownie bites ≠ pancakes; different product type
-31571,40350,NONE,Brownie crisps ≠ pancakes; different product type
-31347,33223,NONE,Wrong sub-category; water ≠ cakes/cookies
-31347,28332,NONE,Wrong sub-category; water ≠ cakes/cookies
-31347,36459,NONE,Wrong sub-category; water ≠ cakes/cookies
-31347,36493,NONE,Wrong sub-category; water ≠ cakes/cookies
-31347,27569,NONE,Wrong sub-category; water ≠ cakes/cookies
-31347,38561,STRONG,same brand family; larger bottle; higher price
-31347,24715,STRONG,similar size; slightly higher price; different brand
-31347,30805,STRONG,same brand; larger bottle; similar price
-31347,24594,STRONG,similar size; very close price; more bottles
-31347,27672,STRONG,slightly larger bottle; close price; more units
-31347,38033,NONE,premium brand; significantly higher price
-31347,36955,STRONG,similar size; slightly lower price; fewer bottles
-31347,32884,STRONG,similar size; slightly higher price; fewer bottles
-33553,24435,NONE,different product; marinated vs plain chicken
-33553,34096,STRONG,same brand; larger size; slightly higher price
-33553,33554,STRONG,same brand; whole chicken; slightly larger size
-33553,38342,NONE,different cut; different brand; much higher price
-33553,25940,NONE,different cut (breast fillet vs whole chicken)
-33553,28608,NONE,different cut (breast fillet vs whole chicken)
-33553,27641,NONE,different cut (breast fillet vs whole chicken)
-33553,30658,STRONG,same type; whole chicken; slightly larger size
-33553,24794,NONE,different cut (legs vs whole chicken)
 27838,24437,NONE,different cut; large quantity/price difference
 27838,32440,NONE,different cut (drumsticks vs breast fillet)
 27838,29951,NONE,different cut (drumsticks vs breast fillet)
@@ -850,73 +729,6 @@ oos_id,sub_id,strength,reason
 35087,37577,NONE,Different product type; biscuits vs chocolate sticks
 35087,27865,NONE,Different product type; wafers vs chocolate sticks
 35087,35084,NONE,Same brand; similar chocolate stick format; lower price.
-31584,32878,NONE,Different product type; chocolate bar vs. egg toy.
-31584,30682,NONE,Different product type; chocolate bar vs. egg toy.
-31584,26607,NONE,Different product type; dark chocolate vs. egg toy.
-31584,25452,NONE,Different product type; nut bar vs. egg toy.
-31584,31200,NONE,Different product type; chocolate bar vs. egg toy.
-31584,27491,NONE,Different product type; rocher vs. egg toy.
-31584,27425,NONE,Different product type; wafer bar vs. egg toy.
-31584,25364,NONE,Different product type; wafer bar vs. egg toy.
-31584,25529,NONE,Different product type; chocolate bar vs. egg toy.
-31584,26674,STRONG,Same brand; similar size; lower price
-31584,26515,STRONG,Same brand; similar size; lower price
-31584,32478,DIRECT,Same product; same price; different gender
-31584,25659,STRONG,Same brand; similar size; lower price
-31584,30495,STRONG,Same supplier; similar price; different brand
-31584,37737,NONE,Different brand; larger size; higher price
-31584,40332,STRONG,Different brand; similar size; lower price
-31584,40331,STRONG,Different brand; similar size; lower price
-31584,26396,STRONG,Different brand; similar size; lower price
-31584,31468,STRONG,Different brand; larger size; similar price
-31584,40330,STRONG,same chocolate category; similar price; different brand
-31584,28422,STRONG,same chocolate category; same price; dark variant
-31584,38392,STRONG,same chocolate category; slightly higher price
-31584,30298,STRONG,same chocolate category; slightly higher price
-31584,39940,STRONG,same chocolate category; lower price; smaller size
-31584,39941,STRONG,same chocolate category; higher price; larger size
-31584,31445,STRONG,same chocolate category; much lower price; smaller
-31584,39942,STRONG,same chocolate category; similar price; larger size
-31584,26726,STRONG,same chocolate category; lower price; smaller size
-31584,40367,NONE,vastly different price; unknown brand; different format
-31584,40368,NONE,different product type; size; price too high
-31584,40369,NONE,different product type; size; price too high
-31584,27353,NONE,different format; size; price difference significant
-31584,37874,STRONG,same chocolate single bar; similar size/price
-31584,36912,STRONG,same chocolate single bar; similar size/price
-31584,29477,STRONG,same chocolate single bar; slightly larger/similar price
-31584,33778,STRONG,same chocolate single bar; similar size/price
-31584,39111,NONE,price too high; different flavour format
-31584,39786,STRONG,same chocolate single bar; similar size/price
-31584,38465,STRONG,same chocolate single bar; similar size/price
-31584,38466,STRONG,same indulgent chocolate bar; minor differences
-31584,27746,STRONG,chocolate bar; similar format; slightly cheaper
-31584,25677,STRONG,chocolate bar; similar format; cheaper price
-31584,37875,NONE,too small; very different format/price
-31584,31527,STRONG,chocolate wafer bar; similar single serve
-31584,36803,STRONG,chocolate bar; similar size and price
-31584,36804,NONE,significantly larger and more expensive
-31584,39944,STRONG,chocolate bar; similar size and price
-31584,26790,NONE,too small; very different format/price
-31584,37447,STRONG,chocolate bar; similar size; slightly cheaper
-31584,26832,STRONG,same chocolate category; smaller size; similar price
-31584,39115,STRONG,same chocolate category; smaller size; lower price
-31584,36832,STRONG,same chocolate category; similar size; similar price
-31584,36831,STRONG,same chocolate category; similar size; similar price
-31584,37722,NONE,significantly larger; much higher price; different brand
-31584,37723,NONE,significantly larger; much higher price; different brand
-31584,37721,NONE,significantly larger; much higher price; different brand
-31584,24397,STRONG,same chocolate category; larger size; similar price
-31584,37088,NONE,dark chocolate vs milk; premium brand; different type
-31584,37080,NONE,dark chocolate ganache; premium brand; different type
-31584,37087,NONE,different brand/type; higher price; no toy
-31584,39317,STRONG,similar chocolate bar; close price/size
-31584,33213,NONE,biscuit nibbles; not chocolate egg
-31584,26257,NONE,biscuit nibbles; not chocolate egg
-31584,29821,NONE,cocoa spread; completely different product type
-31584,38171,STRONG,similar chocolate bar; slightly lower price
-31584,38173,STRONG,similar chocolate bar; lower price/size
-31584,38170,NONE,very different product; much higher price
 29679,32878,STRONG,similar milk chocolate bar; close size
 29679,30682,NONE,different format; significantly higher price
 29679,26607,NONE,different format; sugar shells vs dark chocolate pearls
@@ -1182,31 +994,6 @@ oos_id,sub_id,strength,reason
 30684,31568,STRONG,Same brand; same size; different pasta shape
 30684,28855,STRONG,Same brand; same size; different pasta type
 30684,39249,NONE,Different brand; chickpea-based; significantly higher price
-29145,31718,NONE,Cheese sauce; completely different product type
-29145,33229,STRONG,Same type; larger size; different brand
-29145,27877,NONE,Lasagne sheets; different pasta format entirely
-29145,27580,STRONG,Same brand; pasta shape differs; similar size
-29145,39390,STRONG,Same brand; elbow pasta; minor price difference
-29145,39391,STRONG,Same brand; tricolor farfalle; minor price difference
-29145,24498,STRONG,Same brand; spaghetti match; larger multipack format
-29145,27581,STRONG,Same pasta type; different brand/size/price
-29145,25431,NONE,Rice vs pasta; completely different product
-29145,25524,NONE,Rice vs pasta; completely different product
-29145,26340,STRONG,Same brand; pasta type; slightly cheaper
-29145,28319,STRONG,Same brand; different pasta shape/size
-29145,30541,STRONG,Same brand; different pasta shape/size
-29145,25234,STRONG,Same brand; similar pasta; slightly cheaper
-29145,30282,STRONG,Same brand; different pasta shape/size
-29145,30281,STRONG,Same brand; different pasta shape/size
-29145,34211,NONE,Lasagna is significantly different format/price
-29145,34316,NONE,Different pasta type; different size; lower price
-29145,26255,NONE,Different pasta type (orzo); lower price
-29145,27250,NONE,Different pasta type (shells); different size
-29145,29282,NONE,Different pasta type (shells); different size
-29145,33210,NONE,Different pasta type (tubes); different size
-29145,31568,NONE,Different pasta type (pipe); different size
-29145,27248,STRONG,Same spaghetti type; same brand; similar price
-29145,28855,NONE,Different pasta type (vermicelli); different size
 26255,38725,NONE,Rice vs pasta; different brand; higher price
 26255,39626,NONE,Rice vs pasta; completely different product
 26255,31352,NONE,Pasta replaced with unrelated rice product
@@ -1445,26 +1232,6 @@ oos_id,sub_id,strength,reason
 28130,26766,STRONG,same low fat; same format; lower price
 28130,35237,DIRECT,same low fat; same format; lower price
 28130,29556,NONE,full fat Royale vs low fat
-29556,28130,STRONG,same format; low fat vs Royale; slight price up
-29556,34035,NONE,full fat sour vs full fat Royale
-29556,31804,NONE,full fat vs Royale (full fat); different brand/type
-29556,40185,NONE,full fat vs full fat Royale; different brand
-29556,33989,NONE,Single cup vs 6-pack; low fat vs full fat
-29556,32547,STRONG,Same multipack format; similar price; low fat
-29556,26837,NONE,Single cup vs 6-pack; fat content unclear
-29556,36840,STRONG,Same multipack format; similar price; plain yoghurt
-29556,39682,NONE,Single cup vs 6-pack; kefir vs yoghurt
-29556,36791,STRONG,Same multipack format; same price; full fat
-29556,37831,NONE,Protein yoghurt; different format and type
-29556,34781,NONE,Goat milk vs cow milk yoghurt
-29556,26523,NONE,Single large tub; different size/format; lower price
-29556,27275,STRONG,Same 6-pack format; similar price; full fat
-29556,34782,NONE,Goat yogurt vs regular dairy yogurt
-29556,34245,STRONG,Same format; similar size; slight price difference
-29556,31845,NONE,Full cream vs Royale (fat content differs)
-29556,26766,NONE,Low fat but different brand/size; original is Royale (not low fat)
-29556,33692,NONE,Skimmed vs Royale (fat content differs)
-29556,30844,NONE,Full cream; different size format entirely
 35237,28130,STRONG,Same type; fat content; size; higher price
 35237,33989,NONE,Single 125g vs 6-pack; incompatible format/price
 35237,32547,STRONG,Same fat content; similar format and price
@@ -1492,9 +1259,6 @@ oos_id,sub_id,strength,reason
 29287,26523,STRONG,Same full fat; different size/format/brand
 29287,27275,DIRECT,Same full fat; same format; similar price
 35237,36270,NONE,Different fat content; also lacto-free vs regular
-29556,29287,STRONG,Same full fat yoghurt; slight price increase
-29556,36270,NONE,Different fat content; also lacto-free vs regular
-29556,33706,STRONG,Same brand type; same price; similar format
 33983,39682,NONE,Kefir yogurt vs plain yogurt; different product
 33983,36270,NONE,Different fat content; also lacto-free vs regular
 26837,28130,NONE,Different fat content; low fat vs full fat
@@ -1676,22 +1440,9 @@ oos_id,sub_id,strength,reason
 34766,40201,NONE,Different cheese type; flavored block vs string
 34766,40136,NONE,Different cheese type; block vs string format
 34766,37006,NONE,Different cheese type; balade vs mozzarella string
-33405,28636,STRONG,Same type; fat content; size; minor price diff
-33405,25988,NONE,Different size format; 2.85L vs 1L original
-33405,33545,NONE,Different size format; 2L vs 1L original
 37029,28636,STRONG,same fat; cow vs goat; larger size
 37029,25988,STRONG,same fat; cow vs goat; larger size
 37029,33545,STRONG,same fat; cow vs goat; larger size
-28636,33405,STRONG,same brand type; full fat; similar size
-28636,25455,NONE,goat milk vs cow milk; higher price
-28636,37029,NONE,goat milk vs cow milk; smaller size
-28636,36701,NONE,kefir probiotic; different product type entirely
-28636,36279,NONE,camel milk; completely different milk type
-33545,33405,STRONG,same fat content; smaller size; different brand
-33545,25455,NONE,goat milk vs cow milk; different type
-33545,37029,NONE,Different animal source (cow vs goat milk)
-33545,36701,NONE,Kefir probiotic; different product type entirely
-33545,36279,NONE,Different animal source (cow vs camel milk)
 27344,33405,STRONG,Same brand/size; lacks lactose-free feature
 27344,25455,NONE,Different animal source (cow vs goat milk)
 27344,37029,NONE,Different animal source and smaller size
@@ -1708,14 +1459,6 @@ oos_id,sub_id,strength,reason
 33357,24502,NONE,Natural cheddar ≠ processed sandwich cheese; different type
 33357,35971,NONE,Different size; type; and significantly higher price
 33357,35970,NONE,Different size; type; and significantly higher price
-33356,28438,NONE,1.5% fat ≠ full fat; different fat content
-33356,32384,NONE,different fat content (low fat vs full fat)
-33356,24502,NONE,different size; natural vs processed cheese type
-33356,35971,NONE,different size; different cheese type (white vs burger)
-33356,35970,NONE,different size; different cheese type (white vs burger)
-33356,38891,STRONG,same brand/size; cheddar vs burger cheese slices
-33356,38569,NONE,completely different product (caviar; not cheese)
-33356,40195,NONE,completely different product (cheese rings; not slices)
 33357,38891,STRONG,same brand/size; cheddar vs sandwich cheese slices
 33357,38569,NONE,completely different product (caviar; not cheese)
 33357,40195,NONE,completely different product (cheese rings; not slices)
@@ -1740,25 +1483,6 @@ oos_id,sub_id,strength,reason
 25101,36421,STRONG,Same type; smaller size; lower price
 25101,33846,STRONG,Same type; similar size and price
 31019,36421,NONE,Parmesan vs pizza shredded cheese; different type
-33476,28436,NONE,Portion pack vs tub; different format/category
-33476,31490,NONE,Portion pack vs tub; different format/category
-33476,34221,NONE,Portion pack vs tub; different format/category
-33476,29722,NONE,Portion pack vs tub; different format/category
-33476,36331,NONE,Portion pack vs tub; different format/category
-33476,27783,NONE,Portion pack vs tub; different format/category
-33476,36062,NONE,Portion pack vs tub; different format/category
-33476,24747,NONE,Portion pack vs tub; different format/category
-33476,40142,NONE,Portion pack vs tub; different format/category
-33476,40141,STRONG,same type; larger size; similar price
-33476,40143,NONE,beetroot flavour added; different product
-33476,24430,STRONG,same type; full fat; smaller size
-33476,25457,NONE,different fat content (low fat vs original)
-33476,31537,NONE,different milk type (goat vs cow)
-33476,29484,NONE,different milk type (goat vs cow)
-33476,37014,STRONG,same type; cow milk; larger size
-33476,37005,STRONG,same type; cow milk; larger size
-33476,37011,NONE,different milk type (goat vs cow)
-33476,38693,NONE,different fat content (0% fat vs original)
 29793,36798,NONE,Fresh cream vs butter; different product type
 29793,28961,NONE,Fresh cream vs cooking cream; different type
 29793,26261,NONE,Fresh cream vs cooking cream; different type
@@ -1790,30 +1514,6 @@ oos_id,sub_id,strength,reason
 31773,32086,NONE,Different fat content: skimmed vs full cream
 31773,36739,NONE,Different fat content: lactose free vs full cream
 29090,31038,NONE,Different product type: hummus vs mutabal
-35382,30685,NONE,Different fruit type: apple vs pomegranate
-35382,34081,NONE,Different format: 8x125ml vs single 1.4L
-35382,24568,NONE,Different fruit type: apple vs mixed berry
-35382,29622,NONE,Different format and fruit type mismatch
-35382,33005,NONE,Different format; brand; and fruit type
-35382,39147,NONE,Different format: multipack vs single 1L
-35382,39151,NONE,Different format and fruit type: apple vs cocktail
-35382,38541,NONE,Different fruit type: apple vs hibiscus/mixed
-35382,36128,NONE,Different fruit type: apple vs mixed berry
-35382,31639,NONE,Different fruit (apple vs cranberry/aronia)
-35382,39748,NONE,Different fruit (apple vs mixed berry)
-35382,39747,NONE,Different fruit (apple vs mixed fruit)
-35382,36137,NONE,Cola; not juice; different product type
-35382,39717,NONE,Different fruit (apple vs cocktail/mixed)
-35382,35381,STRONG,Same product; larger pack; same brand
-35382,33349,STRONG,Same brand; apple juice; different size
-35382,33350,STRONG,Same brand; apple juice; smaller size
-35382,35365,STRONG,Same brand; apple juice; multipack format
-35382,35010,NONE,Different fruit (apple vs cocktail fruit)
-35382,29501,STRONG,Same brand; cocktail vs apple; different size
-35382,31486,STRONG,Same brand; cocktail vs apple; smaller size
-35382,35280,STRONG,Same brand; cocktail vs apple; larger pack
-35382,35360,STRONG,Same brand; cocktail vs apple; different format
-35382,27820,DIRECT,Same brand; same size; cocktail vs apple
 35010,25599,NONE,Different brand; different fruit type
 35010,30685,NONE,Different brand; different fruit type
 35010,29623,NONE,Different brand; different fruit type
@@ -2047,56 +1747,6 @@ oos_id,sub_id,strength,reason
 33363,25715,STRONG,Same supplier; minor size/price difference
 33363,29618,DIRECT,Same brand/product; minor size/price difference
 33363,29075,NONE,Bulk pack; different format entirely
-35357,39715,STRONG,Same type/size; different brand; lower price
-35357,30164,NONE,Different size; single vs multipack format
-35357,28214,NONE,different flavor (chocolate vs dates)
-35357,25112,NONE,different flavor (chocolate vs strawberry)
-35357,33084,NONE,different flavor (chocolate vs vanilla)
-35357,35448,NONE,different size/format (6x250ml vs 30x125ml)
-35357,33378,STRONG,same brand/flavor family; smaller size/pack
-35357,35276,NONE,different pack size (6x250ml vs 30x125ml)
-35357,27458,STRONG,same brand/flavor; smaller pack format
-35357,32380,NONE,different flavor (chocolate vs strawberry)
-35357,25400,NONE,different flavor (chocolate vs banana)
-35357,24761,NONE,different flavor (chocolate vs banana)
-35357,35277,STRONG,Same brand/flavor; larger pack; similar unit price
-35357,32379,STRONG,Same brand; lactose free variant; single unit
-35357,31485,STRONG,Same brand; different flavor; single unit
-35357,35443,STRONG,Same brand; different flavor; same pack size
-28495,39715,STRONG,Different brand; low fat vs full fat
-28495,30164,NONE,Different brand; protein drink; much higher price
-28495,28214,NONE,Different flavor; protein drink; dates variant
-28495,25112,NONE,Different flavor; protein drink; strawberry variant
-28495,33084,NONE,Different flavor; protein drink; vanilla variant
-28495,35448,NONE,Different flavor; banana; bulk multipack format
-28495,33378,NONE,Different flavor (banana vs chocolate)
-28495,35276,STRONG,Same flavor; smaller size; multipack format
-28495,27458,STRONG,Same flavor; smaller size; multipack format
-28495,32380,NONE,Different flavor (strawberry vs chocolate)
-28495,25400,NONE,Different flavor (banana vs chocolate)
-28495,24761,NONE,Different flavor (banana vs chocolate)
-28495,35277,STRONG,Same flavor; larger multipack; same brand
-28495,32379,STRONG,Same flavor; lactose-free variant; slight price difference
-28495,31485,NONE,Different flavor (strawberry vs chocolate)
-28495,35443,NONE,Different flavor (strawberry vs chocolate)
-35441,34148,NONE,Different brand; fresh vs long life milk
-35441,27587,STRONG,Same product; smaller pack size
-35441,25240,STRONG,Same brand; full cream; smaller unit
-35441,24740,STRONG,Same brand; full cream; smaller unit
-35441,35422,STRONG,Same brand; full cream; similar multipack
-35441,35420,NONE,Different fat content; half cream vs full cream
-35441,35434,NONE,Different fat content; half cream vs full cream
-35441,32378,STRONG,Same brand; full cream; larger single unit
-35441,27130,STRONG,Same brand; full cream; multipack format
-35441,31483,NONE,Different fat content; skimmed vs full cream
-25398,27587,STRONG,Same brand; full cream; smaller multi-pack format
-25398,25240,STRONG,Same brand; full cream; smaller size; fortified
-25398,24740,STRONG,Same brand; full cream; smaller single size
-25398,35422,STRONG,Same brand; full cream; multi-pack larger size
-25398,35434,NONE,Different fat content; half cream vs full cream
-25398,35421,NONE,Different fat content; half cream vs full cream
-25398,32378,DIRECT,Same brand; full cream; same size; similar price
-25398,27130,STRONG,Same brand; full cream; multi-pack format
 32762,39971,NONE,Wrong sub-category; frozen chicken not milk
 32762,40002,NONE,Wrong sub-category; frozen chicken not milk
 32762,40000,NONE,different format; much less quantity (250g vs 1kg)
@@ -2354,19 +2004,12 @@ oos_id,sub_id,strength,reason
 35552,35768,NONE,different vegetable type entirely
 35552,35771,NONE,different vegetable type entirely
 35552,35782,STRONG,mushroom type; smaller size; higher price
-31515,24413,NONE,different fruit type entirely
-31515,38276,NONE,different fruit type entirely
-31515,27495,NONE,different vegetable type entirely
-31515,27494,NONE,different product type entirely
-31515,28119,STRONG,same brand/type; slightly smaller size/price
-31515,25509,NONE,Different fruit type (blackberries vs pomelo)
 24510,24413,NONE,Different fruit type (watermelon vs avocado)
 24510,38276,NONE,Different fruit type (watermelon vs avocado)
 24510,27495,NONE,Fruit vs vegetable (watermelon vs squash)
 24510,27494,NONE,Different fruit type (watermelon vs coconut)
 24510,25509,NONE,Different fruit type (watermelon vs pomelo)
 24510,33930,STRONG,Same fruit; different origin; minor size/price difference
-26676,31727,NONE,Different vegetable type (coriander vs mixed leaves)
 26675,31727,NONE,Different type (rocket vs mixed baby leaves)
 26675,31726,STRONG,Same type; minor size/price difference
 36737,36672,NONE,Different fruit type: pomegranate vs melon
@@ -2479,100 +2122,6 @@ oos_id,sub_id,strength,reason
 37159,33853,NONE,Different product type; glass cleaner vs disinfectant
 37159,37512,NONE,Completely different product; wiper vs disinfectant
 37159,38648,NONE,Completely different product; scrubbing pad vs disinfectant
-36640,39887,STRONG,same format; different brand/flavor/size/price
-36640,39886,STRONG,same format; different brand/flavor/size/price
-36640,39885,STRONG,same format; flavor match; different brand/price
-36640,40416,NONE,multipack format; different brand; much higher price
-36640,39752,NONE,multipack format; different brand; much higher price
-36640,39751,NONE,multipack format; different brand; much higher price
-36640,37710,NONE,multipack format; different brand; much higher price
-36640,40178,STRONG,same brand; similar size; minor price difference
-36640,36641,DIRECT,same brand; same size; same price
-36640,36646,DIRECT,same brand; same size; same price
-36640,40181,STRONG,same brand; same format; similar price
-36640,39987,NONE,price 10x higher; different brand/flavor
-36640,39991,NONE,price 10x higher; different brand/flavor
-36640,39988,NONE,price 10x higher; different brand/flavor
-36640,39990,NONE,price 10x higher; different brand/flavor
-36640,32074,NONE,different flavor (yogurt/pistachio); higher price
-36640,40208,STRONG,same sub-category; similar price; different flavor
-36640,28484,STRONG,same sub-category; similar price; different flavor
-36640,40209,STRONG,same sub-category; similar price; different flavor
-36640,24678,STRONG,same sub-category; similar price; different flavor
-36640,24442,STRONG,same brand type; fruit ice lolly; slightly cheaper
-36642,39887,NONE,fruit lolly vs cream stick; very different price
-36642,39886,NONE,fruit lolly vs cream stick; very different price
-36642,40416,NONE,multipack format; very different price
-36642,39752,NONE,multipack format; very different price
-36642,39749,STRONG,same flavor type; multipack format differs
-36642,39846,NONE,multipack freeze pops; very different format/price
-36642,37710,NONE,multipack freeze pops; very different format/price
-36642,40178,NONE,different flavor type; cream-based vs fruit lolly
-36642,36641,STRONG,same brand; ice cream stick; similar price
-36642,36646,STRONG,Same brand; similar format; minor size/price diff
-36642,35191,NONE,Price 4x higher; very different format
-36642,40181,STRONG,Same brand; similar price; stick format
-36642,39987,NONE,Different brand; price 11x higher
-36642,39991,NONE,Different brand; price 11x higher
-36642,39988,NONE,Different brand; price 11x higher
-36642,39990,NONE,Different brand; price 11x higher
-36642,32074,NONE,Different brand; yoghurt base; price 6x higher
-36642,40208,STRONG,Same price; stick format; different brand/flavor
-36642,28484,STRONG,Same category; stick format; similar price
-36642,32446,STRONG,Same raspberry flavor; slight price difference
-36642,40209,NONE,Different flavor (cacao vs raspberry); different format
-36642,24678,NONE,Different type (chocolate coating vs fruit lolly)
-36642,27095,DIRECT,Same raspberry lolly; same brand family; lower price
-36642,24442,STRONG,Same lolly format; different flavor/brand
-34777,39887,NONE,Different type and massive price difference
-34777,39886,NONE,Different type and massive price difference
-34777,40416,NONE,Multipack; different brand; massive price difference
-34777,39752,NONE,Multipack; different brand; massive price difference
-34777,37710,NONE,Completely different product; massive price difference
-34777,40178,NONE,Different flavor; hazelnut vs orange; higher price
-34777,36641,STRONG,Same format; similar size; different flavor/brand
-34777,36646,STRONG,Same format; similar size; different flavor/brand
-34777,40181,STRONG,Same format; similar size; chocolate coating added
-34777,39987,NONE,Major price difference; different brand/premium product
-34777,39991,NONE,Major price difference; different brand/premium product
-34777,39988,NONE,Major price difference; different brand/premium product
-34777,39990,NONE,Major price difference; different brand/premium product
-34777,32074,NONE,Different type; frozen yogurt vs fruit lolly
-34777,40208,STRONG,Same brand; chocolate stick; slightly larger size
-34777,28484,NONE,fruit lolly vs chocolate/vanilla ice cream stick
-34777,40209,NONE,fruit lolly vs chocolate ice cream stick
-34777,24678,NONE,fruit lolly vs chocolate ice cream stick
-34777,24442,STRONG,same brand; same format; same size; same price
-36640,30693,NONE,budget fruit stick vs premium chocolate bar ice cream
-36640,30060,NONE,strawberry fruit stick vs vanilla dairy ice cream
-36640,31610,NONE,fruit stick vs premium full-fat dairy ice cream
-36640,27589,NONE,fruit stick vs premium full-fat dairy ice cream
-36640,24513,NONE,fruit stick vs premium full-fat dairy ice cream
-36640,32505,NONE,fruit stick vs premium full-fat dairy ice cream
-36640,32522,NONE,different type; price too high (5x)
-36640,36623,STRONG,similar stick; close price; different flavor
-36640,26047,STRONG,similar stick; slightly larger; minor price diff
-36640,29038,STRONG,similar stick format; close price; different flavor
-36640,27525,STRONG,similar stick; close price; different flavor
-36642,30693,NONE,different type; price too high (7x)
-36642,30060,NONE,different type/flavor; price too high (4x)
-36642,31610,NONE,different type; price too high (5x)
-36642,27589,NONE,different type; price too high (5x)
-36642,24513,NONE,different type; price too high (6x)
-36642,32505,NONE,raspberry lolly vs premium chocolate ice cream
-36642,32522,NONE,raspberry lolly vs premium white chocolate bar
-36642,36623,STRONG,similar stick format; close price match
-36642,26047,STRONG,similar ice cream stick; slightly higher price
-36642,29038,STRONG,similar stick format; peanut butter flavor differs
-36642,27525,STRONG,similar local brand stick; same price range
-31552,39884,STRONG,same cone format; different brand/flavor/price
-31552,39882,STRONG,same cone format; different brand/price
-31552,39883,STRONG,same cone format; different brand/price
-31552,39893,NONE,mini cones multipack; significantly higher price/format
-31552,25007,STRONG,same format; different brand/flavor; lower price
-31552,30079,STRONG,same format; different brand/flavor; lower price
-31552,25473,STRONG,same brand; similar format; slightly lower price
-31552,33416,DIRECT,same brand/size/price; different flavor only
 31554,39890,NONE,different product type; significantly higher price
 31554,39699,NONE,completely different product; 15x higher price
 25766,24755,NONE,different product format; cotton wool vs pads
